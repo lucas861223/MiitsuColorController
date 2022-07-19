@@ -1,0 +1,353 @@
+﻿<Page x:Class="MiitsuColorController.Views.ArtMeshTintingFeature"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:MiitsuColorController.Views"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:converters="using:MiitsuColorController.Converters"
+      mc:Ignorable="d"
+      Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Page.Resources>
+        <converters:BoolToRedGreenConverter x:Key="BoolToRedGreenConverter" />
+        <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+        <converters:BoolToStringConverter x:Key="BoolToStringConverter" />
+        <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter" />
+
+        <LinearGradientBrush x:Key="HueBrush"
+                             StartPoint="0,0"
+                             EndPoint="0,1">
+            <LinearGradientBrush.GradientStops>
+                <GradientStop Color="{x:Bind _context.FirstStopColor, Mode=OneWay}"
+                              Offset="1" />
+                <GradientStop Color="{x:Bind _context.SecondStopColor, Mode=OneWay}"
+                              Offset="0.5" />
+                <GradientStop Color="{x:Bind _context.ThirdStopColor, Mode=OneWay}"
+                              Offset="0" />
+            </LinearGradientBrush.GradientStops>
+        </LinearGradientBrush>
+    </Page.Resources>
+    <Grid Padding="40,0,0,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"></RowDefinition>
+            <RowDefinition Height="5*"></RowDefinition>
+            <RowDefinition Height="5*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="5*"></ColumnDefinition>
+            <ColumnDefinition Width="6*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Border Opacity="0.7"
+                Background="Black"
+                HorizontalAlignment="Center"
+                Grid.Row="0"
+                Grid.RowSpan="3"
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
+                Canvas.ZIndex="10"
+                Visibility="{x:Bind VTS_Socket.IsConnected, Mode=OneWay, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+            <Viewbox StretchDirection="Both">
+                <TextBlock Text="此功能只在有連結到Vtube Studio時才能使用" />
+            </Viewbox>
+        </Border>
+        <Border Grid.Row="0"
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
+                BorderThickness="2"
+                BorderBrush="White">
+            <RelativePanel>
+                <Button Content="啟用"
+                        RelativePanel.AlignHorizontalCenterWithPanel="True"
+                        RelativePanel.AlignVerticalCenterWithPanel="True"></Button>
+                <TextBlock Text="當前模型： "
+                           Name="ModelLabel"
+                           RelativePanel.AlignLeftWithPanel="True"
+                           RelativePanel.AlignVerticalCenterWithPanel="True"></TextBlock>
+                <TextBlock Text="{x:Bind _context.ModelName, Mode=OneWay}"
+                           RelativePanel.AlignVerticalCenterWithPanel="True"
+                           RelativePanel.RightOf="ModelLabel"></TextBlock>
+                <Button RelativePanel.AlignRightWithPanel="True"
+                        RelativePanel.AlignVerticalCenterWithPanel="True"
+                        Click="{x:Bind _context.SaveCommand, Mode=OneTime}">
+                    <Button.Content>
+                        <SymbolIcon Symbol="Save"></SymbolIcon>
+                    </Button.Content>
+                </Button>
+
+            </RelativePanel>
+        </Border>
+        <Grid Grid.Row="1"
+              Grid.Column="0"
+              Grid.ColumnSpan="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="2*"></RowDefinition>
+                <RowDefinition Height="3*"></RowDefinition>
+                <RowDefinition Height="6*"></RowDefinition>
+                <RowDefinition Height="3*"></RowDefinition>
+                <RowDefinition Height="6*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="10*"></ColumnDefinition>
+                <ColumnDefinition Width="2*"></ColumnDefinition>
+                <ColumnDefinition Width="10*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <TextBox Grid.Column="0"
+                     Grid.Row="0"
+                     PlaceholderText="搜尋部件..."
+                     TextChanged="NameFilterChanged"
+                     Text="{x:Bind Filter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+
+            <ListView x:Name="ArtMeshNameListView"
+                      ItemsSource="{x:Bind FilteredList}"
+                      Grid.Column="0"
+                      Grid.Row="1"
+                      Grid.RowSpan="4"
+                      BorderThickness="1"
+                      SelectionMode="Multiple"
+                      BorderBrush="DarkGray"
+                      SelectionChanged="ArtMeshNameListView_SelectionChanged" />
+
+            <Button Grid.Column="1"
+                    Grid.Row="1"
+                    VerticalAlignment="Stretch"
+                    HorizontalAlignment="Stretch"
+                    Click="{x:Bind _context.RefreshCommand, Mode=OneTime}">
+                <Button.Content>
+                    <SymbolIcon Symbol="Refresh"></SymbolIcon>
+                </Button.Content>
+            </Button>
+            <Button Content="測試"
+                    Grid.Column="1"
+                    Grid.Row="3"
+                    VerticalAlignment="Stretch"
+                    HorizontalAlignment="Stretch"></Button>
+
+            <AppBarSeparator Grid.Column="1"
+                             Grid.Row="0" />
+            <AppBarSeparator Grid.Column="1"
+                             Grid.Row="2" />
+            <AppBarSeparator Grid.Column="1"
+                             Grid.Row="4" />
+            <TextBox Grid.Column="2"
+                     Grid.Row="0"
+                     PlaceholderText="搜尋標籤..."
+                     TextChanged="TagFilterChanged"
+                     Text="{x:Bind TagFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+            </TextBox>
+            <ListView x:Name="TagListView"
+                      ItemsSource="{x:Bind FilteredTagList}"
+                      Grid.Column="2"
+                      Grid.RowSpan="4"
+                      Grid.Row="1"
+                      BorderThickness="1"
+                      SelectionMode="Multiple"
+                      SelectionChanged="TagListView_SelectionChanged"
+                      BorderBrush="DarkGray" />
+        </Grid>
+        <ScrollViewer Grid.Row="2"
+                      Grid.Column="0">
+            <Grid VerticalAlignment="Center"
+                  Margin="0,0,20,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"></RowDefinition>
+                    <RowDefinition Height="2*"></RowDefinition>
+                    <RowDefinition Height="1*"></RowDefinition>
+                    <RowDefinition Height="1*"></RowDefinition>
+                    <RowDefinition Height="1*"></RowDefinition>
+                    <RowDefinition Height="1*"></RowDefinition>
+                    <RowDefinition Height="1*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"></ColumnDefinition>
+                    <ColumnDefinition Width="8*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <RadioButtons Header="變色方針"
+                              SelectedIndex="{x:Bind _context.MessageHandlingMethod, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                              Grid.ColumnSpan="2"
+                              Grid.Row="1">
+                    <x:String>累積變色</x:String>
+                    <x:String>排程變色</x:String>
+                </RadioButtons>
+
+                <StackPanel Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            Grid.Row="0"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center">
+                    <TextBlock VerticalAlignment="Center">以前</TextBlock>
+                    <NumberBox SpinButtonPlacementMode="Compact"
+                               Width="60"
+                               Minimum="1"
+                               SmallChange="1"
+                               LargeChange="1"
+                               Value="{x:Bind _context.MessageCount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                               ValueChanged="NumberBox_ValueChanged"></NumberBox>
+                    <TextBlock VerticalAlignment="Center">條訊息中的比例平均值做為選色方針</TextBlock>
+                </StackPanel>
+
+                <TextBlock Grid.Row="3"
+                           VerticalAlignment="Center"
+                           Grid.Column="0">綠色</TextBlock>
+                <TextBox Grid.Row="2"
+                         VerticalAlignment="Center"
+                         Grid.Column="1"
+                         Text="{x:Bind _context.GreenEmote, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                <TextBlock Grid.Row="2"
+                           Grid.Column="0"
+                           VerticalAlignment="Center">紅色</TextBlock>
+                <TextBox Grid.Row="3"
+                         VerticalAlignment="Center"
+                         Grid.Column="1"
+                         Text="{x:Bind _context.RedEmote, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                <TextBlock Grid.Row="4"
+                           Grid.Column="0"
+                           VerticalAlignment="Center">藍色</TextBlock>
+                <TextBox Grid.Row="4"
+                         VerticalAlignment="Center"
+                         Grid.Column="1"
+                         Text="{x:Bind _context.BlueEmote, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                <Slider Grid.Row="5"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="2"
+                        Minimum="0"
+                        Maximum="10"
+                        StepFrequency="1"
+                        Value="{x:Bind _context.Interpolation, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    <Slider.Header>
+                        <TextBlock>
+                            <Run>插值- 從顏色A到顏色B中間的顏色數量：</Run>
+                            <Run Text="{x:Bind _context.Interpolation, Mode=OneWay}"></Run>
+                            <Run>次變色</Run>
+                        </TextBlock>
+                    </Slider.Header>
+                </Slider>
+                <Slider Grid.Row="6"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="2"
+                        Minimum="0"
+                        Maximum="1000"
+                        StepFrequency="10"
+                        Value="{x:Bind _context.Duration, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    <Slider.Header>
+                        <TextBlock>
+                            <Run>時長- 顏色A到顏色B的速度：</Run>
+                            <Run Text="{x:Bind _context.Duration, Mode=OneWay}"></Run>
+                            <Run>毫秒</Run>
+                        </TextBlock>
+                    </Slider.Header>
+                </Slider>
+            </Grid>
+        </ScrollViewer>
+
+        <Grid Grid.Row="2"
+              Grid.Column="1"
+              Padding="10,10,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="7*"></RowDefinition>
+                <RowDefinition Height="3*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="15*"></ColumnDefinition>
+                <ColumnDefinition Width="5*"></ColumnDefinition>
+                <ColumnDefinition Width="100*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Canvas Grid.Row="0"
+                    Grid.Column="0"
+                    Background="{StaticResource HueBrush}"
+                    x:Name="RectColor" />
+            <Canvas Grid.Row="0"
+                    Grid.Column="2"
+                    x:Name="ColorPickerCanvas"
+                    SizeChanged="ColorPickerCanvas_SizeChanged"
+                    Background="Transparent"
+                    PointerPressed="ColorPickerCanvas_PointerPressed"
+                    PointerExited="ColorPickerCanvas_PointerExited"
+                    PointerMoved="ColorPickerCanvas_PointerMoved" />
+            <Grid Grid.Row="1"
+                  Grid.Column="0"
+                  Grid.ColumnSpan="3">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="5*"></RowDefinition>
+                    <RowDefinition Height="5*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"></ColumnDefinition>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="0"
+                           Grid.Column="0"
+                           VerticalAlignment="Center">
+                    可變的飽和度範圍 (0~100)
+                </TextBlock>
+                <TextBlock Grid.Row="0"
+                           Grid.Column="1"
+                           VerticalAlignment="Center"
+                           TextAlignment="Right">
+                    最小:
+                </TextBlock>
+                <TextBlock Grid.Row="0"
+                           Grid.Column="3"
+                           VerticalAlignment="Center"
+                           TextAlignment="Right">
+                    最大:
+                </TextBlock>
+                <TextBlock Grid.Row="1"
+                           Grid.Column="1"
+                           VerticalAlignment="Center"
+                           TextAlignment="Right">
+                    最小:
+                </TextBlock>
+                <TextBlock Grid.Row="1"
+                           Grid.Column="3"
+                           VerticalAlignment="Center"
+                           TextAlignment="Right">
+                    最大:
+                </TextBlock>
+                <TextBlock Grid.Row="1"
+                           Grid.Column="0"
+                           VerticalAlignment="Center">
+                    可變的明亮度範圍 (0~100)
+                </TextBlock>
+
+                <NumberBox Grid.Row="1"
+                           Grid.Column="2"
+                           Minimum="0"
+                           Value="{x:Bind _context.MinimumV, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           Maximum="{x:Bind _context.MaximumV, Mode=OneWay}"
+                           ValueChanged="NumberBox_ValueChanged"
+                           VerticalAlignment="Center">
+                </NumberBox>
+                <NumberBox Grid.Row="1"
+                           Maximum="100"
+                           Grid.Column="4"
+                           Minimum="{x:Bind _context.MinimumV, Mode=OneWay}"
+                           ValueChanged="NumberBox_ValueChanged"
+                           Value="{x:Bind _context.MaximumV, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           VerticalAlignment="Center">
+                </NumberBox>
+                <NumberBox Grid.Row="0"
+                           Minimum="0"
+                           Grid.Column="2"
+                           Value="{x:Bind _context.MinimumS, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           Maximum="{x:Bind _context.MaximumS, Mode=OneWay}"
+                           ValueChanged="NumberBox_ValueChanged"
+                           VerticalAlignment="Center">
+                </NumberBox>
+                <NumberBox Grid.Row="0"
+                           Grid.Column="4"
+                           Maximum="100"
+                           Minimum="{x:Bind _context.MinimumS, Mode=OneWay}"
+                           ValueChanged="NumberBox_ValueChanged"
+                           Value="{x:Bind _context.MaximumS, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           VerticalAlignment="Center">
+                </NumberBox>
+            </Grid>
+        </Grid>
+
+    </Grid>
+
+</Page>

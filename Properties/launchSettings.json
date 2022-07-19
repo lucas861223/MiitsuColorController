@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "MiitsuColorController (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "MiitsuColorController (Unpackaged)": {
+      "commandName": "Project",
+      "nativeDebugging": false
+    }
+  }
+}
