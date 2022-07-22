@@ -94,7 +94,7 @@ namespace MiitsuColorController.Models
 
     public class ArtMeshMatcher
     {
-        public bool tintAll = true;
+        public bool tintAll = false;
         public int[] artMeshNumber;
         public string[] nameExact;
         public string[] nameContains;

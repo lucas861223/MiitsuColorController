@@ -1,11 +1,81 @@
-﻿using System;
+﻿using MiitsuColorController.Models;
+using System;
 using Windows.UI;
 
 namespace MiitsuColorController.Helper
 {
     internal class ColorHelper
     {
-        public static Color ConvertHSV2RGB(float h, float s, float v)
+
+        public static void RBGToAdjustedColorTint(float[] color, float sRatio, float minS, float vRatio, float minV, ref ArtMeshColorTint result)
+        {
+            float[] hsv = { 0, 0, 0 };
+            ConvertRGB2HSV(color, ref hsv);
+            hsv[1] = hsv[1] * sRatio + minS;
+            hsv[2] = hsv[2] * vRatio + minV;
+            ConvertHSV2RGBColorTint(hsv[0], hsv[1], hsv[2], ref result);
+        }
+
+        //255, 255, 255 to 360, 1, 1
+        private static void ConvertRGB2HSV(float[] color, ref float[] result)
+        {
+            float R = color[0];
+            float G = color[1];
+            float B = color[2];
+
+            float Min = Math.Min(Math.Min(R, G), B);
+            float Max = Math.Max(Math.Max(R, G), B);
+            float Delta = Max - Min;
+
+            result[2] = Max;
+
+            if (result[2] == 0)
+            {
+                result[1] = 0;
+            }
+            else
+            {
+                result[1] = Delta / Max;
+            }
+
+            if (result[1] == 0)
+            {
+                result[0] = 0;
+            }
+            else
+            {
+                if (R == Max)
+                {
+                    result[0] = (G - B) / Delta;
+                }
+                else if (G == Max)
+                {
+                    result[0] = 2f + (B - R) / Delta;
+                }
+                else if (B == Max)
+                {
+                    result[0] = 4f + (R - G) / Delta;
+                }
+                result[0] *= 60;
+                if (result[0] < 0.0)
+                {
+                    result[0] = result[0] + 360;
+                }
+            }
+
+            result[2] /= 255;
+        }
+
+        public static void ConvertHSV2RGBColorTint(float h, float s, float v, ref ArtMeshColorTint result)
+        {
+            byte[] rgb = ConvertHSV2RGB(h, s, v);
+            result.colorB = (int)rgb[2];
+            result.colorG = (int)rgb[1];
+            result.colorR = (int)rgb[0];
+        }
+
+        //360, 1, 1 to 255, 255, 255,
+        public static byte[] ConvertHSV2RGB(float h, float s, float v)
         {
             byte r = 0;
             byte g = 0;
@@ -51,7 +121,13 @@ namespace MiitsuColorController.Helper
                     b = (byte)(255 * q);
                     break;
             }
-            return Color.FromArgb(255, r, g, b);
+            return new byte[] { r, g, b };
+        }
+
+        public static Color ConvertHSV2RGBColor(float h, float s, float v)
+        {
+            byte[] rgb = ConvertHSV2RGB(h, s, v);
+            return Color.FromArgb(255, rgb[0], rgb[1], rgb[2]);
         }
     }
 }

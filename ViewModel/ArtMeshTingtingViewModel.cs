@@ -22,7 +22,7 @@ namespace MiitsuColorController.ViewModel
             get { return _messageHandlingMethod; }
             set { _messageHandlingMethod = value; OnPropertyChanged("MessageHandlingMethod"); }
         }
-        private ArtmeshColoringSetting _setting;
+        private ArtmeshColoringSetting _setting = new();
         public int Interpolation { get { return _setting.Interpolation; } set { _setting.Interpolation = value; OnPropertyChanged("Interpolation"); } }
         public int Duration { get { return _setting.Duration; } set { _setting.Duration = value; OnPropertyChanged("Duration"); } }
         public string GreenEmote { get { return _setting.GreenEmote; } set { _setting.GreenEmote = value; OnPropertyChanged("GreenEmote"); } }
@@ -31,6 +31,7 @@ namespace MiitsuColorController.ViewModel
         public bool Activated { get { return _setting.Activated; } set { _setting.Activated = value; OnPropertyChanged("Activated"); } }
         public RoutedEventHandler RefreshCommand { get { return LoadModel; } }
         public RoutedEventHandler SaveCommand { get { return SaveModelSetting; } }
+        public RoutedEventHandler ActivateCommand { get { return Activate; } }
         private ResourceManager _resourceManager = ResourceManager.Instance;
         private FeatureManager _featureManager = FeatureManager.Instance;
         public int MinimumS
@@ -119,8 +120,10 @@ namespace MiitsuColorController.ViewModel
         public int MessageCount { get { return _setting.MessageCount; } set { _setting.MessageCount = value; OnPropertyChanged("MessageCount"); } }
         public List<string> ArtMeshNames = new();
         public List<string> Tags = new();
-        public List<string> SelectedArtMesh;
-        public List<string> SelectedTag;
+        public List<string> SelectedArtMesh { get { return _setting.SelectedArtMesh; } }
+        public List<string> SelectedTag { get { return _setting.SelectedArtMesh; } }
+        public List<string> SelectedButFilteredName = new();
+        public List<string> SelectedButFilteredTag = new();
         private Action<List<string>, List<string>, List<string>, List<string>> _loadModelCallback;
         private string _modelName = "載入中...";
         public string ModelName
@@ -135,8 +138,6 @@ namespace MiitsuColorController.ViewModel
         public ArtMeshTingtingViewModel(Canvas ColorPickerCanvas, Action<List<string>, List<string>, List<string>, List<string>> LoadModelCallback)
         {
             LoadModel();
-            SelectedArtMesh = _setting.SelectedArtMesh;
-            SelectedTag = _setting.SelectedTag;
             _colorPickerCanvas = ColorPickerCanvas;
             _loadModelCallback = LoadModelCallback;
             PaintCanvas();
@@ -147,8 +148,31 @@ namespace MiitsuColorController.ViewModel
 
         private void SaveModelSetting(object sender, RoutedEventArgs e)
         {
+            foreach (string name in SelectedButFilteredName)
+            {
+                SelectedArtMesh.Add(name);
+            }
+            foreach (string tag in SelectedButFilteredTag)
+            {
+                SelectedTag.Add(tag);
+            }
             _resourceManager.SaveModelSetting(_setting);
             _featureManager.ReAssembleConfig();
+            foreach (string name in SelectedButFilteredName)
+            {
+                SelectedArtMesh.Remove(name);
+            }
+            foreach (string tag in SelectedButFilteredTag)
+            {
+                SelectedTag.Remove(tag);
+            }
+        }
+
+        private void Activate(object sender, RoutedEventArgs e)
+        {
+            Activated = true;
+            SaveModelSetting(null, null);
+            _featureManager.StartTask();
         }
 
         private void LoadModel(object sender, RoutedEventArgs e)
@@ -166,10 +190,12 @@ namespace MiitsuColorController.ViewModel
                     _vtsSocket.GetModelInformation();
                     if (_resourceManager.CurrentModelInformation.ArtMeshNames != null)
                     {
+                        ArtMeshNames.Clear();
                         foreach (string artmesh in _resourceManager.CurrentModelInformation.ArtMeshNames)
                         {
                             ArtMeshNames.Add(artmesh);
                         }
+                        Tags.Clear();
                         foreach (string tag in _resourceManager.CurrentModelInformation.ArtMeshTags)
                         {
                             Tags.Add(tag);
@@ -177,12 +203,12 @@ namespace MiitsuColorController.ViewModel
                         queue.TryEnqueue(() =>
                         {
                             ModelName = _resourceManager.CurrentModelInformation.ModelName;
-                            OnPropertyChanged("ModelName");
                             _setting = _resourceManager.LoadModelSetting();
-                            List<string> tmpNames = SelectedArtMesh;
-                            List<string> tmpTags = SelectedTag;
-                            SelectedTag = new();
-                            SelectedArtMesh = new();
+                            OnPropertyChanged((string)null);
+                            List<string> tmpNames = _setting.SelectedArtMesh;
+                            _setting.SelectedArtMesh = new();
+                            List<string> tmpTags = _setting.SelectedTag;
+                            _setting.SelectedTag = new();
                             _loadModelCallback(ArtMeshNames, Tags, tmpNames, tmpTags);
                         });
                     }
@@ -200,8 +226,8 @@ namespace MiitsuColorController.ViewModel
             for (int i = 0; i < 100; i++)
             {
                 LinearGradientBrush lgb = new();
-                lgb.GradientStops.Add(new GradientStop() { Color = ColorHelper.ConvertHSV2RGB(_circlePercent * i, MinimumS / 100f, 1) });
-                lgb.GradientStops.Add(new GradientStop() { Color = ColorHelper.ConvertHSV2RGB(_circlePercent * i, MaximumS / 100f, 1), Offset = 1 });
+                lgb.GradientStops.Add(new GradientStop() { Color = ColorHelper.ConvertHSV2RGBColor(_circlePercent * i, MinimumS / 100f, 1) });
+                lgb.GradientStops.Add(new GradientStop() { Color = ColorHelper.ConvertHSV2RGBColor(_circlePercent * i, MaximumS / 100f, 1), Offset = 1 });
                 Line line = new()
                 {
                     X1 = _colorPickerCanvas.ActualWidth / 100 * i,
@@ -229,12 +255,12 @@ namespace MiitsuColorController.ViewModel
                         LinearGradientBrush lgb = new();
                         lgb.GradientStops.Add(new GradientStop()
                         {
-                            Color = ColorHelper.ConvertHSV2RGB(_circlePercent * (int)tmpLine.Tag,
+                            Color = ColorHelper.ConvertHSV2RGBColor(_circlePercent * (int)tmpLine.Tag,
                                                                MinimumS / 100f, 1)
                         });
                         lgb.GradientStops.Add(new GradientStop()
                         {
-                            Color = ColorHelper.ConvertHSV2RGB(_circlePercent * (int)tmpLine.Tag,
+                            Color = ColorHelper.ConvertHSV2RGBColor(_circlePercent * (int)tmpLine.Tag,
                                                                MaximumS / 100f, 1),
                             Offset = 1
                         });
@@ -258,9 +284,9 @@ namespace MiitsuColorController.ViewModel
         public void UpdateColor(float h, float s)
         {
             float adjustedS = (MinimumS + (MaximumS - MinimumS) * s) / 100f;
-            FirstStopColor = ColorHelper.ConvertHSV2RGB(h, adjustedS, MinimumV / 100f);
-            SecondStopColor = ColorHelper.ConvertHSV2RGB(h, adjustedS, (MinimumV + MaximumV) / 200f);
-            ThirdStopColor = ColorHelper.ConvertHSV2RGB(h, adjustedS, MaximumV / 100f);
+            FirstStopColor = ColorHelper.ConvertHSV2RGBColor(h, adjustedS, MinimumV / 100f);
+            SecondStopColor = ColorHelper.ConvertHSV2RGBColor(h, adjustedS, (MinimumV + MaximumV) / 200f);
+            ThirdStopColor = ColorHelper.ConvertHSV2RGBColor(h, adjustedS, MaximumV / 100f);
             _lastS = s;
             _lastH = h;
         }

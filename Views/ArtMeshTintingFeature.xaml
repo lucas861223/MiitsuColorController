@@ -57,7 +57,8 @@
             <RelativePanel>
                 <Button Content="啟用"
                         RelativePanel.AlignHorizontalCenterWithPanel="True"
-                        RelativePanel.AlignVerticalCenterWithPanel="True"></Button>
+                        RelativePanel.AlignVerticalCenterWithPanel="True"
+                        Click="{x:Bind _context.ActivateCommand, Mode=OneTime}"></Button>
                 <TextBlock Text="當前模型： "
                            Name="ModelLabel"
                            RelativePanel.AlignLeftWithPanel="True"
@@ -189,14 +190,14 @@
                 <TextBlock Grid.Row="3"
                            VerticalAlignment="Center"
                            Grid.Column="0">綠色</TextBlock>
-                <TextBox Grid.Row="2"
+                <TextBox Grid.Row="3"
                          VerticalAlignment="Center"
                          Grid.Column="1"
                          Text="{x:Bind _context.GreenEmote, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
                 <TextBlock Grid.Row="2"
                            Grid.Column="0"
                            VerticalAlignment="Center">紅色</TextBlock>
-                <TextBox Grid.Row="3"
+                <TextBox Grid.Row="2"
                          VerticalAlignment="Center"
                          Grid.Column="1"
                          Text="{x:Bind _context.RedEmote, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>

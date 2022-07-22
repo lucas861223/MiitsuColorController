@@ -27,8 +27,6 @@ namespace MiitsuColorController.Views
         public string Filter { get; set; } = "";
         public ObservableCollection<string> FilteredTagList { get; } = new ObservableCollection<string>();
         public ObservableCollection<string> FilteredList { get; } = new ObservableCollection<string>();
-        public List<string> SelectedTags = new();
-        public List<string> SelectedArtMesh = new();
         public FeatureManager FeatureManager = FeatureManager.Instance;
         private Ellipse _indicationCircle;
         private bool _isInsideCanvas = false;
@@ -63,12 +61,12 @@ namespace MiitsuColorController.Views
             {
                 FilteredTagList.Add(tag);
             }
-            SelectedArtMesh.Clear();
+            _context.SelectedButFilteredName.Clear();
             foreach (string name in selected)
             {
                 ArtMeshNameListView.SelectedItems.Add(name);
             }
-            SelectedTags.Clear();
+            _context.SelectedButFilteredTag.Clear();
             foreach (string tag in selectedTags)
             {
                 TagListView.SelectedItems.Add(tag);
@@ -85,7 +83,7 @@ namespace MiitsuColorController.Views
                 {
                     if (ArtMeshNameListView.SelectedItems.Contains(FilteredList.ElementAt<string>(i)))
                     {
-                        SelectedArtMesh.Add(FilteredList.ElementAt<string>(i));
+                        _context.SelectedButFilteredName.Add(FilteredList.ElementAt<string>(i));
                     }
                     FilteredList.RemoveAt(i);
                 }
@@ -98,10 +96,10 @@ namespace MiitsuColorController.Views
                 {
                     index++;
                     FilteredList.Insert(index, item);
-                    if (SelectedArtMesh.Contains(item))
+                    if (_context.SelectedButFilteredName.Contains(item))
                     {
                         ArtMeshNameListView.SelectedItems.Add(item);
-                        SelectedArtMesh.Remove(item);
+                        _context.SelectedButFilteredName.Remove(item);
                     }
                 }
                 else
@@ -121,7 +119,7 @@ namespace MiitsuColorController.Views
                 {
                     if (TagListView.SelectedItems.Contains(FilteredTagList.ElementAt<string>(i)))
                     {
-                        SelectedTags.Add(FilteredTagList.ElementAt<string>(i));
+                        _context.SelectedButFilteredTag.Add(FilteredTagList.ElementAt<string>(i));
                     }
                     FilteredTagList.RemoveAt(i);
                 }
@@ -134,10 +132,10 @@ namespace MiitsuColorController.Views
                 {
                     index++;
                     FilteredTagList.Insert(index, item);
-                    if (SelectedTags.Contains(item))
+                    if (_context.SelectedButFilteredTag.Contains(item))
                     {
                         TagListView.SelectedItems.Add(item);
-                        SelectedTags.Remove(item);
+                        _context.SelectedButFilteredTag.Remove(item);
                     }
                 }
                 else

@@ -6,16 +6,46 @@ using System.Threading;
 using MiitsuColorController.Models;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-
+using System.Collections.Concurrent;
 
 namespace MiitsuColorController.Helper
 {
     public class VTSSocket : AbstractSocket
     {
-        public string VTS_Websocket_URL { get; set; }
-
+        private CancellationTokenSource _cancelSend = new();
+        private int _waitTime = 0;
+        private int _interpolation;
         private JsonSerializerOptions _jsonSerializerOptions = new();
         private static VTSSocket _instance = null;
+        public ConcurrentQueue<string> SendQueue = new();
+        public string VTS_Websocket_URL { get; set; }
+        private ArtMeshColorTint _targetArtmeshColor;
+        private int _step = 0;
+        private float _currentR;
+        private float _currentG;
+        private float _currentB;
+        private float _stepR;
+        private float _stepG;
+        private float _stepB;
+        private string _formatString;
+
+
+        public void SetArtmeshColoringParameters(ArtMeshColorTint pointer, int interpolation, int duration, string formatString)
+        {
+            _targetArtmeshColor = pointer;
+            _interpolation = interpolation + 1;
+            _waitTime = duration / _interpolation;
+            _formatString = formatString;
+        }
+
+        public void UpdateTargetColor()
+        {
+            _step = _interpolation;
+            _stepR = (_targetArtmeshColor.colorR - _currentR) / _interpolation;
+            _stepG = (_targetArtmeshColor.colorG - _currentG) / _interpolation;
+            _stepB = (_targetArtmeshColor.colorB - _currentB) / _interpolation;
+        }
+
         public static VTSSocket Instance
         {
             get
@@ -27,6 +57,8 @@ namespace MiitsuColorController.Helper
                 return _instance;
             }
         }
+
+
         private VTSSocket() : base()
         {
             _jsonSerializerOptions.IncludeFields = true;
@@ -72,7 +104,6 @@ namespace MiitsuColorController.Helper
                     model.ModelName = currentModelData.data.modelName;
                     model.ArtMeshNames = currentModelArtmesh.data.artMeshNames;
                     model.ArtMeshTags = currentModelArtmesh.data.artMeshTags;
-
                 }
             }
         }
@@ -98,8 +129,35 @@ namespace MiitsuColorController.Helper
                     }
                     OnPropertyChanged("IsNotInUse");
                 });
+                if (IsConnected)
+                {
+                    StartSending();
+                }
             });
         }
+
+        public void StartSending()
+        {
+            CancellationToken token = _cancelSend.Token;
+            while (!token.IsCancellationRequested && IsConnected)
+            {
+                if (_step > 0)
+                {
+                    _step -= 1;
+                    _currentB += _stepB;
+                    _currentG += _stepG;
+                    _currentR += _stepR;
+                    System.Diagnostics.Debug.WriteLine(_currentR + "\t" + _currentG + "\t" + _currentB + "\t" + _step + "\t" + _stepR + "\t" + _stepG + "\t" + _stepB);
+                    SendRequest(String.Format(_formatString, Math.Round(_currentR), Math.Round(_currentG), Math.Round(_currentB)), "失去與VTube Studio的連結");
+                    Task.Delay(_waitTime).Wait();
+                }
+                else
+                {
+                    Task.Delay(100).Wait();
+                }
+            }
+        }
+
         public void EstablishConnection()
         {
             //connection timeout
