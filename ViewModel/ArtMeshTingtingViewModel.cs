@@ -8,7 +8,6 @@ using Microsoft.UI.Xaml.Shapes;
 using Microsoft.UI.Xaml;
 using MiitsuColorController.Helper;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using MiitsuColorController.Models;
 
 namespace MiitsuColorController.ViewModel

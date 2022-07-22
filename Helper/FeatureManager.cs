@@ -2,9 +2,6 @@
 using System.Text.Json;
 using System.Threading.Tasks;
 using MiitsuColorController.Models;
-using System.Text.Json.Serialization;
-using System.Text;
-using System;
 
 namespace MiitsuColorController.Helper
 {
@@ -69,7 +66,6 @@ namespace MiitsuColorController.Helper
             string json = JsonSerializer.Serialize(request, typeof(VTSColorTintData), _jsonSerializerOptions);
             //escape brackets
             json = json.Replace("{", "{{").Replace("}", "}}");
-            //change to use {0}, {1} for formatting purpose
             json = json.Replace(":253", ":{0}").Replace(":254", ":{1}").Replace(":252", ":{2}");
             _sRatio = (_setting.MaximumS - _setting.MinimumS) / 100f;
             _vRatio = (_setting.MaximumV - _setting.MinimumV) / 100f;
@@ -145,7 +141,6 @@ namespace MiitsuColorController.Helper
                             rgb[1] = (255f * (_artmeshCurrentColor[1] / rgbSum));
                             rgb[2] = (255f * (_artmeshCurrentColor[2] / rgbSum));
                             ColorHelper.RBGToAdjustedColorTint(rgb, _sRatio, _setting.MinimumS, _vRatio, _setting.MinimumV, ref _colortintHolder);
-                            //change to use strinigbuilder to format
                             _vtsSocket.UpdateTargetColor();
                         }
                     }

@@ -13,28 +13,13 @@
     <ApplicationIcon>3.0.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="Assets\twitch_PNG28.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Assets\vts_logo_1024_website.png" />
+    <Content Include="Assets\**" CopyToPublishDirectory="Always"/>
   </ItemGroup>
   <ItemGroup>
     <None Remove="Views\ArtMeshColoringFeature.xaml" />
     <None Remove="Views\ArtMeshTintingFeature.xaml" />
     <None Remove="Views\Connection.xaml" />
     <None Remove="Views\Overview.xaml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Assets\3.0.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Assets\SplashScreen.scale-200.png" />
-    <Content Include="Assets\LockScreenLogo.scale-200.png" />
-    <Content Include="Assets\Square150x150Logo.scale-200.png" />
-    <Content Include="Assets\Square44x44Logo.scale-200.png" />
-    <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
-    <Content Include="Assets\StoreLogo.png" />
-    <Content Include="Assets\Wide310x150Logo.scale-200.png" />
   </ItemGroup>
 
   <ItemGroup>
