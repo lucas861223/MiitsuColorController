@@ -148,7 +148,12 @@ namespace MiitsuColorController.Helper
                             ColorHelper.RBGToAdjustedColorTint(rgb, _sRatio, _setting.MinimumS, _vRatio, _setting.MinimumV, ref _colortintHolder);
                             if (_setting.MessageHandlingMethod == 0)
                             {
+                                int leftStep = _vtsSocket.TaskQueue.Count;
+                                currentAdjustedRGB[0] -= difference[0] * (_setting.Interpolation + 1 - leftStep);
+                                currentAdjustedRGB[1] -= difference[1] * (_setting.Interpolation + 1 - leftStep);
+                                currentAdjustedRGB[2] -= difference[2] * (_setting.Interpolation + 1 - leftStep);
                                 _vtsSocket.TaskQueue.Clear();
+
                             }
                             difference[0] = _colortintHolder.colorR - currentAdjustedRGB[0] / (_setting.Interpolation + 1);
                             difference[1] = _colortintHolder.colorG - currentAdjustedRGB[1] / (_setting.Interpolation + 1);
