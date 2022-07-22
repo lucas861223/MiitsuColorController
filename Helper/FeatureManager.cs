@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
 using MiitsuColorController.Models;
@@ -21,18 +23,18 @@ namespace MiitsuColorController.Helper
         }
         private ArtMeshColorTint _colortintHolder = new();
         private bool _artmeshColoringFeature = false;
-        private bool _hasQueue = false;
         private float _sRatio;
         private float _vRatio;
         private int[] _artmeshCurrentColor = { 0, 0, 0 };
         private JsonSerializerOptions _jsonSerializerOptions = new();
-        private Queue<int[]> _artmeshEmoteHistory = new();
+        private ConcurrentQueue<int[]> _artmeshEmoteHistory = new();
         private ResourceManager _resourceManager = ResourceManager.Instance;
         private TwitchSocket _twitchSocket = TwitchSocket.Instance;
         private VTSSocket _vtsSocket = VTSSocket.Instance;
         public bool ArtMeshTintingActivated = false;
         public bool Suspended = false;
-
+        private string _formatString;
+        private int _taskDelay;
 
         private ArtmeshColoringSetting _setting;
 
@@ -63,13 +65,13 @@ namespace MiitsuColorController.Helper
             request.data.colorTint.colorR = 253;
             request.data.colorTint.colorG = 254;
             request.data.colorTint.colorA = 255;
-            string json = JsonSerializer.Serialize(request, typeof(VTSColorTintData), _jsonSerializerOptions);
+            _formatString = JsonSerializer.Serialize(request, typeof(VTSColorTintData), _jsonSerializerOptions);
             //escape brackets
-            json = json.Replace("{", "{{").Replace("}", "}}");
-            json = json.Replace(":253", ":{0}").Replace(":254", ":{1}").Replace(":252", ":{2}");
+            _formatString = _formatString.Replace("{", "{{").Replace("}", "}}");
+            _formatString = _formatString.Replace(":253", ":{0}").Replace(":254", ":{1}").Replace(":252", ":{2}");
             _sRatio = (_setting.MaximumS - _setting.MinimumS) / 100f;
             _vRatio = (_setting.MaximumV - _setting.MinimumV) / 100f;
-            _vtsSocket.SetArtmeshColoringParameters(_colortintHolder, _setting.Interpolation, _setting.Duration, json);
+            _taskDelay = _setting.Duration / (_setting.Interpolation + 1);
             Suspended = false;
         }
 
@@ -88,15 +90,17 @@ namespace MiitsuColorController.Helper
         {
             await Task.Run(() =>
             {
-                System.Collections.Concurrent.ConcurrentQueue<string> queue = _twitchSocket.ReceiveQueue;
+                ConcurrentQueue<string> queue = _twitchSocket.ReceiveQueue;
                 queue.Clear();
                 ColorTint colorTintTmp = new ColorTint() { colorA = 0 };
-                float[] rgb = { 0f, 0f, 0f };
-                int rgbSum = 0;
                 int startIndex = ("PRIVMSG #" + _resourceManager.StringResourceDictionary[ResourceKey.TwitchUserName] + " :").Length;
-                int[] temp;
                 string message;
                 string[] tokens;
+                float[] rgb = { 0f, 0f, 0f };
+                int[] temp;
+                int rgbSum;
+                float[] difference = { 0, 0, 0 };
+                float[] currentAdjustedRGB = { 0, 0, 0 };
                 ReAssembleConfig();
                 while (_setting.Activated)
                 {
@@ -125,23 +129,37 @@ namespace MiitsuColorController.Helper
                             {
                                 continue;
                             }
+
                             _artmeshEmoteHistory.Enqueue(emotes);
+                            _artmeshCurrentColor[0] += emotes[0];
+                            _artmeshCurrentColor[1] += emotes[1];
+                            _artmeshCurrentColor[2] += emotes[2];
                             if (_artmeshEmoteHistory.Count > _setting.MessageCount)
                             {
-                                temp = _artmeshEmoteHistory.Dequeue();
+                                _artmeshEmoteHistory.TryDequeue(out temp);
                                 _artmeshCurrentColor[0] -= temp[0];
                                 _artmeshCurrentColor[1] -= temp[1];
                                 _artmeshCurrentColor[2] -= temp[2];
                             }
-                            _artmeshCurrentColor[0] += emotes[0];
-                            _artmeshCurrentColor[1] += emotes[1];
-                            _artmeshCurrentColor[2] += emotes[2];
                             rgbSum = _artmeshCurrentColor[0] + _artmeshCurrentColor[1] + _artmeshCurrentColor[2];
                             rgb[0] = (255f * (_artmeshCurrentColor[0] / rgbSum));
                             rgb[1] = (255f * (_artmeshCurrentColor[1] / rgbSum));
                             rgb[2] = (255f * (_artmeshCurrentColor[2] / rgbSum));
                             ColorHelper.RBGToAdjustedColorTint(rgb, _sRatio, _setting.MinimumS, _vRatio, _setting.MinimumV, ref _colortintHolder);
-                            _vtsSocket.UpdateTargetColor();
+                            if (_setting.MessageHandlingMethod == 0)
+                            {
+                                _vtsSocket.TaskQueue.Clear();
+                            }
+                            difference[0] = _colortintHolder.colorR - currentAdjustedRGB[0] / (_setting.Interpolation + 1);
+                            difference[1] = _colortintHolder.colorG - currentAdjustedRGB[1] / (_setting.Interpolation + 1);
+                            difference[2] = _colortintHolder.colorB - currentAdjustedRGB[2] / (_setting.Interpolation + 1);
+                            for (int i = 0; i <= _setting.Interpolation; i++)
+                            {
+                                currentAdjustedRGB[0] += difference[0];
+                                currentAdjustedRGB[1] += difference[1];
+                                currentAdjustedRGB[2] += difference[2];
+                                _vtsSocket.TaskQueue.Enqueue(new Tuple<string, int>(String.Format(_formatString, Math.Round(currentAdjustedRGB[0]), Math.Round(currentAdjustedRGB[1]), Math.Round(currentAdjustedRGB[2])), _taskDelay));
+                            }
                         }
                     }
                     else
@@ -155,8 +173,6 @@ namespace MiitsuColorController.Helper
                 }
             });
         }
-
-
 
         public void ActivateArtmeshColoring()
         {

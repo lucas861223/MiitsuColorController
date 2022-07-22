@@ -13,38 +13,12 @@ namespace MiitsuColorController.Helper
     public class VTSSocket : AbstractSocket
     {
         private CancellationTokenSource _cancelSend = new();
-        private int _waitTime = 0;
-        private int _interpolation;
         private JsonSerializerOptions _jsonSerializerOptions = new();
         private static VTSSocket _instance = null;
         public ConcurrentQueue<string> SendQueue = new();
         public string VTS_Websocket_URL { get; set; }
         private ArtMeshColorTint _targetArtmeshColor;
-        private int _step = 0;
-        private float _currentR;
-        private float _currentG;
-        private float _currentB;
-        private float _stepR;
-        private float _stepG;
-        private float _stepB;
-        private string _formatString;
-
-
-        public void SetArtmeshColoringParameters(ArtMeshColorTint pointer, int interpolation, int duration, string formatString)
-        {
-            _targetArtmeshColor = pointer;
-            _interpolation = interpolation + 1;
-            _waitTime = duration / _interpolation;
-            _formatString = formatString;
-        }
-
-        public void UpdateTargetColor()
-        {
-            _step = _interpolation;
-            _stepR = (_targetArtmeshColor.colorR - _currentR) / _interpolation;
-            _stepG = (_targetArtmeshColor.colorG - _currentG) / _interpolation;
-            _stepB = (_targetArtmeshColor.colorB - _currentB) / _interpolation;
-        }
+        public ConcurrentQueue<Tuple<string, int>> TaskQueue = new();
 
         public static VTSSocket Instance
         {
@@ -138,22 +112,18 @@ namespace MiitsuColorController.Helper
 
         public void StartSending()
         {
+            Tuple<string, int> task;
             CancellationToken token = _cancelSend.Token;
             while (!token.IsCancellationRequested && IsConnected)
             {
-                if (_step > 0)
+                if (TaskQueue.TryDequeue(out task))
                 {
-                    _step -= 1;
-                    _currentB += _stepB;
-                    _currentG += _stepG;
-                    _currentR += _stepR;
-                    System.Diagnostics.Debug.WriteLine(_currentR + "\t" + _currentG + "\t" + _currentB + "\t" + _step + "\t" + _stepR + "\t" + _stepG + "\t" + _stepB);
-                    SendRequest(String.Format(_formatString, Math.Round(_currentR), Math.Round(_currentG), Math.Round(_currentB)), "失去與VTube Studio的連結");
-                    Task.Delay(_waitTime).Wait();
+                    SendRequest(task.Item1, "失去與VTube Studio的連結");
+                    Task.Delay(task.Item2).Wait();
                 }
                 else
                 {
-                    Task.Delay(100).Wait();
+                    Task.Delay(100).Wait(0);
                 }
             }
         }
@@ -192,7 +162,6 @@ namespace MiitsuColorController.Helper
             catch (RequestError e) { Console.Write(e); }
             IsAuthorized = stateRequest.data.currentSessionAuthenticated;
         }
-
 
         public bool Authorize()
         {

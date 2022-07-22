@@ -19,15 +19,15 @@ namespace MiitsuColorController.ViewModel
         public int MessageHandlingMethod
         {
             get { return _messageHandlingMethod; }
-            set { _messageHandlingMethod = value; OnPropertyChanged("MessageHandlingMethod"); }
+            set { _messageHandlingMethod = value; OnPropertyChanged(nameof(MessageHandlingMethod)); }
         }
         private ArtmeshColoringSetting _setting = new();
-        public int Interpolation { get { return _setting.Interpolation; } set { _setting.Interpolation = value; OnPropertyChanged("Interpolation"); } }
-        public int Duration { get { return _setting.Duration; } set { _setting.Duration = value; OnPropertyChanged("Duration"); } }
-        public string GreenEmote { get { return _setting.GreenEmote; } set { _setting.GreenEmote = value; OnPropertyChanged("GreenEmote"); } }
-        public string RedEmote { get { return _setting.RedEmote; } set { _setting.RedEmote = value; OnPropertyChanged("RedEmote"); } }
-        public string BlueEmote { get { return _setting.BlueEmote; } set { _setting.BlueEmote = value; OnPropertyChanged("BlueEmote"); } }
-        public bool Activated { get { return _setting.Activated; } set { _setting.Activated = value; OnPropertyChanged("Activated"); } }
+        public int Interpolation { get { return _setting.Interpolation; } set { _setting.Interpolation = value; OnPropertyChanged(nameof(Interpolation)); } }
+        public int Duration { get { return _setting.Duration; } set { _setting.Duration = value; OnPropertyChanged(nameof(Duration)); } }
+        public string GreenEmote { get { return _setting.GreenEmote; } set { _setting.GreenEmote = value; OnPropertyChanged(nameof(GreenEmote)); } }
+        public string RedEmote { get { return _setting.RedEmote; } set { _setting.RedEmote = value; OnPropertyChanged(nameof(RedEmote)); } }
+        public string BlueEmote { get { return _setting.BlueEmote; } set { _setting.BlueEmote = value; OnPropertyChanged(nameof(BlueEmote)); } }
+        public bool Activated { get { return _setting.Activated; } set { _setting.Activated = value; OnPropertyChanged(nameof(Activated)); } }
         public RoutedEventHandler RefreshCommand { get { return LoadModel; } }
         public RoutedEventHandler SaveCommand { get { return SaveModelSetting; } }
         public RoutedEventHandler ActivateCommand { get { return Activate; } }
@@ -43,7 +43,7 @@ namespace MiitsuColorController.ViewModel
                     _setting.MinimumS = value;
                     UpdateCanvas();
                 }
-                OnPropertyChanged("MinimumS");
+                OnPropertyChanged(nameof(MinimumS));
             }
         }
         public int MaximumS
@@ -56,7 +56,7 @@ namespace MiitsuColorController.ViewModel
                     _setting.MaximumS = value;
                     UpdateCanvas();
                 }
-                OnPropertyChanged("MaximumS");
+                OnPropertyChanged(nameof(MaximumS));
             }
         }
         public int MinimumV
@@ -69,7 +69,7 @@ namespace MiitsuColorController.ViewModel
                     _setting.MinimumV = value;
                     UpdateColor();
                 }
-                OnPropertyChanged("MinimumV");
+                OnPropertyChanged(nameof(MinimumV));
             }
         }
         public int MaximumV
@@ -82,7 +82,7 @@ namespace MiitsuColorController.ViewModel
                     _setting.MaximumV = value;
                     UpdateColor();
                 }
-                OnPropertyChanged("MaximumV");
+                OnPropertyChanged(nameof(MaximumV));
             }
         }
         private Color _firstStopColor;
@@ -92,7 +92,7 @@ namespace MiitsuColorController.ViewModel
             set
             {
                 _firstStopColor = value;
-                OnPropertyChanged("FirstStopColor");
+                OnPropertyChanged(nameof(FirstStopColor));
             }
         }
         private Color _secondStopColor;
@@ -102,7 +102,7 @@ namespace MiitsuColorController.ViewModel
             set
             {
                 _secondStopColor = value;
-                OnPropertyChanged("SecondStopColor");
+                OnPropertyChanged(nameof(SecondStopColor));
             }
         }
         private Color _thirdStopColor;
@@ -112,11 +112,11 @@ namespace MiitsuColorController.ViewModel
             set
             {
                 _thirdStopColor = value;
-                OnPropertyChanged("ThirdStopColor");
+                OnPropertyChanged(nameof(ThirdStopColor));
             }
         }
         private Canvas _colorPickerCanvas;
-        public int MessageCount { get { return _setting.MessageCount; } set { _setting.MessageCount = value; OnPropertyChanged("MessageCount"); } }
+        public int MessageCount { get { return _setting.MessageCount; } set { _setting.MessageCount = value; OnPropertyChanged(nameof(MessageCount)); } }
         public List<string> ArtMeshNames = new();
         public List<string> Tags = new();
         public List<string> SelectedArtMesh { get { return _setting.SelectedArtMesh; } }
@@ -131,7 +131,7 @@ namespace MiitsuColorController.ViewModel
             set
             {
                 _modelName = value;
-                OnPropertyChanged("ModelName");
+                OnPropertyChanged(nameof(ModelName));
             }
         }
         public ArtMeshTingtingViewModel(Canvas ColorPickerCanvas, Action<List<string>, List<string>, List<string>, List<string>> LoadModelCallback)

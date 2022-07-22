@@ -16,14 +16,13 @@ namespace MiitsuColorController.Helper
         private string _statusString = "未連結";
         protected bool AlreadyRetried = false;
         protected ClientWebSocket _socket = null;
-        protected ConcurrentQueue<string> _sendQueue = new();
         protected DispatcherQueue _dispathcerQueue;
         public bool AutoReconnect { get; set; }
         public bool ConnectOnStartup { get; set; }
         public bool IsAuthorized = false;
         public bool IsConnected { get { return _socket != null && _socket.State == WebSocketState.Open && IsAuthorized; } }
         public bool IsNotInUse { get { return _socket != null && (_socket.State == WebSocketState.Closed || _socket.State == WebSocketState.None); } }
-        public string StatusString { get { return _statusString; } set { _statusString = value; OnPropertyChanged("StatusString"); } }
+        public string StatusString { get { return _statusString; } set { _statusString = value; OnPropertyChanged(nameof(StatusString)); } }
 
         public AbstractSocket()
         {
@@ -50,8 +49,8 @@ namespace MiitsuColorController.Helper
                 }
             }
             _socket = new ClientWebSocket();
-            OnPropertyChanged("IsConnected");
-            OnPropertyChanged("IsNotInUse");
+            OnPropertyChanged(nameof(IsConnected));
+            OnPropertyChanged(nameof(IsNotInUse));
         }
 
         protected void CheckConnection(string Message)
@@ -61,8 +60,8 @@ namespace MiitsuColorController.Helper
             _socket.Options.KeepAliveInterval = new TimeSpan(0, 0, 10);
             _dispathcerQueue.TryEnqueue(() =>
             {
-                OnPropertyChanged("IsConnected");
-                OnPropertyChanged("IsNotInUse");
+                OnPropertyChanged(nameof(IsConnected));
+                OnPropertyChanged(nameof(IsNotInUse));
                 if (StatusString != "未連結")
                 {
                     StatusString = Message;
