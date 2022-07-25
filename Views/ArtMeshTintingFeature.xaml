@@ -53,9 +53,9 @@
                 Grid.Column="0"
                 Grid.ColumnSpan="2"
                 BorderThickness="2"
-                BorderBrush="White">
+                BorderBrush="{x:Bind _context.Activated, Mode=OneWay, Converter={StaticResource BoolToRedGreenConverter}}">
             <RelativePanel>
-                <Button Content="啟用"
+                <Button Content="{x:Bind _context.Activated, Mode=OneWay, Converter={StaticResource BoolToStringConverter}, ConverterParameter='啟用,停用'}"
                         RelativePanel.AlignHorizontalCenterWithPanel="True"
                         RelativePanel.AlignVerticalCenterWithPanel="True"
                         Click="{x:Bind _context.ActivateCommand, Mode=OneTime}"></Button>

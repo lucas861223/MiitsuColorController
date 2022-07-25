@@ -26,6 +26,15 @@ namespace MiitsuColorController.Helper
             }
         }
 
+        public void UpdateCurrentModelInformation(VTSCurrentModelData.Data modelData, VTSArtMeshListData.Data artmeshData)
+        {
+            CurrentModelInformation.ID = modelData.modelID;
+            CurrentModelInformation.ModelName = modelData.modelName;
+            CurrentModelInformation.ArtMeshNames = artmeshData.artMeshNames;
+            CurrentModelInformation.ArtMeshTags = artmeshData.artMeshTags;
+            FeatureManager.Instance.ReAssembleConfig();
+        }
+
         private ResourceManager()
         {
             if (File.Exists("SaveData"))

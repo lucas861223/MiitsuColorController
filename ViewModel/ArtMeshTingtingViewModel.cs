@@ -169,9 +169,12 @@ namespace MiitsuColorController.ViewModel
 
         private void Activate(object sender, RoutedEventArgs e)
         {
-            Activated = true;
-            SaveModelSetting(null, null);
-            _featureManager.StartTask();
+            Activated = !Activated;
+            if (Activated)
+            {
+                SaveModelSetting(null, null);
+                _featureManager.StartTask();
+            }
         }
 
         private void LoadModel(object sender, RoutedEventArgs e)
@@ -202,7 +205,7 @@ namespace MiitsuColorController.ViewModel
                         queue.TryEnqueue(() =>
                         {
                             ModelName = _resourceManager.CurrentModelInformation.ModelName;
-                            _setting = _resourceManager.LoadModelSetting();
+                            _setting = _featureManager.GetSetting();
                             OnPropertyChanged((string)null);
                             List<string> tmpNames = _setting.SelectedArtMesh;
                             _setting.SelectedArtMesh = new();

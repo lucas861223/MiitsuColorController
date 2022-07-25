@@ -46,7 +46,6 @@ namespace MiitsuColorController.Views
             //todo 
             //implement test button
             //implement start button 
-
         }
 
         private void PopulateListsCallBack(List<string> names, List<string> tags, List<string> selected, List<string> selectedTags)

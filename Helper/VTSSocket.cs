@@ -66,7 +66,6 @@ namespace MiitsuColorController.Helper
                 }
                 if (ResourceManager.Instance.CurrentModelInformation.ID != currentModelData.data.modelID)
                 {
-                    ModelInformation model = ResourceManager.Instance.CurrentModelInformation;
                     VTSArtMeshListData currentModelArtmesh = new();
                     SendRequest(JsonSerializer.Serialize(currentModelArtmesh, typeof(VTSArtMeshListData), _jsonSerializerOptions),
                         "失去與VTube Studio的連結");
@@ -74,10 +73,7 @@ namespace MiitsuColorController.Helper
                     {
                         return;
                     }
-                    model.ID = currentModelData.data.modelID;
-                    model.ModelName = currentModelData.data.modelName;
-                    model.ArtMeshNames = currentModelArtmesh.data.artMeshNames;
-                    model.ArtMeshTags = currentModelArtmesh.data.artMeshTags;
+                    ResourceManager.Instance.UpdateCurrentModelInformation(currentModelData.data, currentModelArtmesh.data);
                 }
             }
         }

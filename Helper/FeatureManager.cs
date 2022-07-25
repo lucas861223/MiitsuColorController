@@ -22,27 +22,34 @@ namespace MiitsuColorController.Helper
             }
         }
         private ArtMeshColorTint _colortintHolder = new();
-        private bool _artmeshColoringFeature = false;
+        private bool _isInUse = false;
+        private ConcurrentQueue<int[]> _artmeshEmoteHistory = new();
         private float _sRatio;
         private float _vRatio;
+        private int _taskDelay;
         private int[] _artmeshCurrentColor = { 0, 0, 0 };
         private JsonSerializerOptions _jsonSerializerOptions = new();
-        private ConcurrentQueue<int[]> _artmeshEmoteHistory = new();
         private ResourceManager _resourceManager = ResourceManager.Instance;
+        private string _formatString;
         private TwitchSocket _twitchSocket = TwitchSocket.Instance;
         private VTSSocket _vtsSocket = VTSSocket.Instance;
         public bool ArtMeshTintingActivated = false;
         public bool Suspended = false;
-        private string _formatString;
-        private int _taskDelay;
 
         private ArtmeshColoringSetting _setting;
 
-        public bool ArtmeshColoringFeature { get { return _artmeshColoringFeature; } }
 
         private FeatureManager()
         {
             _jsonSerializerOptions.IncludeFields = true;
+            if (_vtsSocket.IsConnected)
+            {
+                ReAssembleConfig();
+                if (_setting.Activated)
+                {
+                    StartTask();
+                }
+            }
             //_jsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault;
         }
 
@@ -75,6 +82,11 @@ namespace MiitsuColorController.Helper
             Suspended = false;
         }
 
+        public ArtmeshColoringSetting GetSetting()
+        {
+            return _setting;
+        }
+
         public void SuspendFeatures()
         {
             Suspended = true;
@@ -88,95 +100,99 @@ namespace MiitsuColorController.Helper
 
         public async void StartTask()
         {
-            await Task.Run(() =>
+            if (!_isInUse)
             {
-                ConcurrentQueue<string> queue = _twitchSocket.ReceiveQueue;
-                queue.Clear();
-                ColorTint colorTintTmp = new ColorTint() { colorA = 0 };
-                int startIndex = ("PRIVMSG #" + _resourceManager.StringResourceDictionary[ResourceKey.TwitchUserName] + " :").Length;
-                string message;
-                string[] tokens;
-                float[] rgb = { 0f, 0f, 0f };
-                int[] temp;
-                int rgbSum;
-                float[] difference = { 0, 0, 0 };
-                float[] currentAdjustedRGB = { 0, 0, 0 };
-                ReAssembleConfig();
-                while (_setting.Activated)
+                await Task.Run(() =>
                 {
-                    if (queue.TryDequeue(out message))
+                    _isInUse = true;
+                    ConcurrentQueue<string> queue = _twitchSocket.ReceiveQueue;
+                    queue.Clear();
+                    ColorTint colorTintTmp = new ColorTint() { colorA = 0 };
+                    int startIndex = ("PRIVMSG #" + _resourceManager.StringResourceDictionary[ResourceKey.TwitchUserName] + " :").Length;
+                    string message;
+                    string[] tokens;
+                    float[] rgb = { 0f, 0f, 0f };
+                    int rgbSum;
+                    float[] difference = { 0, 0, 0 };
+                    float[] currentAdjustedRGB = { 0, 0, 0 };
+                    ReAssembleConfig();
+                    while (_setting.Activated)
                     {
-                        tokens = message.Substring(startIndex).Trim('\r', '\n').Split(" ");
-                        if (_setting.Activated)
+                        if (queue.TryDequeue(out message))
                         {
-                            int[] emotes = { 0, 0, 0 };
-                            foreach (string token in tokens)
+                            tokens = message.Substring(startIndex).Trim('\r', '\n').Split(" ");
+                            if (_setting.Activated)
                             {
-                                if (string.CompareOrdinal(token, _setting.RedEmote) == 0)
+                                int[] emotes = { 0, 0, 0 };
+                                foreach (string token in tokens)
                                 {
-                                    emotes[0] += 1;
+                                    if (string.CompareOrdinal(token, _setting.RedEmote) == 0)
+                                    {
+                                        emotes[0] += 1;
+                                    }
+                                    if (string.CompareOrdinal(token, _setting.GreenEmote) == 0)
+                                    {
+                                        emotes[1] += 1;
+                                    }
+                                    if (string.CompareOrdinal(token, _setting.BlueEmote) == 0)
+                                    {
+                                        emotes[2] += 1;
+                                    }
                                 }
-                                if (string.CompareOrdinal(token, _setting.GreenEmote) == 0)
+                                if (emotes[0] + emotes[1] + emotes[2] == 0)
                                 {
-                                    emotes[1] += 1;
+                                    continue;
                                 }
-                                if (string.CompareOrdinal(token, _setting.BlueEmote) == 0)
-                                {
-                                    emotes[2] += 1;
-                                }
-                            }
-                            if (emotes[0] + emotes[1] + emotes[2] == 0)
-                            {
-                                continue;
-                            }
 
-                            _artmeshEmoteHistory.Enqueue(emotes);
-                            _artmeshCurrentColor[0] += emotes[0];
-                            _artmeshCurrentColor[1] += emotes[1];
-                            _artmeshCurrentColor[2] += emotes[2];
-                            if (_artmeshEmoteHistory.Count > _setting.MessageCount)
-                            {
-                                _artmeshEmoteHistory.TryDequeue(out temp);
-                                _artmeshCurrentColor[0] -= temp[0];
-                                _artmeshCurrentColor[1] -= temp[1];
-                                _artmeshCurrentColor[2] -= temp[2];
-                            }
-                            rgbSum = _artmeshCurrentColor[0] + _artmeshCurrentColor[1] + _artmeshCurrentColor[2];
-                            rgb[0] = (255f * (_artmeshCurrentColor[0] / rgbSum));
-                            rgb[1] = (255f * (_artmeshCurrentColor[1] / rgbSum));
-                            rgb[2] = (255f * (_artmeshCurrentColor[2] / rgbSum));
-                            ColorHelper.RBGToAdjustedColorTint(rgb, _sRatio, _setting.MinimumS, _vRatio, _setting.MinimumV, ref _colortintHolder);
-                            if (_setting.MessageHandlingMethod == 0)
-                            {
-                                int leftStep = _vtsSocket.TaskQueue.Count;
-                                currentAdjustedRGB[0] -= difference[0] * (_setting.Interpolation + 1 - leftStep);
-                                currentAdjustedRGB[1] -= difference[1] * (_setting.Interpolation + 1 - leftStep);
-                                currentAdjustedRGB[2] -= difference[2] * (_setting.Interpolation + 1 - leftStep);
-                                _vtsSocket.TaskQueue.Clear();
+                                _artmeshEmoteHistory.Enqueue(emotes);
+                                _artmeshCurrentColor[0] += emotes[0];
+                                _artmeshCurrentColor[1] += emotes[1];
+                                _artmeshCurrentColor[2] += emotes[2];
+                                if (_artmeshEmoteHistory.Count > _setting.MessageCount)
+                                {
+                                    _artmeshEmoteHistory.TryDequeue(out emotes);
+                                    _artmeshCurrentColor[0] -= emotes[0];
+                                    _artmeshCurrentColor[1] -= emotes[1];
+                                    _artmeshCurrentColor[2] -= emotes[2];
+                                }
+                                rgbSum = _artmeshCurrentColor[0] + _artmeshCurrentColor[1] + _artmeshCurrentColor[2];
+                                rgb[0] = (255f * (_artmeshCurrentColor[0] / rgbSum));
+                                rgb[1] = (255f * (_artmeshCurrentColor[1] / rgbSum));
+                                rgb[2] = (255f * (_artmeshCurrentColor[2] / rgbSum));
+                                ColorHelper.RBGToAdjustedColorTint(rgb, _sRatio, _setting.MinimumS, _vRatio, _setting.MinimumV, ref _colortintHolder);
+                                if (_setting.MessageHandlingMethod == 0)
+                                {
+                                    int leftStep = _vtsSocket.TaskQueue.Count;
+                                    currentAdjustedRGB[0] -= difference[0] * (_setting.Interpolation + 1 - leftStep);
+                                    currentAdjustedRGB[1] -= difference[1] * (_setting.Interpolation + 1 - leftStep);
+                                    currentAdjustedRGB[2] -= difference[2] * (_setting.Interpolation + 1 - leftStep);
+                                    _vtsSocket.TaskQueue.Clear();
 
-                            }
-                            difference[0] = _colortintHolder.colorR - currentAdjustedRGB[0] / (_setting.Interpolation + 1);
-                            difference[1] = _colortintHolder.colorG - currentAdjustedRGB[1] / (_setting.Interpolation + 1);
-                            difference[2] = _colortintHolder.colorB - currentAdjustedRGB[2] / (_setting.Interpolation + 1);
-                            for (int i = 0; i <= _setting.Interpolation; i++)
-                            {
-                                currentAdjustedRGB[0] += difference[0];
-                                currentAdjustedRGB[1] += difference[1];
-                                currentAdjustedRGB[2] += difference[2];
-                                _vtsSocket.TaskQueue.Enqueue(new Tuple<string, int>(String.Format(_formatString, Math.Round(currentAdjustedRGB[0]), Math.Round(currentAdjustedRGB[1]), Math.Round(currentAdjustedRGB[2])), _taskDelay));
+                                }
+                                difference[0] = _colortintHolder.colorR - currentAdjustedRGB[0] / (_setting.Interpolation + 1);
+                                difference[1] = _colortintHolder.colorG - currentAdjustedRGB[1] / (_setting.Interpolation + 1);
+                                difference[2] = _colortintHolder.colorB - currentAdjustedRGB[2] / (_setting.Interpolation + 1);
+                                for (int i = 0; i <= _setting.Interpolation; i++)
+                                {
+                                    currentAdjustedRGB[0] += difference[0];
+                                    currentAdjustedRGB[1] += difference[1];
+                                    currentAdjustedRGB[2] += difference[2];
+                                    _vtsSocket.TaskQueue.Enqueue(new Tuple<string, int>(String.Format(_formatString, Math.Round(currentAdjustedRGB[0]), Math.Round(currentAdjustedRGB[1]), Math.Round(currentAdjustedRGB[2])), _taskDelay));
+                                }
                             }
                         }
+                        else
+                        {
+                            Task.Delay(100).Wait();
+                        }
+                        while (Suspended)
+                        {
+                            Task.Delay(100).Wait();
+                        }
                     }
-                    else
-                    {
-                        Task.Delay(100).Wait();
-                    }
-                    while (Suspended)
-                    {
-                        Task.Delay(100).Wait();
-                    }
-                }
-            });
+                    _isInUse = false;
+                });
+            }
         }
 
         public void ActivateArtmeshColoring()
