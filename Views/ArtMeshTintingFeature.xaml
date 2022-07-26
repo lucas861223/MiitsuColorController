@@ -57,6 +57,7 @@
             <RelativePanel>
                 <Button Content="{x:Bind _context.Activated, Mode=OneWay, Converter={StaticResource BoolToStringConverter}, ConverterParameter='停用,啟用'}"
                         RelativePanel.AlignHorizontalCenterWithPanel="True"
+                        IsEnabled="{x:Bind _context.IsTesting, Mode=OneWay, Converter={StaticResource InverseBoolConverter}}"
                         RelativePanel.AlignVerticalCenterWithPanel="True"
                         Click="{x:Bind _context.ActivateCommand, Mode=OneTime}"></Button>
                 <TextBlock Text="當前模型： "
@@ -120,6 +121,7 @@
             <Button Content="{x:Bind _context.IsTesting, Mode=OneWay, Converter={StaticResource BoolToStringConverter}, ConverterParameter='停止測試,測試'}"
                     Grid.Column="1"
                     Grid.Row="3"
+                    IsEnabled="{x:Bind _context.Activated, Mode=OneWay, Converter={StaticResource InverseBoolConverter}}"
                     Click="{x:Bind _context.TestCommand, Mode=OneTime}"
                     VerticalAlignment="Stretch"
                     HorizontalAlignment="Stretch"></Button>
@@ -164,10 +166,23 @@
                     <ColumnDefinition Width="8*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
-                <RadioButtons Header="變色方針"
-                              SelectedIndex="{x:Bind _context.MessageHandlingMethod, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                <RadioButtons SelectedIndex="{x:Bind _context.MessageHandlingMethod, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                               Grid.ColumnSpan="2"
                               Grid.Row="1">
+                    <RadioButtons.Header>
+                        <TextBlock>
+                            <Run>變色方針</Run>
+                             <Hyperlink>
+                                這是什麼意思?
+                                <ToolTipService.ToolTip>
+                                    <StackPanel Orientation="Vertical">
+                                        <TextBlock TextWrapping="Wrap">累積變色:當顏色還沒完全變化時收到新的顏色，把目標顏色改成新的顏色</TextBlock>
+                                        <TextBlock TextWrapping="Wrap">排程變色:當顏色還沒完全變化時收到新的顏色，將把目前顏色處理完再變成新的顏色</TextBlock>
+                                    </StackPanel>
+                                </ToolTipService.ToolTip>
+                            </Hyperlink>
+                        </TextBlock>
+                    </RadioButtons.Header>
                     <x:String>累積變色</x:String>
                     <x:String>排程變色</x:String>
                 </RadioButtons>
@@ -218,7 +233,7 @@
                         Value="{x:Bind _context.Interpolation, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     <Slider.Header>
                         <TextBlock>
-                            <Run>插值- 從顏色A到顏色B中間的顏色數量：</Run>
+                            <Run>插值- 從顏色A到顏色B中間的過渡顏色數量：</Run>
                             <Run Text="{x:Bind _context.Interpolation, Mode=OneWay}"></Run>
                             <Run>次變色</Run>
                         </TextBlock>

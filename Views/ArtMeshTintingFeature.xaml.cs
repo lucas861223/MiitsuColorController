@@ -27,7 +27,6 @@ namespace MiitsuColorController.Views
         public string Filter { get; set; } = "";
         public ObservableCollection<string> FilteredTagList { get; } = new ObservableCollection<string>();
         public ObservableCollection<string> FilteredList { get; } = new ObservableCollection<string>();
-        public FeatureManager FeatureManager = FeatureManager.Instance;
         private Ellipse _indicationCircle;
         private bool _isInsideCanvas = false;
         private bool _hasClicked = false;
@@ -213,30 +212,6 @@ namespace MiitsuColorController.Views
         private void ColorPickerCanvas_PointerExited(object sender, PointerRoutedEventArgs e)
         {
             _isInsideCanvas = false;
-        }
-
-        private void TagListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            foreach (string tag in e.AddedItems)
-            {
-                _context.SelectedTag.Add(tag);
-            }
-            foreach (string tag in e.RemovedItems)
-            {
-                _context.SelectedTag.Remove(tag);
-            }
-        }
-
-        private void ArtMeshNameListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            foreach (string artmesh in e.AddedItems)
-            {
-                _context.SelectedArtMesh.Add(artmesh);
-            }
-            foreach (string artmesh in e.RemovedItems)
-            {
-                _context.SelectedArtMesh.Remove(artmesh);
-            }
         }
     }
 }

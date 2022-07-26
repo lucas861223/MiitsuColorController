@@ -16,14 +16,34 @@ namespace MiitsuColorController.ViewModel
     {
         private VTSSocket _vtsSocket = VTSSocket.Instance;
         private int _messageHandlingMethod = 0;
-        public int MessageHandlingMethod
-        {
-            get { return _messageHandlingMethod; }
-            set { _messageHandlingMethod = value; OnPropertyChanged(nameof(MessageHandlingMethod)); }
-        }
+        public int MessageHandlingMethod { get { return _messageHandlingMethod; } set { _messageHandlingMethod = value; OnPropertyChanged(nameof(MessageHandlingMethod)); } }
         private ArtmeshColoringSetting _setting = new();
-        public int Interpolation { get { return _setting.Interpolation; } set { _setting.Interpolation = value; OnPropertyChanged(nameof(Interpolation)); } }
-        public int Duration { get { return _setting.Duration; } set { _setting.Duration = value; OnPropertyChanged(nameof(Duration)); } }
+        public int Interpolation
+        {
+            get { return _setting.Interpolation; }
+            set
+            {
+                _setting.Interpolation = value;
+                OnPropertyChanged(nameof(Interpolation));
+                if (IsTesting)
+                {
+                    _featureManager.UpdateTestingParameters(_setting);
+                }
+            }
+        }
+        public int Duration
+        {
+            get { return _setting.Duration; }
+            set
+            {
+                _setting.Duration = value;
+                OnPropertyChanged(nameof(Duration));
+                if (IsTesting)
+                {
+                    _featureManager.UpdateTestingParameters(_setting);
+                }
+            }
+        }
         public string GreenEmote { get { return _setting.GreenEmote; } set { _setting.GreenEmote = value; OnPropertyChanged(nameof(GreenEmote)); } }
         public string RedEmote { get { return _setting.RedEmote; } set { _setting.RedEmote = value; OnPropertyChanged(nameof(RedEmote)); } }
         public string BlueEmote { get { return _setting.BlueEmote; } set { _setting.BlueEmote = value; OnPropertyChanged(nameof(BlueEmote)); } }
@@ -34,6 +54,8 @@ namespace MiitsuColorController.ViewModel
         public RoutedEventHandler SaveCommand { get { return SaveModelSetting; } }
         public RoutedEventHandler TestCommand { get { return Test; } }
         public RoutedEventHandler ActivateCommand { get { return Activate; } }
+        public SelectionChangedEventHandler NameSelectionCommand { get { return ArtMeshNameListView_SelectionChanged; } }
+        public SelectionChangedEventHandler TagSelectionCommand { get { return TagListView_SelectionChanged; } }
         private ResourceManager _resourceManager = ResourceManager.Instance;
         private FeatureManager _featureManager = FeatureManager.Instance;
         public int MinimumS
@@ -45,6 +67,10 @@ namespace MiitsuColorController.ViewModel
                 {
                     _setting.MinimumS = value;
                     UpdateCanvas();
+                    if (IsTesting)
+                    {
+                        _featureManager.UpdateTestingParameters(_setting);
+                    }
                 }
                 OnPropertyChanged(nameof(MinimumS));
             }
@@ -58,6 +84,10 @@ namespace MiitsuColorController.ViewModel
                 {
                     _setting.MaximumS = value;
                     UpdateCanvas();
+                    if (IsTesting)
+                    {
+                        _featureManager.UpdateTestingParameters(_setting);
+                    }
                 }
                 OnPropertyChanged(nameof(MaximumS));
             }
@@ -71,6 +101,10 @@ namespace MiitsuColorController.ViewModel
                 {
                     _setting.MinimumV = value;
                     UpdateColor();
+                    if (IsTesting)
+                    {
+                        _featureManager.UpdateTestingParameters(_setting);
+                    }
                 }
                 OnPropertyChanged(nameof(MinimumV));
             }
@@ -84,6 +118,10 @@ namespace MiitsuColorController.ViewModel
                 {
                     _setting.MaximumV = value;
                     UpdateColor();
+                    if (IsTesting)
+                    {
+                        _featureManager.UpdateTestingParameters(_setting);
+                    }
                 }
                 OnPropertyChanged(nameof(MaximumV));
             }
@@ -168,6 +206,37 @@ namespace MiitsuColorController.ViewModel
             foreach (string tag in SelectedButFilteredTag)
             {
                 SelectedTag.Remove(tag);
+            }
+        }
+        private void TagListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            foreach (string tag in e.AddedItems)
+            {
+                SelectedTag.Add(tag);
+            }
+            foreach (string tag in e.RemovedItems)
+            {
+                SelectedTag.Remove(tag);
+            }
+            if (IsTesting)
+            {
+                _featureManager.UpdateSelections(_setting);
+            }
+        }
+
+        private void ArtMeshNameListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            foreach (string artmesh in e.AddedItems)
+            {
+                SelectedArtMesh.Add(artmesh);
+            }
+            foreach (string artmesh in e.RemovedItems)
+            {
+                SelectedArtMesh.Remove(artmesh);
+            }
+            if (IsTesting)
+            {
+                _featureManager.UpdateSelections(_setting);
             }
         }
 

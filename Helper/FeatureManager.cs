@@ -57,6 +57,13 @@ namespace MiitsuColorController.Helper
         public void ReAssembleConfig(ArtmeshColoringSetting setting)
         {
             Suspended = true;
+            MakeFormatString(setting);
+            UpdateTestingParameters(setting);
+            Suspended = false;
+        }
+
+        public void MakeFormatString(ArtmeshColoringSetting setting)
+        {
             VTSColorTintData request = new VTSColorTintData();
             request.data.artMeshMatcher = new ArtMeshMatcher();
             if (setting.SelectedArtMesh.Count > 0)
@@ -76,10 +83,20 @@ namespace MiitsuColorController.Helper
             //escape brackets
             _formatString = _formatString.Replace("{", "{{").Replace("}", "}}");
             _formatString = _formatString.Replace(":253", ":{0}").Replace(":254", ":{1}").Replace(":252", ":{2}");
+        }
+
+        public void UpdateSelections(ArtmeshColoringSetting setting)
+        {
+            //reset tinted parts
+            _vtsSocket.TaskQueue.Enqueue(new Tuple<string, int>(String.Format(_formatString, 255, 255, 255), 0));
+            MakeFormatString(setting);
+        }
+
+        public void UpdateTestingParameters(ArtmeshColoringSetting setting)
+        {
             _sRatio = (setting.MaximumS - setting.MinimumS) / 100f;
             _vRatio = (setting.MaximumV - setting.MinimumV) / 100f;
             _taskDelay = setting.Duration / (setting.Interpolation + 1);
-            Suspended = false;
         }
 
         public void ReAssembleConfig()
@@ -209,16 +226,15 @@ namespace MiitsuColorController.Helper
                     _isTesting = true;
                     SuspendFeatures();
                     ReAssembleConfig(setting);
+                    int difference = 30;
                     ColorTint colorTintTmp = new ColorTint() { colorA = 0 };
                     float[] rgb = { 0f, 0f, 0f };
-                    float[] difference = { 0, 0, 0 };
-                    float[] currentAdjustedRGB = { 0, 0, 0 };
                     bool iRed = false, iBlue = false, iGreen = false;
                     while (_isTesting)
                     {
                         if (!iRed && !iGreen && !iBlue)
                         {
-                            rgb[0] += 20;
+                            rgb[0] += difference;
                             if (rgb[0] >= 255)
                             {
                                 rgb[0] = 255;
@@ -227,7 +243,7 @@ namespace MiitsuColorController.Helper
                         }
                         else if (iRed && !iGreen && !iBlue)
                         {
-                            rgb[1] += 20;
+                            rgb[1] += difference;
                             if (rgb[1] >= 255)
                             {
                                 rgb[1] = 255;
@@ -236,7 +252,7 @@ namespace MiitsuColorController.Helper
                         }
                         else if (iRed && iGreen && !iBlue)
                         {
-                            rgb[2] += 20;
+                            rgb[2] += difference;
                             if (rgb[2] >= 255)
                             {
                                 rgb[2] = 255;
@@ -245,7 +261,7 @@ namespace MiitsuColorController.Helper
                         }
                         else if (iRed && iGreen && iBlue)
                         {
-                            rgb[0] -= 20;
+                            rgb[0] -= difference;
                             if (rgb[0] <= 0)
                             {
                                 rgb[0] = 0;
@@ -254,7 +270,7 @@ namespace MiitsuColorController.Helper
                         }
                         else if (!iRed && iGreen && iBlue)
                         {
-                            rgb[1] -= 20;
+                            rgb[1] -= difference;
                             if (rgb[1] <= 0)
                             {
                                 rgb[1] = 0;
@@ -263,7 +279,7 @@ namespace MiitsuColorController.Helper
                         }
                         else if (!iRed && !iGreen && iBlue)
                         {
-                            rgb[2] -= 20;
+                            rgb[2] -= difference;
                             if (rgb[2] <= 0)
                             {
                                 rgb[2] = 0;
