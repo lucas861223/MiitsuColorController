@@ -28,8 +28,11 @@ namespace MiitsuColorController.ViewModel
         public string RedEmote { get { return _setting.RedEmote; } set { _setting.RedEmote = value; OnPropertyChanged(nameof(RedEmote)); } }
         public string BlueEmote { get { return _setting.BlueEmote; } set { _setting.BlueEmote = value; OnPropertyChanged(nameof(BlueEmote)); } }
         public bool Activated { get { return _setting.Activated; } set { _setting.Activated = value; OnPropertyChanged(nameof(Activated)); } }
+        private bool _isTesting = false;
+        public bool IsTesting { get { return _isTesting; } set { _isTesting = value; OnPropertyChanged(nameof(IsTesting)); } }
         public RoutedEventHandler RefreshCommand { get { return LoadModel; } }
         public RoutedEventHandler SaveCommand { get { return SaveModelSetting; } }
+        public RoutedEventHandler TestCommand { get { return Test; } }
         public RoutedEventHandler ActivateCommand { get { return Activate; } }
         private ResourceManager _resourceManager = ResourceManager.Instance;
         private FeatureManager _featureManager = FeatureManager.Instance;
@@ -134,9 +137,10 @@ namespace MiitsuColorController.ViewModel
                 OnPropertyChanged(nameof(ModelName));
             }
         }
+
         public ArtMeshTingtingViewModel(Canvas ColorPickerCanvas, Action<List<string>, List<string>, List<string>, List<string>> LoadModelCallback)
         {
-            LoadModel();
+            LoadModelAsync();
             _colorPickerCanvas = ColorPickerCanvas;
             _loadModelCallback = LoadModelCallback;
             PaintCanvas();
@@ -167,6 +171,19 @@ namespace MiitsuColorController.ViewModel
             }
         }
 
+        private void Test(object sender, RoutedEventArgs e)
+        {
+            IsTesting = !IsTesting;
+            if (IsTesting)
+            {
+                _featureManager.StartTesting(_setting);
+            }
+            else
+            {
+                _featureManager.StopTesting();
+            }
+        }
+
         private void Activate(object sender, RoutedEventArgs e)
         {
             Activated = !Activated;
@@ -179,9 +196,10 @@ namespace MiitsuColorController.ViewModel
 
         private void LoadModel(object sender, RoutedEventArgs e)
         {
-            LoadModel();
+            LoadModelAsync();
         }
-        public async void LoadModel()
+
+        public async void LoadModelAsync()
         {
             if (_vtsSocket.IsConnected)
             {
@@ -243,6 +261,7 @@ namespace MiitsuColorController.ViewModel
                 _colorPickerCanvas.Children.Add(line);
             }
         }
+
         private void UpdateCanvas()
         {
             float _circlePercent = 360.0F / 100F;
@@ -257,13 +276,11 @@ namespace MiitsuColorController.ViewModel
                         LinearGradientBrush lgb = new();
                         lgb.GradientStops.Add(new GradientStop()
                         {
-                            Color = ColorHelper.ConvertHSV2RGBColor(_circlePercent * (int)tmpLine.Tag,
-                                                               MinimumS / 100f, 1)
+                            Color = ColorHelper.ConvertHSV2RGBColor(_circlePercent * (int)tmpLine.Tag, MinimumS / 100f, 1)
                         });
                         lgb.GradientStops.Add(new GradientStop()
                         {
-                            Color = ColorHelper.ConvertHSV2RGBColor(_circlePercent * (int)tmpLine.Tag,
-                                                               MaximumS / 100f, 1),
+                            Color = ColorHelper.ConvertHSV2RGBColor(_circlePercent * (int)tmpLine.Tag, MaximumS / 100f, 1),
                             Offset = 1
                         });
                         tmpLine.Stroke = lgb;

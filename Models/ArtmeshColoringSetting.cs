@@ -5,7 +5,7 @@ namespace MiitsuColorController.Models
     public class ArtmeshColoringSetting
     {
         public bool Activated = false;
-        public int Duration = 0;
+        public int Duration = 1000;
         public int Interpolation = 0;
         public int MaximumS = 100;
         public int MaximumV = 100;

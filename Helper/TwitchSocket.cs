@@ -152,7 +152,7 @@ namespace MiitsuColorController.Helper
             string result;
             byte[] receiveData = new byte[4096];
             ArraySegment<byte> recvBuff = new(receiveData);
-            int startIndex = ("PRIVMSG #" + ResourceManager.Instance.StringResourceDictionary[ResourceKey.TwitchUserName] + " :").Length;
+            int startIndex = ("PRIVMSG #" + Username + " :").Length;
             CancellationToken token = _cancelRecv.Token;
             while (!token.IsCancellationRequested && IsConnected)
             {
@@ -164,7 +164,7 @@ namespace MiitsuColorController.Helper
                 }
                 else if (result.Contains("PRIVMSG"))
                 {
-                    ReceiveQueue.Enqueue(result.Substring(result.IndexOf("PRIVMSG")));
+                    ReceiveQueue.Enqueue(result.Substring(result.IndexOf("PRIVMSG") + startIndex).Trim('\r', '\n'));
                 }
 
                 Task.Delay(50).Wait();

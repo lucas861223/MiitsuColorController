@@ -76,24 +76,6 @@ namespace MiitsuColorController.Helper
             _cancelSend = new CancellationTokenSource();
         }
 
-
-        protected async void StartSending(string ErrorMessage)
-        {
-            await new Task(() =>
-            {
-                CancellationToken token = _cancelSend.Token;
-                string message = "";
-                while (!token.IsCancellationRequested)
-                {
-                    if (!_sendQueue.IsEmpty && _socket.State == WebSocketState.Open && _sendQueue.TryDequeue(out message))
-                    {
-                        SendRequest(message, ErrorMessage);
-                    }
-                    Task.Delay(5).Wait();
-                }
-            });
-        }
-
         protected async void SendRequest(string Message, string ErrorMessage)
         {
             if (_socket.State == WebSocketState.Open)

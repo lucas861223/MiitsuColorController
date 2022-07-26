@@ -23,6 +23,7 @@ namespace MiitsuColorController.Helper
         }
         private ArtMeshColorTint _colortintHolder = new();
         private bool _isInUse = false;
+        private bool _isTesting = false;
         private ConcurrentQueue<int[]> _artmeshEmoteHistory = new();
         private float _sRatio;
         private float _vRatio;
@@ -53,19 +54,18 @@ namespace MiitsuColorController.Helper
             //_jsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault;
         }
 
-        public void ReAssembleConfig()
+        public void ReAssembleConfig(ArtmeshColoringSetting setting)
         {
             Suspended = true;
-            _setting = _resourceManager.LoadModelSetting();
             VTSColorTintData request = new VTSColorTintData();
             request.data.artMeshMatcher = new ArtMeshMatcher();
-            if (_setting.SelectedArtMesh.Count > 0)
+            if (setting.SelectedArtMesh.Count > 0)
             {
-                request.data.artMeshMatcher.nameExact = _setting.SelectedArtMesh.ToArray();
+                request.data.artMeshMatcher.nameExact = setting.SelectedArtMesh.ToArray();
             }
-            if (_setting.SelectedTag.Count > 0)
+            if (setting.SelectedTag.Count > 0)
             {
-                request.data.artMeshMatcher.tagExact = _setting.SelectedTag.ToArray();
+                request.data.artMeshMatcher.tagExact = setting.SelectedTag.ToArray();
             }
             request.data.colorTint = new ArtMeshColorTint();
             request.data.colorTint.colorB = 252;
@@ -76,10 +76,16 @@ namespace MiitsuColorController.Helper
             //escape brackets
             _formatString = _formatString.Replace("{", "{{").Replace("}", "}}");
             _formatString = _formatString.Replace(":253", ":{0}").Replace(":254", ":{1}").Replace(":252", ":{2}");
-            _sRatio = (_setting.MaximumS - _setting.MinimumS) / 100f;
-            _vRatio = (_setting.MaximumV - _setting.MinimumV) / 100f;
-            _taskDelay = _setting.Duration / (_setting.Interpolation + 1);
+            _sRatio = (setting.MaximumS - setting.MinimumS) / 100f;
+            _vRatio = (setting.MaximumV - setting.MinimumV) / 100f;
+            _taskDelay = setting.Duration / (setting.Interpolation + 1);
             Suspended = false;
+        }
+
+        public void ReAssembleConfig()
+        {
+            _setting = _resourceManager.LoadModelSetting();
+            ReAssembleConfig(_setting);
         }
 
         public ArtmeshColoringSetting GetSetting()
@@ -108,7 +114,6 @@ namespace MiitsuColorController.Helper
                     ConcurrentQueue<string> queue = _twitchSocket.ReceiveQueue;
                     queue.Clear();
                     ColorTint colorTintTmp = new ColorTint() { colorA = 0 };
-                    int startIndex = ("PRIVMSG #" + _resourceManager.StringResourceDictionary[ResourceKey.TwitchUserName] + " :").Length;
                     string message;
                     string[] tokens;
                     float[] rgb = { 0f, 0f, 0f };
@@ -120,7 +125,7 @@ namespace MiitsuColorController.Helper
                     {
                         if (queue.TryDequeue(out message))
                         {
-                            tokens = message.Substring(startIndex).Trim('\r', '\n').Split(" ");
+                            tokens = message.Split(" ");
                             if (_setting.Activated)
                             {
                                 int[] emotes = { 0, 0, 0 };
@@ -195,6 +200,92 @@ namespace MiitsuColorController.Helper
             }
         }
 
+        public async void StartTesting(ArtmeshColoringSetting setting)
+        {
+            if (!_isTesting)
+            {
+                await Task.Run(() =>
+                {
+                    _isTesting = true;
+                    SuspendFeatures();
+                    ReAssembleConfig(setting);
+                    ColorTint colorTintTmp = new ColorTint() { colorA = 0 };
+                    float[] rgb = { 0f, 0f, 0f };
+                    float[] difference = { 0, 0, 0 };
+                    float[] currentAdjustedRGB = { 0, 0, 0 };
+                    bool iRed = false, iBlue = false, iGreen = false;
+                    while (_isTesting)
+                    {
+                        if (!iRed && !iGreen && !iBlue)
+                        {
+                            rgb[0] += 20;
+                            if (rgb[0] >= 255)
+                            {
+                                rgb[0] = 255;
+                                iRed = true;
+                            }
+                        }
+                        else if (iRed && !iGreen && !iBlue)
+                        {
+                            rgb[1] += 20;
+                            if (rgb[1] >= 255)
+                            {
+                                rgb[1] = 255;
+                                iGreen = true;
+                            }
+                        }
+                        else if (iRed && iGreen && !iBlue)
+                        {
+                            rgb[2] += 20;
+                            if (rgb[2] >= 255)
+                            {
+                                rgb[2] = 255;
+                                iBlue = true;
+                            }
+                        }
+                        else if (iRed && iGreen && iBlue)
+                        {
+                            rgb[0] -= 20;
+                            if (rgb[0] <= 0)
+                            {
+                                rgb[0] = 0;
+                                iRed = false;
+                            }
+                        }
+                        else if (!iRed && iGreen && iBlue)
+                        {
+                            rgb[1] -= 20;
+                            if (rgb[1] <= 0)
+                            {
+                                rgb[1] = 0;
+                                iGreen = false;
+                            }
+                        }
+                        else if (!iRed && !iGreen && iBlue)
+                        {
+                            rgb[2] -= 20;
+                            if (rgb[2] <= 0)
+                            {
+                                rgb[2] = 0;
+                                iBlue = false;
+                            }
+                        }
+                        ColorHelper.RBGToAdjustedColorTint(rgb, _sRatio, _setting.MinimumS, _vRatio, _setting.MinimumV, ref _colortintHolder);
+                        _vtsSocket.TaskQueue.Enqueue(new Tuple<string, int>(String.Format(_formatString, _colortintHolder.colorR, _colortintHolder.colorG, _colortintHolder.colorB), 0));
+                        Task.Delay(_taskDelay).Wait();
+                        System.Diagnostics.Debug.WriteLine("seinding new message");
+                    }
+                    ReAssembleConfig(_setting);
+                    ResumeFeatures();
+                    _isTesting = false;
+                });
+            }
+        }
+
+        public void StopTesting()
+        {
+            _isTesting = false;
+        }
         public void ActivateArtmeshColoring()
         {
             if (!ArtMeshTintingActivated)

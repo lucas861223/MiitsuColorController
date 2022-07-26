@@ -17,7 +17,6 @@ namespace MiitsuColorController.Helper
         private static VTSSocket _instance = null;
         public ConcurrentQueue<string> SendQueue = new();
         public string VTS_Websocket_URL { get; set; }
-        private ArtMeshColorTint _targetArtmeshColor;
         public ConcurrentQueue<Tuple<string, int>> TaskQueue = new();
 
         public static VTSSocket Instance
@@ -119,8 +118,9 @@ namespace MiitsuColorController.Helper
                 }
                 else
                 {
-                    Task.Delay(100).Wait(0);
+                    Task.Delay(100).Wait();
                 }
+                System.Diagnostics.Debug.WriteLine("waiting");
             }
         }
 

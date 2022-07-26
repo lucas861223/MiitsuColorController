@@ -55,7 +55,7 @@
                 BorderThickness="2"
                 BorderBrush="{x:Bind _context.Activated, Mode=OneWay, Converter={StaticResource BoolToRedGreenConverter}}">
             <RelativePanel>
-                <Button Content="{x:Bind _context.Activated, Mode=OneWay, Converter={StaticResource BoolToStringConverter}, ConverterParameter='啟用,停用'}"
+                <Button Content="{x:Bind _context.Activated, Mode=OneWay, Converter={StaticResource BoolToStringConverter}, ConverterParameter='停用,啟用'}"
                         RelativePanel.AlignHorizontalCenterWithPanel="True"
                         RelativePanel.AlignVerticalCenterWithPanel="True"
                         Click="{x:Bind _context.ActivateCommand, Mode=OneTime}"></Button>
@@ -117,9 +117,10 @@
                     <SymbolIcon Symbol="Refresh"></SymbolIcon>
                 </Button.Content>
             </Button>
-            <Button Content="測試"
+            <Button Content="{x:Bind _context.IsTesting, Mode=OneWay, Converter={StaticResource BoolToStringConverter}, ConverterParameter='停止測試,測試'}"
                     Grid.Column="1"
                     Grid.Row="3"
+                    Click="{x:Bind _context.TestCommand, Mode=OneTime}"
                     VerticalAlignment="Stretch"
                     HorizontalAlignment="Stretch"></Button>
 
