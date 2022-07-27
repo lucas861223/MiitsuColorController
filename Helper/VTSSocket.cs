@@ -120,7 +120,6 @@ namespace MiitsuColorController.Helper
                 {
                     Task.Delay(100).Wait();
                 }
-                System.Diagnostics.Debug.WriteLine("waiting");
             }
         }
 

@@ -107,7 +107,7 @@
                       BorderThickness="1"
                       SelectionMode="Multiple"
                       BorderBrush="DarkGray"
-                      SelectionChanged="ArtMeshNameListView_SelectionChanged" />
+                      SelectionChanged="{x:Bind _context.NameSelectionCommand, Mode=OneTime}" />
 
             <Button Grid.Column="1"
                     Grid.Row="1"
@@ -145,7 +145,7 @@
                       Grid.Row="1"
                       BorderThickness="1"
                       SelectionMode="Multiple"
-                      SelectionChanged="TagListView_SelectionChanged"
+                      SelectionChanged="{x:Bind _context.TagSelectionCommand, Mode=OneTime}"
                       BorderBrush="DarkGray" />
         </Grid>
         <ScrollViewer Grid.Row="2"

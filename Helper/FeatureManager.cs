@@ -289,7 +289,6 @@ namespace MiitsuColorController.Helper
                         ColorHelper.RBGToAdjustedColorTint(rgb, _sRatio, _setting.MinimumS, _vRatio, _setting.MinimumV, ref _colortintHolder);
                         _vtsSocket.TaskQueue.Enqueue(new Tuple<string, int>(String.Format(_formatString, _colortintHolder.colorR, _colortintHolder.colorG, _colortintHolder.colorB), 0));
                         Task.Delay(_taskDelay).Wait();
-                        System.Diagnostics.Debug.WriteLine("seinding new message");
                     }
                     ReAssembleConfig(_setting);
                     ResumeFeatures();
