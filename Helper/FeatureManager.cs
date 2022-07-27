@@ -1,9 +1,8 @@
-﻿using System;
+﻿using MiitsuColorController.Models;
+using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
-using MiitsuColorController.Models;
 
 namespace MiitsuColorController.Helper
 {
@@ -136,7 +135,7 @@ namespace MiitsuColorController.Helper
                     float[] rgb = { 0f, 0f, 0f };
                     int rgbSum;
                     float[] difference = { 0, 0, 0 };
-                    float[] currentAdjustedRGB = { 0, 0, 0 };
+                    float[] currentAdjustedRGB = { 255, 255, 255 };
                     ReAssembleConfig();
                     while (_setting.Activated)
                     {
@@ -300,7 +299,6 @@ namespace MiitsuColorController.Helper
             _vtsSocket.TaskQueue.Enqueue(new Tuple<string, int>(String.Format(_formatString, 255, 255, 255), 0));
             ReAssembleConfig(_setting);
             ResumeFeatures();
-            _isTesting = false;
         }
         public void ActivateArtmeshColoring()
         {
@@ -309,11 +307,6 @@ namespace MiitsuColorController.Helper
                 ArtMeshTintingActivated = true;
                 ReAssembleConfig();
             }
-        }
-
-        public void DeactivateArtmeshColoring()
-        {
-
         }
     }
 }

@@ -1,13 +1,13 @@
-﻿using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Navigation;
-using System;
-using MiitsuColorController.Helper;
-using Microsoft.UI;
+﻿using Microsoft.UI;
 using Microsoft.UI.Windowing;
-using System.Collections.Generic;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using MiitsuColorController.Views;
+using Microsoft.UI.Xaml.Navigation;
+using MiitsuColorController.Helper;
 using MiitsuColorController.Models;
+using MiitsuColorController.Views;
+using System;
+using System.Collections.Generic;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -48,6 +48,13 @@ namespace MiitsuColorController
                     Height = Manager.IntResourceDictionary[ResourceKey.WindowHeight]
                 });
             }
+
+            if (this.Content is FrameworkElement rootElement)
+            {
+                rootElement.RequestedTheme = ElementTheme.Dark;
+            }
+
+            grid.RequestedTheme = ElementTheme.Dark;
         }
 
         public void OnExit()
