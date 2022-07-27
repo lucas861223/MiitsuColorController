@@ -290,15 +290,16 @@ namespace MiitsuColorController.Helper
                         _vtsSocket.TaskQueue.Enqueue(new Tuple<string, int>(String.Format(_formatString, _colortintHolder.colorR, _colortintHolder.colorG, _colortintHolder.colorB), 0));
                         Task.Delay(_taskDelay).Wait();
                     }
-                    ReAssembleConfig(_setting);
-                    ResumeFeatures();
-                    _isTesting = false;
                 });
             }
         }
 
         public void StopTesting()
         {
+            _isTesting = false;
+            _vtsSocket.TaskQueue.Enqueue(new Tuple<string, int>(String.Format(_formatString, 255, 255, 255), 0));
+            ReAssembleConfig(_setting);
+            ResumeFeatures();
             _isTesting = false;
         }
         public void ActivateArtmeshColoring()

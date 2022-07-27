@@ -83,7 +83,7 @@
                                  AcceptsReturn="False"
                                  IsEnabled="{x:Bind Path=VTS_Socket.IsNotInUse, Mode=OneWay}"
                                  IsSpellCheckEnabled="False"
-                                 PlaceholderText="API地址"
+                                 PlaceholderText="在設定裡,需先開啟API"
                                  Text="{x:Bind Path=VTS_Socket.VTS_Websocket_URL, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     </Grid>
                     <Grid Grid.Row="2"
