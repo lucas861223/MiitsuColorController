@@ -81,7 +81,7 @@ namespace MiitsuColorController
             NavigationViewNavigate("overview");
         }
 
-        private void NavigationViewNavigate(string navItemTag)
+        public void NavigationViewNavigate(string navItemTag)
         {
             Type _page = _pages.Find(x => x.Tag == navItemTag).Page;
             // Get the page type before navigation so you can prevent duplicate

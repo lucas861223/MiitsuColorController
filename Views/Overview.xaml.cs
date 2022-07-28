@@ -35,5 +35,10 @@ namespace MiitsuColorController.Views
                 VTS_Socket.ConnectAndAuthorize();
             }
         }
+
+        public void NavigateToColorTintingFeature(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        {
+            ((App)App.Current).m_window.NavigationViewNavigate("artmeshtintingfeature");
+        }
     }
 }

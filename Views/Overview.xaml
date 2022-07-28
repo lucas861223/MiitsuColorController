@@ -11,6 +11,8 @@
         <converters:BoolToRedGreenConverter x:Key="BoolToRedGreenConverter" />
         <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
         <converters:BoolToStringConverter x:Key="BoolToStringConverter" />
+        <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter" />
+        <converters:IntToStringArrayIndexConverter x:Key="IntToStringArrayIndexConverter" />
     </Page.Resources>
 
     <Grid Name="grid"
@@ -100,56 +102,117 @@
                 <ColumnDefinition Width="4*" />
             </Grid.ColumnDefinitions>
             <Border Background="#333333"
-                    BorderBrush="#333333"
-                    BorderThickness="2,2,2,2"
                     CornerRadius="7,7,7,7"
-                    Padding="10,10,0,10"
-                    Grid.Column="1">
-                <StackPanel Orientation="Vertical">
-                    <TextBlock>
+                    Margin="10,10,10,10"
+                    Grid.Column="1"
+                    BorderThickness="2"
+                    BorderBrush="{x:Bind dataContext.Activated, Mode=OneWay, Converter={StaticResource BoolToRedGreenConverter}}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*" />
+                    </Grid.RowDefinitions>
+                    <Border Opacity="0.7"
+                            Background="Black"
+                            HorizontalAlignment="Center"
+                            Grid.Row="0"
+                            Grid.RowSpan="10"
+                            Canvas.ZIndex="10"
+                            Visibility="{x:Bind VTS_Socket.IsConnected, Mode=OneWay, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+                        <Viewbox StretchDirection="Both">
+                            <TextBlock Text="未連結Vtube Studio" />
+                        </Viewbox>
+                    </Border>
+                    <TextBlock Grid.Row="0">
                         <Run>模型: </Run>
                         <Run Text="{x:Bind dataContext.ModelName, Mode=OneWay}"></Run>
                     </TextBlock>
-                    <TextBlock>
+                    <TextBlock Grid.Row="1">
                         <Run>紅: </Run>
                         <Run Text="{x:Bind dataContext.RedEmote, Mode=OneWay}"></Run>
                     </TextBlock>
-                    <TextBlock>
+                    <TextBlock Grid.Row="2">
                         <Run>綠: </Run>
                         <Run Text="{x:Bind dataContext.GreenEmote, Mode=OneWay}"></Run>
                     </TextBlock>
-                    <TextBlock>
+                    <TextBlock Grid.Row="3">
                         <Run>藍: </Run>
                         <Run Text="{x:Bind dataContext.BlueEmote, Mode=OneWay}"></Run>
                     </TextBlock>
-                    <TextBlock>
+                    <TextBlock Grid.Row="4">
                         <Run>飽和度範圍: </Run>
                         <Run Text="{x:Bind dataContext.MinimumS, Mode=OneWay}"></Run>
                         <Run> ~ </Run>
                         <Run Text="{x:Bind dataContext.MaximumS, Mode=OneWay}"></Run>
                     </TextBlock>
-                    <TextBlock>
+                    <TextBlock Grid.Row="5">
                         <Run>明亮度範圍: </Run>
                         <Run Text="{x:Bind dataContext.MinimumV, Mode=OneWay}"></Run>
                         <Run> ~ </Run>
                         <Run Text="{x:Bind dataContext.MaximumV, Mode=OneWay}"></Run>
                     </TextBlock>
-                    <TextBlock>
+                    <TextBlock Grid.Row="6">
                         <Run>時長: </Run>
                         <Run Text="{x:Bind dataContext.Duration, Mode=OneWay}"></Run>
                     </TextBlock>
-                    <TextBlock>
+                    <TextBlock Grid.Row="7">
                         <Run>插值: </Run>
                         <Run Text="{x:Bind dataContext.Interpolation, Mode=OneWay}"></Run>
                     </TextBlock>
-                    <Grid>
+                    <TextBlock Grid.Row="8">
+                        <Run>參考訊息數量: </Run>
+                        <Run Text="{x:Bind dataContext.MessageCount, Converter={StaticResource IntToStringArrayIndexConverter}, ConverterParameter='累積變色,排程變色', Mode=OneWay}"></Run>
+                    </TextBlock>
+                    <TextBlock Grid.Row="9">
+                        <Run>變色方針: </Run>
+                        <Run Text="{x:Bind dataContext.Interpolation, Mode=OneWay}"></Run>
+                    </TextBlock>
+                    <Grid Grid.Row="10">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="4*" />
                             <ColumnDefinition Width="4*" />
                             <ColumnDefinition Width="4*" />
                         </Grid.ColumnDefinitions>
+                        <Button Grid.Column="0"
+                                Click="{x:Bind dataContext.RefreshCommand, Mode=OneTime}"
+                                IsEnabled="{x:Bind VTS_Socket.IsConnected, Mode=OneWay}"
+                                HorizontalAlignment="Center">
+                            <Button.Content>
+                                <SymbolIcon Symbol="Refresh"></SymbolIcon>
+                            </Button.Content>
+                        </Button>
+                        <Button Grid.Column="1"
+                                Click="NavigateToColorTintingFeature"
+                                HorizontalAlignment="Center">
+                            <Button.Content>
+                                <SymbolIcon Symbol="Setting"></SymbolIcon>
+                            </Button.Content>
+                        </Button>
+                        <Button Content="{x:Bind dataContext.Activated, Mode=OneWay, Converter={StaticResource BoolToStringConverter}, ConverterParameter='停用,啟用'}"
+                                IsEnabled="{x:Bind VTS_Socket.IsConnected, Mode=OneWay}"
+                                Click="{x:Bind dataContext.ActivateCommand, Mode=OneTime}"
+                                Grid.Column="2"
+                                HorizontalAlignment="Center">
+                        </Button>
                     </Grid>
-                </StackPanel>
+                </Grid>
+            </Border>
+            <Border Background="#111111"
+                    CornerRadius="7,7,7,7"
+                    Margin="10,10,10,10"
+                    Grid.Column="2">
+                <Viewbox>
+                    <TextBlock>More to come..</TextBlock>
+                </Viewbox>
             </Border>
         </Grid>
     </Grid>
