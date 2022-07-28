@@ -1,12 +1,10 @@
-﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
-
-namespace MiitsuColorController.Models
+﻿namespace MiitsuColorController.Models
 {
-    public class ModelInformation : ObservableObject
+    public class ModelInformation
     {
-        public string ID { get; set; }
-        public string ModelName { get; set; }
-        public string[] ArtMeshNames { get; set; }
-        public string[] ArtMeshTags { get; set; }
+        public string ID;
+        public string ModelName;
+        public string[] ArtMeshNames;
+        public string[] ArtMeshTags;
     }
 }

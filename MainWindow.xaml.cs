@@ -19,7 +19,8 @@ namespace MiitsuColorController
     /// </summary>
     public sealed partial class MainWindow : Window
     {
-        ResourceManager Manager = ResourceManager.Instance;
+        private ResourceManager _resourceManager = ResourceManager.Instance;
+
         AppWindow window;
         public MainWindow()
         {
@@ -32,20 +33,20 @@ namespace MiitsuColorController
 
             // And then set the icon
             window.SetIcon("Assets/3.0.ico");
-            if (Manager.IntResourceDictionary.ContainsKey(ResourceKey.WindowPositionX))
+            if (_resourceManager.IntResourceDictionary.ContainsKey(ResourceKey.WindowPositionX))
             {
                 window.Move(new Windows.Graphics.PointInt32
                 {
-                    X = Manager.IntResourceDictionary[ResourceKey.WindowPositionX],
-                    Y = Manager.IntResourceDictionary[ResourceKey.WindowPositionY]
+                    X = _resourceManager.IntResourceDictionary[ResourceKey.WindowPositionX],
+                    Y = _resourceManager.IntResourceDictionary[ResourceKey.WindowPositionY]
                 });
             }
-            if (Manager.IntResourceDictionary.ContainsKey(ResourceKey.WindowWidth))
+            if (_resourceManager.IntResourceDictionary.ContainsKey(ResourceKey.WindowWidth))
             {
                 window.Resize(new Windows.Graphics.SizeInt32
                 {
-                    Width = Manager.IntResourceDictionary[ResourceKey.WindowWidth],
-                    Height = Manager.IntResourceDictionary[ResourceKey.WindowHeight]
+                    Width = _resourceManager.IntResourceDictionary[ResourceKey.WindowWidth],
+                    Height = _resourceManager.IntResourceDictionary[ResourceKey.WindowHeight]
                 });
             }
 
@@ -59,11 +60,11 @@ namespace MiitsuColorController
 
         public void OnExit()
         {
-            Manager.IntResourceDictionary[ResourceKey.WindowHeight] = window.Size.Height;
-            Manager.IntResourceDictionary[ResourceKey.WindowWidth] = window.Size.Width;
-            Manager.IntResourceDictionary[ResourceKey.WindowPositionX] = window.Position.X;
-            Manager.IntResourceDictionary[ResourceKey.WindowPositionY] = window.Position.Y;
-            Manager.SaveToPersistantStorage();
+            _resourceManager.IntResourceDictionary[ResourceKey.WindowHeight] = window.Size.Height;
+            _resourceManager.IntResourceDictionary[ResourceKey.WindowWidth] = window.Size.Width;
+            _resourceManager.IntResourceDictionary[ResourceKey.WindowPositionX] = window.Position.X;
+            _resourceManager.IntResourceDictionary[ResourceKey.WindowPositionY] = window.Position.Y;
+            _resourceManager.SaveToPersistantStorage();
         }
 
         private readonly List<(string Tag, Type Page)> _pages = new()

@@ -12,6 +12,7 @@
     <EnableMsixTooling>true</EnableMsixTooling>
     <ApplicationIcon>3.0.ico</ApplicationIcon>
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+    <WindowsPackageType>None</WindowsPackageType>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="Assets\**" CopyToPublishDirectory="Always"/>

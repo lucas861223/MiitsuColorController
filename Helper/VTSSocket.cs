@@ -18,6 +18,9 @@ namespace MiitsuColorController.Helper
         public ConcurrentQueue<string> SendQueue = new();
         public string VTS_Websocket_URL { get; set; }
         public ConcurrentQueue<Tuple<string, int>> TaskQueue = new();
+        public event Action ConnectionEstablishedEvent;
+        public event Action NewModelEvent;
+
 
         public static VTSSocket Instance
         {
@@ -74,11 +77,13 @@ namespace MiitsuColorController.Helper
                     }
                     ResourceManager.Instance.UpdateCurrentModelInformation(currentModelData.data, currentModelArtmesh.data);
                 }
+                NewModelEvent();
             }
         }
         public async void ConnectAndAuthorize()
         {
             StatusString = "連結中...";
+            Microsoft.UI.Dispatching.DispatcherQueue queue = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
             await Task.Run(() =>
             {
                 if (_socket.State != WebSocketState.Open && _socket.State != WebSocketState.Connecting)
@@ -100,6 +105,7 @@ namespace MiitsuColorController.Helper
                 });
                 if (IsConnected)
                 {
+                    GetModelInformation();
                     StartSending();
                 }
             });

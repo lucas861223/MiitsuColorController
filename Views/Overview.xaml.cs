@@ -1,5 +1,6 @@
 ﻿using Microsoft.UI.Xaml.Controls;
 using MiitsuColorController.Helper;
+using MiitsuColorController.ViewModel;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -13,6 +14,9 @@ namespace MiitsuColorController.Views
     {
         public TwitchSocket Twitch_Socket;
         public VTSSocket VTS_Socket;
+        public FeatureManager Feature_Manager = FeatureManager.Instance;
+        public ResourceManager Resource_Manager = ResourceManager.Instance;
+        public ArtMeshTingtingViewModel dataContext = new();
         public Overview()
         {
             InitializeComponent();

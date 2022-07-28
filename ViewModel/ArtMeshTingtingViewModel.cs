@@ -58,6 +58,8 @@ namespace MiitsuColorController.ViewModel
         public SelectionChangedEventHandler TagSelectionCommand { get { return TagListView_SelectionChanged; } }
         private ResourceManager _resourceManager = ResourceManager.Instance;
         private FeatureManager _featureManager = FeatureManager.Instance;
+        private Microsoft.UI.Dispatching.DispatcherQueue _uiThread;
+        private bool _settingLoaded = false;
         public int MinimumS
         {
             get { return _setting.MinimumS; }
@@ -176,8 +178,27 @@ namespace MiitsuColorController.ViewModel
             }
         }
 
+        public void Test()
+        {
+            _uiThread.TryEnqueue(() =>
+            {
+                _setting = _featureManager.GetSetting();
+                OnPropertyChanged((string)null);
+            });
+        }
+
+        public ArtMeshTingtingViewModel()
+        {
+            _uiThread = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
+            VTSSocket.Instance.NewModelEvent += new Action(NewModelEventHandler);
+            LoadModelAsync();
+        }
+
         public ArtMeshTingtingViewModel(Canvas ColorPickerCanvas, Action<List<string>, List<string>, List<string>, List<string>> LoadModelCallback)
         {
+            _uiThread = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
+            //VTSSocket.Instance.ConnectionEstablishedEvent += new Action(LoadModelAsync);
+            VTSSocket.Instance.NewModelEvent += new Action(NewModelEventHandlerWithUI);
             LoadModelAsync();
             _colorPickerCanvas = ColorPickerCanvas;
             _loadModelCallback = LoadModelCallback;
@@ -272,41 +293,57 @@ namespace MiitsuColorController.ViewModel
         {
             if (_vtsSocket.IsConnected)
             {
-                Microsoft.UI.Dispatching.DispatcherQueue queue = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
-
+                _settingLoaded = false;
                 await Task.Run(() =>
                 {
                     _vtsSocket.GetModelInformation();
-                    if (_resourceManager.CurrentModelInformation.ArtMeshNames != null)
-                    {
-                        ArtMeshNames.Clear();
-                        foreach (string artmesh in _resourceManager.CurrentModelInformation.ArtMeshNames)
-                        {
-                            ArtMeshNames.Add(artmesh);
-                        }
-                        Tags.Clear();
-                        foreach (string tag in _resourceManager.CurrentModelInformation.ArtMeshTags)
-                        {
-                            Tags.Add(tag);
-                        }
-                        queue.TryEnqueue(() =>
-                        {
-                            ModelName = _resourceManager.CurrentModelInformation.ModelName;
-                            _setting = _featureManager.GetSetting();
-                            OnPropertyChanged((string)null);
-                            List<string> tmpNames = _setting.SelectedArtMesh;
-                            _setting.SelectedArtMesh = new();
-                            List<string> tmpTags = _setting.SelectedTag;
-                            _setting.SelectedTag = new();
-                            _loadModelCallback(ArtMeshNames, Tags, tmpNames, tmpTags);
-                        });
-                    }
                 });
             }
             else
             {
                 _setting = new ArtmeshColoringSetting();
             }
+        }
+
+        public void NewModelEventHandlerWithUI()
+        {
+            if (_resourceManager.CurrentModelInformation.ArtMeshNames != null)
+            {
+                ArtMeshNames.Clear();
+                foreach (string artmesh in _resourceManager.CurrentModelInformation.ArtMeshNames)
+                {
+                    ArtMeshNames.Add(artmesh);
+                }
+                Tags.Clear();
+                foreach (string tag in _resourceManager.CurrentModelInformation.ArtMeshTags)
+                {
+                    Tags.Add(tag);
+                }
+                _uiThread.TryEnqueue(() =>
+                {
+                    _setting = _featureManager.GetSetting();
+                    ModelName = _resourceManager.CurrentModelInformation.ModelName;
+                    OnPropertyChanged((string)null);
+                    List<string> tmpNames = _setting.SelectedArtMesh;
+                    _setting.SelectedArtMesh = new();
+                    List<string> tmpTags = _setting.SelectedTag;
+                    _setting.SelectedTag = new();
+                    if (_loadModelCallback != null)
+                    {
+                        _loadModelCallback(ArtMeshNames, Tags, tmpNames, tmpTags);
+                    }
+                });
+            }
+        }
+
+        public void NewModelEventHandler()
+        {
+            _uiThread.TryEnqueue(() =>
+            {
+                _setting = _featureManager.GetSetting();
+                ModelName = _resourceManager.CurrentModelInformation.ModelName;
+                OnPropertyChanged((string)null);
+            });
         }
 
         private void PaintCanvas()
