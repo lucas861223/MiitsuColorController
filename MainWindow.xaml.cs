@@ -21,7 +21,8 @@ namespace MiitsuColorController
     {
         private ResourceManager _resourceManager = ResourceManager.Instance;
 
-        AppWindow window;
+        private AppWindow window;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -94,6 +95,7 @@ namespace MiitsuColorController
                 ContentFrame.Navigate(_page);
             }
         }
+
         private void NavigationViewItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
         {
             var navItemTag = args.InvokedItemContainer.Tag.ToString();

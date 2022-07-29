@@ -9,9 +9,9 @@ namespace MiitsuColorController.Converters
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-
             return new SolidColorBrush((bool)value ? Colors.Green : Colors.Red);
         }
+
         public object ConvertBack(object value, Type targetType, object parameter, string language)
         {
             throw new NotImplementedException();

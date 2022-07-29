@@ -10,13 +10,7 @@ namespace MiitsuColorController.Helper
 {
     public class TwitchSocket : AbstractSocket
     {
-        public string Username { set; get; }
-        public string TwitchAuthToken { set; get; }
-        private string _TWITCH_IRC_URL = "ws://irc-ws.chat.twitch.tv:80";
-        private CancellationTokenSource _cancelRecv;
-        public bool ConnectOnStartUp { set; get; }
         public ConcurrentQueue<string> ReceiveQueue = new();
-        private static TwitchSocket _instance = null;
         public static TwitchSocket Instance
         {
             get
@@ -28,40 +22,10 @@ namespace MiitsuColorController.Helper
                 return _instance;
             }
         }
-        private TwitchSocket() : base()
-        {
-            _cancelRecv = new CancellationTokenSource();
-            ResourceManager manager = ResourceManager.Instance;
-            if (manager.StringResourceDictionary.TryGetValue(ResourceKey.TwitchAuthToken, out string tmp))
-            {
-                TwitchAuthToken = tmp;
-            }
-            else
-            {
-                TwitchAuthToken = "";
-            }
-            if (manager.StringResourceDictionary.TryGetValue(ResourceKey.TwitchUserName, out tmp))
-            {
-                Username = tmp;
-            }
-            else
-            {
-                Username = "";
-            }
-            ConnectOnStartup = manager.BoolResourceDictionary.TryGetValue(ResourceKey.ConnectTwitchOnStart, out bool boolTmp) && boolTmp;
-            if (ConnectOnStartup)
-            {
-                Connect();
-            }
-        }
 
-        public new void Disconnect()
-        {
-            _cancelRecv.Cancel();
-            _cancelRecv = new CancellationTokenSource();
-            base.Disconnect();
-        }
-
+        public bool ConnectOnStartUp { set; get; }
+        public string TwitchAuthToken { set; get; }
+        public string Username { set; get; }
         public async void Connect()
         {
             StatusString = "連結中...";
@@ -138,6 +102,13 @@ namespace MiitsuColorController.Helper
             }
         }
 
+        public new void Disconnect()
+        {
+            _cancelRecv.Cancel();
+            _cancelRecv = new CancellationTokenSource();
+            base.Disconnect();
+        }
+
         internal void Exit()
         {
             Disconnect();
@@ -147,30 +118,35 @@ namespace MiitsuColorController.Helper
             manager.BoolResourceDictionary[ResourceKey.ConnectTwitchOnStart] = ConnectOnStartup;
         }
 
-        private void StartReceiving()
+        private static TwitchSocket _instance = null;
+        private CancellationTokenSource _cancelRecv;
+        private string _TWITCH_IRC_URL = "ws://irc-ws.chat.twitch.tv:80";
+        private TwitchSocket() : base()
         {
-            string result;
-            byte[] receiveData = new byte[4096];
-            ArraySegment<byte> recvBuff = new(receiveData);
-            int startIndex = ("PRIVMSG #" + Username + " :").Length;
-            CancellationToken token = _cancelRecv.Token;
-            while (!token.IsCancellationRequested && IsConnected)
+            _cancelRecv = new CancellationTokenSource();
+            ResourceManager manager = ResourceManager.Instance;
+            if (manager.StringResourceDictionary.TryGetValue(ResourceKey.TwitchAuthToken, out string tmp))
             {
-                result = Receive(recvBuff, token).Result;
-                if (result.StartsWith("PING "))
-                {
-                    SendRequest("PONG " + result.Substring(5), "連結失敗- 網路有開嗎?");
-                    continue;
-                }
-                else if (result.Contains("PRIVMSG"))
-                {
-                    ReceiveQueue.Enqueue(result.Substring(result.IndexOf("PRIVMSG") + startIndex).Trim('\r', '\n'));
-                }
-
-                Task.Delay(50).Wait();
+                TwitchAuthToken = tmp;
+            }
+            else
+            {
+                TwitchAuthToken = "";
+            }
+            if (manager.StringResourceDictionary.TryGetValue(ResourceKey.TwitchUserName, out tmp))
+            {
+                Username = tmp;
+            }
+            else
+            {
+                Username = "";
+            }
+            ConnectOnStartup = manager.BoolResourceDictionary.TryGetValue(ResourceKey.ConnectTwitchOnStart, out bool boolTmp) && boolTmp;
+            if (ConnectOnStartup)
+            {
+                Connect();
             }
         }
-
         private async Task<string> Receive(ArraySegment<byte> recvBuff, CancellationToken token)
         {
             WebSocketReceiveResult receiveFlags;
@@ -196,6 +172,30 @@ namespace MiitsuColorController.Helper
                 result += Encoding.UTF8.GetString(recvBuff.Array, 0, receiveFlags.Count);
             } while (!receiveFlags.EndOfMessage);
             return result;
+        }
+
+        private void StartReceiving()
+        {
+            string result;
+            byte[] receiveData = new byte[4096];
+            ArraySegment<byte> recvBuff = new(receiveData);
+            int startIndex = ("PRIVMSG #" + Username + " :").Length;
+            CancellationToken token = _cancelRecv.Token;
+            while (!token.IsCancellationRequested && IsConnected)
+            {
+                result = Receive(recvBuff, token).Result;
+                if (result.StartsWith("PING "))
+                {
+                    SendRequest("PONG " + result.Substring(5), "連結失敗- 網路有開嗎?");
+                    continue;
+                }
+                else if (result.Contains("PRIVMSG"))
+                {
+                    ReceiveQueue.Enqueue(result.Substring(result.IndexOf("PRIVMSG") + startIndex).Trim('\r', '\n'));
+                }
+
+                Task.Delay(50).Wait();
+            }
         }
     }
 }

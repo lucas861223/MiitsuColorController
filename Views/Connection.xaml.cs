@@ -14,6 +14,7 @@ namespace MiitsuColorController.Views
     {
         public VTSSocket VTS_Socket;
         public TwitchSocket Twitch_Socket;
+
         public Connection()
         {
             InitializeComponent();

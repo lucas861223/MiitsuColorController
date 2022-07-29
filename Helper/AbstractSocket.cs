@@ -7,21 +7,24 @@ using System.Threading;
 
 namespace MiitsuColorController.Helper
 {
-
     public abstract class AbstractSocket : ObservableObject
     {
+        public bool IsAuthorized = false;
+        protected DispatcherQueue _dispathcerQueue;
+        protected ClientWebSocket _socket = null;
+        protected bool AlreadyRetried = false;
         private CancellationTokenSource _cancelSend;
         private string _statusString = "未連結";
-        protected bool AlreadyRetried = false;
-        protected ClientWebSocket _socket = null;
-        protected DispatcherQueue _dispathcerQueue;
         public bool AutoReconnect { get; set; }
         public bool ConnectOnStartup { get; set; }
-        public bool IsAuthorized = false;
-        public bool IsConnected { get { return _socket != null && _socket.State == WebSocketState.Open && IsAuthorized; } }
-        public bool IsNotInUse { get { return _socket != null && (_socket.State == WebSocketState.Closed || _socket.State == WebSocketState.None); } }
-        public string StatusString { get { return _statusString; } set { _statusString = value; OnPropertyChanged(nameof(StatusString)); } }
+        public bool IsConnected
+        { get { return _socket != null && _socket.State == WebSocketState.Open && IsAuthorized; } }
 
+        public bool IsNotInUse
+        { get { return _socket != null && (_socket.State == WebSocketState.Closed || _socket.State == WebSocketState.None); } }
+
+        public string StatusString
+        { get { return _statusString; } set { _statusString = value; OnPropertyChanged(nameof(StatusString)); } }
         public AbstractSocket()
         {
             _socket = new ClientWebSocket();
@@ -29,7 +32,6 @@ namespace MiitsuColorController.Helper
             _dispathcerQueue = DispatcherQueue.GetForCurrentThread();
             _cancelSend = new CancellationTokenSource();
         }
-
         public async void Disconnect()
         {
             StatusString = "未連結";
@@ -41,14 +43,19 @@ namespace MiitsuColorController.Helper
                 {
                     await _socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", new CancellationTokenSource(500).Token);
                 }
-                catch (System.Net.WebSockets.WebSocketException)
+                catch (WebSocketException)
                 {
-
                 }
             }
             _socket = new ClientWebSocket();
             OnPropertyChanged(nameof(IsConnected));
             OnPropertyChanged(nameof(IsNotInUse));
+        }
+
+        public void StopSending()
+        {
+            _cancelSend.Cancel();
+            _cancelSend = new CancellationTokenSource();
         }
 
         protected void CheckConnection(string Message)
@@ -67,13 +74,6 @@ namespace MiitsuColorController.Helper
             });
             return;
         }
-
-        public void StopSending()
-        {
-            _cancelSend.Cancel();
-            _cancelSend = new CancellationTokenSource();
-        }
-
         protected async void SendRequest(string Message, string ErrorMessage)
         {
             if (_socket.State == WebSocketState.Open)
@@ -85,5 +85,4 @@ namespace MiitsuColorController.Helper
             }
         }
     }
-
 }

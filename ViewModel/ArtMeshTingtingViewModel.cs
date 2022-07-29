@@ -16,8 +16,10 @@ namespace MiitsuColorController.ViewModel
     {
         private VTSSocket _vtsSocket = VTSSocket.Instance;
         private int _messageHandlingMethod = 0;
-        public int MessageHandlingMethod { get { return _messageHandlingMethod; } set { _messageHandlingMethod = value; OnPropertyChanged(nameof(MessageHandlingMethod)); } }
+        public int MessageHandlingMethod
+        { get { return _messageHandlingMethod; } set { _messageHandlingMethod = value; OnPropertyChanged(nameof(MessageHandlingMethod)); } }
         private ArtmeshColoringSetting _setting = new();
+
         public int Interpolation
         {
             get { return _setting.Interpolation; }
@@ -31,6 +33,7 @@ namespace MiitsuColorController.ViewModel
                 }
             }
         }
+
         public int Duration
         {
             get { return _setting.Duration; }
@@ -44,22 +47,35 @@ namespace MiitsuColorController.ViewModel
                 }
             }
         }
-        public string GreenEmote { get { return _setting.GreenEmote; } set { _setting.GreenEmote = value; OnPropertyChanged(nameof(GreenEmote)); } }
-        public string RedEmote { get { return _setting.RedEmote; } set { _setting.RedEmote = value; OnPropertyChanged(nameof(RedEmote)); } }
-        public string BlueEmote { get { return _setting.BlueEmote; } set { _setting.BlueEmote = value; OnPropertyChanged(nameof(BlueEmote)); } }
-        public bool Activated { get { return _setting.Activated; } set { _setting.Activated = value; OnPropertyChanged(nameof(Activated)); } }
+
+        public string GreenEmote
+        { get { return _setting.GreenEmote; } set { _setting.GreenEmote = value; OnPropertyChanged(nameof(GreenEmote)); } }
+        public string RedEmote
+        { get { return _setting.RedEmote; } set { _setting.RedEmote = value; OnPropertyChanged(nameof(RedEmote)); } }
+        public string BlueEmote
+        { get { return _setting.BlueEmote; } set { _setting.BlueEmote = value; OnPropertyChanged(nameof(BlueEmote)); } }
+        public bool Activated
+        { get { return _setting.Activated; } set { _setting.Activated = value; OnPropertyChanged(nameof(Activated)); } }
         private bool _isTesting = false;
-        public bool IsTesting { get { return _isTesting; } set { _isTesting = value; OnPropertyChanged(nameof(IsTesting)); } }
-        public RoutedEventHandler RefreshCommand { get { return LoadModel; } }
-        public RoutedEventHandler SaveCommand { get { return SaveModelSetting; } }
-        public RoutedEventHandler TestCommand { get { return Test; } }
-        public RoutedEventHandler ActivateCommand { get { return Activate; } }
-        public SelectionChangedEventHandler NameSelectionCommand { get { return ArtMeshNameListView_SelectionChanged; } }
-        public SelectionChangedEventHandler TagSelectionCommand { get { return TagListView_SelectionChanged; } }
+        public bool IsTesting
+        { get { return _isTesting; } set { _isTesting = value; OnPropertyChanged(nameof(IsTesting)); } }
+        public RoutedEventHandler RefreshCommand
+        { get { return LoadModel; } }
+        public RoutedEventHandler SaveCommand
+        { get { return SaveModelSetting; } }
+        public RoutedEventHandler TestCommand
+        { get { return Test; } }
+        public RoutedEventHandler ActivateCommand
+        { get { return Activate; } }
+        public SelectionChangedEventHandler NameSelectionCommand
+        { get { return ArtMeshNameListView_SelectionChanged; } }
+        public SelectionChangedEventHandler TagSelectionCommand
+        { get { return TagListView_SelectionChanged; } }
         private ResourceManager _resourceManager = ResourceManager.Instance;
         private FeatureManager _featureManager = FeatureManager.Instance;
         private Microsoft.UI.Dispatching.DispatcherQueue _uiThread;
         private bool _settingLoaded = false;
+
         public int MinimumS
         {
             get { return _setting.MinimumS; }
@@ -77,6 +93,7 @@ namespace MiitsuColorController.ViewModel
                 OnPropertyChanged(nameof(MinimumS));
             }
         }
+
         public int MaximumS
         {
             get { return _setting.MaximumS; }
@@ -94,6 +111,7 @@ namespace MiitsuColorController.ViewModel
                 OnPropertyChanged(nameof(MaximumS));
             }
         }
+
         public int MinimumV
         {
             get { return _setting.MinimumV; }
@@ -111,6 +129,7 @@ namespace MiitsuColorController.ViewModel
                 OnPropertyChanged(nameof(MinimumV));
             }
         }
+
         public int MaximumV
         {
             get { return _setting.MaximumV; }
@@ -128,7 +147,9 @@ namespace MiitsuColorController.ViewModel
                 OnPropertyChanged(nameof(MaximumV));
             }
         }
+
         private Color _firstStopColor;
+
         public Color FirstStopColor
         {
             get { return _firstStopColor; }
@@ -138,7 +159,9 @@ namespace MiitsuColorController.ViewModel
                 OnPropertyChanged(nameof(FirstStopColor));
             }
         }
+
         private Color _secondStopColor;
+
         public Color SecondStopColor
         {
             get { return _secondStopColor; }
@@ -148,7 +171,9 @@ namespace MiitsuColorController.ViewModel
                 OnPropertyChanged(nameof(SecondStopColor));
             }
         }
+
         private Color _thirdStopColor;
+
         public Color ThirdStopColor
         {
             get { return _thirdStopColor; }
@@ -158,16 +183,21 @@ namespace MiitsuColorController.ViewModel
                 OnPropertyChanged(nameof(ThirdStopColor));
             }
         }
+
         private Canvas _colorPickerCanvas;
-        public int MessageCount { get { return _setting.MessageCount; } set { _setting.MessageCount = value; OnPropertyChanged(nameof(MessageCount)); } }
+        public int MessageCount
+        { get { return _setting.MessageCount; } set { _setting.MessageCount = value; OnPropertyChanged(nameof(MessageCount)); } }
         public List<string> ArtMeshNames = new();
         public List<string> Tags = new();
-        public List<string> SelectedArtMesh { get { return _setting.SelectedArtMesh; } }
-        public List<string> SelectedTag { get { return _setting.SelectedArtMesh; } }
+        public List<string> SelectedArtMesh
+        { get { return _setting.SelectedArtMesh; } }
+        public List<string> SelectedTag
+        { get { return _setting.SelectedArtMesh; } }
         public List<string> SelectedButFilteredName = new();
         public List<string> SelectedButFilteredTag = new();
         private Action<List<string>, List<string>, List<string>, List<string>> _loadModelCallback;
         private string _modelName = "載入中...";
+
         public string ModelName
         {
             get { return _modelName; }
@@ -205,6 +235,7 @@ namespace MiitsuColorController.ViewModel
             PaintCanvas();
             UpdateColor();
         }
+
         private float _lastS = 0f;
         private float _lastH = 0f;
 
@@ -229,6 +260,7 @@ namespace MiitsuColorController.ViewModel
                 SelectedTag.Remove(tag);
             }
         }
+
         private void TagListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             foreach (string tag in e.AddedItems)

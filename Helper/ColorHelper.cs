@@ -6,6 +6,74 @@ namespace MiitsuColorController.Helper
 {
     internal class ColorHelper
     {
+        //360, 1, 1 to 255, 255, 255,
+        public static byte[] ConvertHSV2RGB(float h, float s, float v)
+        {
+            byte r = 0;
+            byte g = 0;
+            byte b = 0;
+
+            h /= 60;
+            int i = (int)Math.Floor(h);
+            float f = h - i;
+            float p = v * (1 - s);
+            float q = v * (1 - s * f);
+            float t = v * (1 - s * (1 - f));
+
+            switch (i)
+            {
+                case 0:
+                    r = (byte)(255 * v);
+                    g = (byte)(255 * t);
+                    b = (byte)(255 * p);
+                    break;
+
+                case 1:
+                    r = (byte)(255 * q);
+                    g = (byte)(255 * v);
+                    b = (byte)(255 * p);
+                    break;
+
+                case 2:
+                    r = (byte)(255 * p);
+                    g = (byte)(255 * v);
+                    b = (byte)(255 * t);
+                    break;
+
+                case 3:
+                    r = (byte)(255 * p);
+                    g = (byte)(255 * q);
+                    b = (byte)(255 * v);
+                    break;
+
+                case 4:
+                    r = (byte)(255 * t);
+                    g = (byte)(255 * p);
+                    b = (byte)(255 * v);
+                    break;
+
+                default:
+                    r = (byte)(255 * v);
+                    g = (byte)(255 * p);
+                    b = (byte)(255 * q);
+                    break;
+            }
+            return new byte[] { r, g, b };
+        }
+
+        public static Color ConvertHSV2RGBColor(float h, float s, float v)
+        {
+            byte[] rgb = ConvertHSV2RGB(h, s, v);
+            return Color.FromArgb(255, rgb[0], rgb[1], rgb[2]);
+        }
+
+        public static void ConvertHSV2RGBColorTint(float h, float s, float v, ref ArtMeshColorTint result)
+        {
+            byte[] rgb = ConvertHSV2RGB(h, s, v);
+            result.colorB = (int)rgb[2];
+            result.colorG = (int)rgb[1];
+            result.colorR = (int)rgb[0];
+        }
 
         public static void RBGToAdjustedColorTint(float[] color, float sRatio, float minS, float vRatio, float minV, ref ArtMeshColorTint result)
         {
@@ -64,70 +132,6 @@ namespace MiitsuColorController.Helper
             }
 
             result[2] /= 255;
-        }
-
-        public static void ConvertHSV2RGBColorTint(float h, float s, float v, ref ArtMeshColorTint result)
-        {
-            byte[] rgb = ConvertHSV2RGB(h, s, v);
-            result.colorB = (int)rgb[2];
-            result.colorG = (int)rgb[1];
-            result.colorR = (int)rgb[0];
-        }
-
-        //360, 1, 1 to 255, 255, 255,
-        public static byte[] ConvertHSV2RGB(float h, float s, float v)
-        {
-            byte r = 0;
-            byte g = 0;
-            byte b = 0;
-
-            h /= 60;
-            int i = (int)Math.Floor(h);
-            float f = h - i;
-            float p = v * (1 - s);
-            float q = v * (1 - s * f);
-            float t = v * (1 - s * (1 - f));
-
-            switch (i)
-            {
-                case 0:
-                    r = (byte)(255 * v);
-                    g = (byte)(255 * t);
-                    b = (byte)(255 * p);
-                    break;
-                case 1:
-                    r = (byte)(255 * q);
-                    g = (byte)(255 * v);
-                    b = (byte)(255 * p);
-                    break;
-                case 2:
-                    r = (byte)(255 * p);
-                    g = (byte)(255 * v);
-                    b = (byte)(255 * t);
-                    break;
-                case 3:
-                    r = (byte)(255 * p);
-                    g = (byte)(255 * q);
-                    b = (byte)(255 * v);
-                    break;
-                case 4:
-                    r = (byte)(255 * t);
-                    g = (byte)(255 * p);
-                    b = (byte)(255 * v);
-                    break;
-                default:
-                    r = (byte)(255 * v);
-                    g = (byte)(255 * p);
-                    b = (byte)(255 * q);
-                    break;
-            }
-            return new byte[] { r, g, b };
-        }
-
-        public static Color ConvertHSV2RGBColor(float h, float s, float v)
-        {
-            byte[] rgb = ConvertHSV2RGB(h, s, v);
-            return Color.FromArgb(255, rgb[0], rgb[1], rgb[2]);
         }
     }
 }

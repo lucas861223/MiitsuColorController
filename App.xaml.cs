@@ -12,6 +12,7 @@ namespace MiitsuColorController
     public partial class App : Application
     {
         public MainWindow m_window;
+
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -32,6 +33,7 @@ namespace MiitsuColorController
             m_window.Closed += OnExit;
             m_window.Activate();
         }
+
         public void OnExit(object sender, WindowEventArgs e)
         {
             m_window.OnExit();

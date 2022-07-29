@@ -1,9 +1,9 @@
 ﻿<Page x:Class="MiitsuColorController.Views.Connection"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:converters="using:MiitsuColorController.Converters"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:converters="using:MiitsuColorController.Converters"
       Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
       mc:Ignorable="d">
     <Page.Resources>
@@ -201,7 +201,5 @@
                 </Grid>
             </Grid>
         </Grid>
-
     </Grid>
-
 </Page>

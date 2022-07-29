@@ -9,6 +9,7 @@ namespace MiitsuColorController.Converters
         {
             return !(bool)value;
         }
+
         public object ConvertBack(object value, Type targetType, object parameter, string language)
         {
             return !(bool)value;

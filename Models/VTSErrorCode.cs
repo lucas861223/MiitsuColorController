@@ -7,6 +7,7 @@
     {
         // General errors
         InternalServerError = 0,
+
         APIAccessDeactivated = 1,
         JSONInvalid = 2,
         APINameInvalid = 3,
@@ -18,6 +19,7 @@
 
         // Errors related to AuthenticationTokenRequest
         TokenRequestDenied = 50,
+
         TokenRequestCurrentlyOngoing = 51,
         TokenRequestPluginNameInvalid = 52,
         TokenRequestDeveloperNameInvalid = 53,
@@ -25,18 +27,21 @@
 
         // Errors related to AuthenticationRequest
         AuthenticationTokenMissing = 100,
+
         AuthenticationPluginNameMissing = 101,
         AuthenticationPluginDeveloperMissing = 102,
 
         // Errors related to ModelLoadRequest
         ModelIDMissing = 150,
+
         ModelIDInvalid = 151,
         ModelIDNotFound = 152,
         ModelLoadCooldownNotOver = 153,
         CannotCurrentlyChangeModel = 154,
 
         // Errors related to HotkeyTriggerRequest
-        HotkeyQueueFull = 200, // 
+        HotkeyQueueFull = 200, //
+
         HotkeyExecutionFailedBecauseNoModelLoaded = 201,
         HotkeyIDNotFoundInModel = 202,
         HotkeyCooldownNotOver = 203, // Individual hotkeys have a global 5 second cooldown
@@ -46,16 +51,19 @@
 
         // Errors related to ColorTintRequest
         ColorTintRequestNoModelLoaded = 250,
+
         ColorTintRequestMatchOrColorMissing = 251,
         ColorTintRequestInvalidColorValue = 252,
 
         // Errors related to MoveModelRequest
         MoveModelRequestNoModelLoaded = 300,
+
         MoveModelRequestMissingFields = 301,
         MoveModelRequestValuesOutOfRange = 302,
 
         // Errors related to ParameterCreationRequest
         CustomParamNameInvalid = 350,
+
         CustomParamValuesInvalid = 351,
         CustomParamAlreadyCreatedByOtherPlugin = 352,
         CustomParamExplanationTooLong = 353,
@@ -65,12 +73,14 @@
 
         // Errors related to ParameterDeletionRequest
         CustomParamDeletionNameInvalid = 400,
+
         CustomParamDeletionNotFound = 401, // Trying to delete a parameter that doesn't exist
         CustomParamDeletionCreatedByOtherPlugin = 402, // Trying to delete a parameter created by another plugin
         CustomParamDeletionCannotDeleteDefaultParam = 403,
 
         // Errors related to InjectParameterDataRequest
         InjectDataNoDataProvided = 450,
+
         InjectDataValueInvalid = 451,
         InjectDataWeightInvalid = 452,
         InjectDataParamNameNotFound = 453, // Trying to send data for parameter that doesn't exist

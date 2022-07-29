@@ -8,36 +8,23 @@ namespace MiitsuColorController.Helper
 {
     public class FeatureManager
     {
-        private static FeatureManager _instance = null;
-        public static FeatureManager Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    _instance = new FeatureManager();
-                }
-                return _instance;
-            }
-        }
-        private ArtMeshColorTint _colortintHolder = new();
-        private bool _isInUse = false;
-        private bool _isTesting = false;
-        private ConcurrentQueue<int[]> _artmeshEmoteHistory = new();
-        private float _sRatio;
-        private float _vRatio;
-        private int _taskDelay;
-        private int[] _artmeshCurrentColor = { 0, 0, 0 };
-        private JsonSerializerOptions _jsonSerializerOptions = new();
-        private ResourceManager _resourceManager = ResourceManager.Instance;
-        private string _formatString;
-        private TwitchSocket _twitchSocket = TwitchSocket.Instance;
-        private VTSSocket _vtsSocket = VTSSocket.Instance;
         public bool ArtMeshTintingActivated = false;
         public bool Suspended = false;
-
+        private static FeatureManager _instance = null;
+        private int[] _artmeshCurrentColor = { 0, 0, 0 };
+        private ConcurrentQueue<int[]> _artmeshEmoteHistory = new();
+        private ArtMeshColorTint _colortintHolder = new();
+        private string _formatString;
+        private bool _isInUse = false;
+        private bool _isTesting = false;
+        private JsonSerializerOptions _jsonSerializerOptions = new();
+        private ResourceManager _resourceManager = ResourceManager.Instance;
         private ArtmeshColoringSetting _setting;
-
+        private float _sRatio;
+        private int _taskDelay;
+        private TwitchSocket _twitchSocket = TwitchSocket.Instance;
+        private float _vRatio;
+        private VTSSocket _vtsSocket = VTSSocket.Instance;
 
         private FeatureManager()
         {
@@ -53,12 +40,30 @@ namespace MiitsuColorController.Helper
             //_jsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault;
         }
 
-        public void ReAssembleConfig(ArtmeshColoringSetting setting)
+        public static FeatureManager Instance
         {
-            Suspended = true;
-            MakeFormatString(setting);
-            UpdateTestingParameters(setting);
-            Suspended = false;
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new FeatureManager();
+                }
+                return _instance;
+            }
+        }
+
+        public void ActivateArtmeshColoring()
+        {
+            if (!ArtMeshTintingActivated)
+            {
+                ArtMeshTintingActivated = true;
+                ReAssembleConfig();
+            }
+        }
+
+        public ArtmeshColoringSetting GetSetting()
+        {
+            return _setting;
         }
 
         public void MakeFormatString(ArtmeshColoringSetting setting)
@@ -84,34 +89,18 @@ namespace MiitsuColorController.Helper
             _formatString = _formatString.Replace(":253", ":{0}").Replace(":254", ":{1}").Replace(":252", ":{2}");
         }
 
-        public void UpdateSelections(ArtmeshColoringSetting setting)
+        public void ReAssembleConfig(ArtmeshColoringSetting setting)
         {
-            //reset tinted parts
-            _vtsSocket.TaskQueue.Enqueue(new Tuple<string, int>(String.Format(_formatString, 255, 255, 255), 0));
+            Suspended = true;
             MakeFormatString(setting);
-        }
-
-        public void UpdateTestingParameters(ArtmeshColoringSetting setting)
-        {
-            _sRatio = (setting.MaximumS - setting.MinimumS) / 100f;
-            _vRatio = (setting.MaximumV - setting.MinimumV) / 100f;
-            _taskDelay = setting.Duration / (setting.Interpolation + 1);
+            UpdateTestingParameters(setting);
+            Suspended = false;
         }
 
         public void ReAssembleConfig()
         {
             _setting = _resourceManager.LoadModelSetting();
             ReAssembleConfig(_setting);
-        }
-
-        public ArtmeshColoringSetting GetSetting()
-        {
-            return _setting;
-        }
-
-        public void SuspendFeatures()
-        {
-            Suspended = true;
         }
 
         public void ResumeFeatures()
@@ -188,7 +177,6 @@ namespace MiitsuColorController.Helper
                                     currentAdjustedRGB[1] -= difference[1] * (_setting.Interpolation + 1 - leftStep);
                                     currentAdjustedRGB[2] -= difference[2] * (_setting.Interpolation + 1 - leftStep);
                                     _vtsSocket.TaskQueue.Clear();
-
                                 }
                                 difference[0] = _colortintHolder.colorR - currentAdjustedRGB[0] / (_setting.Interpolation + 1);
                                 difference[1] = _colortintHolder.colorG - currentAdjustedRGB[1] / (_setting.Interpolation + 1);
@@ -300,13 +288,24 @@ namespace MiitsuColorController.Helper
             ReAssembleConfig(_setting);
             ResumeFeatures();
         }
-        public void ActivateArtmeshColoring()
+
+        public void SuspendFeatures()
         {
-            if (!ArtMeshTintingActivated)
-            {
-                ArtMeshTintingActivated = true;
-                ReAssembleConfig();
-            }
+            Suspended = true;
+        }
+
+        public void UpdateSelections(ArtmeshColoringSetting setting)
+        {
+            //reset tinted parts
+            _vtsSocket.TaskQueue.Enqueue(new Tuple<string, int>(String.Format(_formatString, 255, 255, 255), 0));
+            MakeFormatString(setting);
+        }
+
+        public void UpdateTestingParameters(ArtmeshColoringSetting setting)
+        {
+            _sRatio = (setting.MaximumS - setting.MinimumS) / 100f;
+            _vRatio = (setting.MaximumV - setting.MinimumV) / 100f;
+            _taskDelay = setting.Duration / (setting.Interpolation + 1);
         }
     }
 }

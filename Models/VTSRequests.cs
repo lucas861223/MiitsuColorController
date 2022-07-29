@@ -11,7 +11,6 @@ namespace MiitsuColorController.Models
         public string messageType;
     }
 
-
     public class VTSErrorData : VTSMessageData
     {
         public VTSErrorData()
@@ -27,14 +26,12 @@ namespace MiitsuColorController.Models
 
         public Data data;
 
-
         public class Data
         {
             public int errorID;
             public string message;
         }
     }
-
 
     public class VTSStateData : VTSMessageData
     {
@@ -85,12 +82,10 @@ namespace MiitsuColorController.Models
         }
     }
 
-
     public class ArtMeshColorTint : ColorTint
     {
         public float mixWithSceneLightingColor = 1.0f;
     }
-
 
     public class ArtMeshMatcher
     {
@@ -102,7 +97,6 @@ namespace MiitsuColorController.Models
         public string[] tagContains;
     }
 
-
     public class ColorTint
     {
         public int colorR;
@@ -111,7 +105,6 @@ namespace MiitsuColorController.Models
         public int colorA;
     }
 
-
     public class VTSColorTintData : VTSMessageData
     {
         public VTSColorTintData()
@@ -119,13 +112,13 @@ namespace MiitsuColorController.Models
             messageType = "ColorTintRequest";
             data = new Data();
         }
+
         public Data data;
 
         public void Copy(VTSColorTintData e)
         {
             data = e.data;
         }
-
 
         public class Data
         {
@@ -135,12 +128,10 @@ namespace MiitsuColorController.Models
         }
     }
 
-
     public class ColorCapturePart : ColorTint
     {
         public bool active;
     }
-
 
     public class VTSSceneColorOverlayData : VTSMessageData
     {
@@ -149,6 +140,7 @@ namespace MiitsuColorController.Models
             messageType = "SceneColorOverlayInfoRequest";
             data = new Data();
         }
+
         public Data data;
 
         public void Copy(VTSSceneColorOverlayData e)
@@ -180,6 +172,7 @@ namespace MiitsuColorController.Models
             this.messageType = "CurrentModelRequest";
             this.data = new Data();
         }
+
         public Data data;
 
         public void Copy(VTSCurrentModelData e)
@@ -198,7 +191,6 @@ namespace MiitsuColorController.Models
             public int numberOfTextures;
             public int textureResolution;
             public ModelPosition modelPosition;
-
         }
     }
 
@@ -209,6 +201,7 @@ namespace MiitsuColorController.Models
             this.messageType = "ArtMeshListRequest";
             this.data = new Data();
         }
+
         public Data data;
 
         public void Copy(VTSArtMeshListData e)
@@ -253,7 +246,6 @@ namespace MiitsuColorController.Models
         public float defaultValue;
     }
 
-
     public class VTSInputParameterListData : VTSMessageData
     {
         public VTSInputParameterListData()
@@ -261,12 +253,14 @@ namespace MiitsuColorController.Models
             messageType = "InputParameterListRequest";
             data = new Data();
         }
+
         public Data data;
 
         public void Copy(VTSInputParameterListData e)
         {
             data = e.data;
         }
+
         public class Data
         {
             public bool modelLoaded;
@@ -277,7 +271,6 @@ namespace MiitsuColorController.Models
         }
     }
 
-
     public class VTSParameterValueData : VTSMessageData
     {
         public VTSParameterValueData()
@@ -285,15 +278,17 @@ namespace MiitsuColorController.Models
             messageType = "ParameterValueRequest";
             data = new Data();
         }
+
         public Data data;
 
         public void Copy(VTSParameterValueData e)
         {
             data = e.data;
         }
-        public class Data : VTSParameter { }
-    }
 
+        public class Data : VTSParameter
+        { }
+    }
 
     public class VTSLive2DParameterListData : VTSMessageData
     {
@@ -302,13 +297,14 @@ namespace MiitsuColorController.Models
             messageType = "Live2DParameterListRequest";
             data = new Data();
         }
-        public Data data;
 
+        public Data data;
 
         public void Copy(VTSLive2DParameterListData e)
         {
             data = e.data;
         }
+
         public class Data
         {
             public bool modelLoaded;
@@ -318,17 +314,16 @@ namespace MiitsuColorController.Models
         }
     }
 
-
     public class VTSCustomParameter
     {
         // 4-32 characters, alphanumeric
         public string parameterName;
+
         public string explanation;
         public float min;
         public float max;
         public float defaultValue;
     }
-
 
     public class VTSParameterCreationData : VTSMessageData
     {
@@ -337,15 +332,17 @@ namespace MiitsuColorController.Models
             messageType = "ParameterCreationRequest";
             data = new Data();
         }
+
         public Data data;
 
         public void Copy(VTSParameterCreationData e)
         {
             data = e.data;
         }
-        public class Data : VTSCustomParameter { }
-    }
 
+        public class Data : VTSCustomParameter
+        { }
+    }
 
     public class VTSParameterDeletionData : VTSMessageData
     {
@@ -354,18 +351,19 @@ namespace MiitsuColorController.Models
             messageType = "ParameterDeletionRequest";
             data = new Data();
         }
+
         public Data data;
 
         public void Copy(VTSParameterDeletionData e)
         {
             data = e.data;
         }
+
         public class Data
         {
             public string parameterName;
         }
     }
-
 
     public class VTSParameterInjectionValue
     {
@@ -374,7 +372,6 @@ namespace MiitsuColorController.Models
         public float weight = float.MinValue;
     }
 
-
     public class VTSInjectParameterData : VTSMessageData
     {
         public VTSInjectParameterData()
@@ -382,12 +379,14 @@ namespace MiitsuColorController.Models
             messageType = "InjectParameterDataRequest";
             data = new Data();
         }
+
         public Data data;
 
         public void Copy(VTSInjectParameterData e)
         {
             data = e.data;
         }
+
         public class Data
         {
             public VTSParameterInjectionValue[] parameterValues;

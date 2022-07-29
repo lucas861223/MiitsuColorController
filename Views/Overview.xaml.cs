@@ -17,6 +17,7 @@ namespace MiitsuColorController.Views
         public FeatureManager Feature_Manager = FeatureManager.Instance;
         public ResourceManager Resource_Manager = ResourceManager.Instance;
         public ArtMeshTingtingViewModel dataContext = new();
+
         public Overview()
         {
             InitializeComponent();

@@ -7,34 +7,13 @@ namespace MiitsuColorController.Helper
 {
     public class ResourceManager
     {
-        private static string _SAVE_FILE_LOCATION = "SaveData";
-        private static string _ICON_PATH = "Assets/3.0.PNG";
-        public Dictionary<ResourceKey, string> StringResourceDictionary = new();
-        public Dictionary<ResourceKey, int> IntResourceDictionary = new();
         public Dictionary<ResourceKey, bool> BoolResourceDictionary = new();
-        private static ResourceManager _instance = null;
         public ModelInformation CurrentModelInformation = new();
-        public static ResourceManager Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    _instance = new ResourceManager();
-                }
-                return _instance;
-            }
-        }
-
-        public void UpdateCurrentModelInformation(VTSCurrentModelData.Data modelData, VTSArtMeshListData.Data artmeshData)
-        {
-            CurrentModelInformation.ID = modelData.modelID;
-            CurrentModelInformation.ModelName = modelData.modelName;
-            CurrentModelInformation.ArtMeshNames = artmeshData.artMeshNames;
-            CurrentModelInformation.ArtMeshTags = artmeshData.artMeshTags;
-            FeatureManager.Instance.ReAssembleConfig();
-        }
-
+        public Dictionary<ResourceKey, int> IntResourceDictionary = new();
+        public Dictionary<ResourceKey, string> StringResourceDictionary = new();
+        private static string _ICON_PATH = "Assets/3.0.PNG";
+        private static ResourceManager _instance = null;
+        private static string _SAVE_FILE_LOCATION = "SaveData";
         private ResourceManager()
         {
             if (File.Exists("SaveData"))
@@ -55,9 +34,11 @@ namespace MiitsuColorController.Helper
                                 case 0:
                                     StringResourceDictionary.Add(enumValue, tokens[1]);
                                     break;
+
                                 case 1:
                                     IntResourceDictionary.Add(enumValue, int.Parse(tokens[1]));
                                     break;
+
                                 case 2:
                                     BoolResourceDictionary.Add(enumValue, bool.Parse(tokens[1]));
                                     break;
@@ -73,36 +54,101 @@ namespace MiitsuColorController.Helper
             InitializeMissingResource();
         }
 
-        private void InitializeMissingResource()
+        public static ResourceManager Instance
         {
-            if (!BoolResourceDictionary.ContainsKey(ResourceKey.ConnectVTSOnStart))
+            get
             {
-                BoolResourceDictionary.Add(ResourceKey.ConnectVTSOnStart, false);
-            }
-            if (!BoolResourceDictionary.ContainsKey(ResourceKey.ConnectTwitchOnStart))
-            {
-                BoolResourceDictionary.Add(ResourceKey.ConnectTwitchOnStart, false);
+                if (_instance == null)
+                {
+                    _instance = new ResourceManager();
+                }
+                return _instance;
             }
         }
 
-        public void SaveToPersistantStorage()
+        public static string GetAppIcon()
         {
-            string content = "";
-            foreach (ResourceKey key in StringResourceDictionary.Keys)
+            return Convert.ToBase64String(File.ReadAllBytes(_ICON_PATH));
+        }
+
+        public ArtmeshColoringSetting LoadModelSetting()
+        {
+            ArtmeshColoringSetting setting = new ArtmeshColoringSetting();
+            if (File.Exists(CurrentModelInformation.ID + ".Miitsu"))
             {
-                content += Enum.GetName(key) + "\t" + StringResourceDictionary[key] + "\n";
+                string[] lines = File.ReadAllLines(CurrentModelInformation.ID + ".Miitsu");
+                string[] tokens;
+                ResourceKey enumValue;
+                foreach (string line in lines)
+                {
+                    tokens = line.Split("\t");
+                    if (tokens.Length > 0)
+                    {
+                        if (Enum.TryParse(tokens[0], out enumValue))
+                        {
+                            switch (enumValue)
+                            {
+                                case ResourceKey.Activated:
+                                    setting.Activated = bool.Parse(tokens[1]);
+                                    break;
+
+                                case ResourceKey.SelectedArtmesh:
+                                    foreach (string name in tokens[1].Split(","))
+                                    {
+                                        setting.SelectedArtMesh.Add(name);
+                                    }
+                                    break;
+
+                                case ResourceKey.SelectedTags:
+                                    foreach (string tag in tokens[1].Split(","))
+                                    {
+                                        setting.SelectedTag.Add(tag);
+                                    }
+                                    break;
+
+                                case ResourceKey.MessageCount:
+                                    setting.MessageCount = int.Parse(tokens[1]);
+                                    break;
+
+                                case ResourceKey.ColoringMethod:
+                                    setting.MessageHandlingMethod = int.Parse(tokens[1]);
+                                    break;
+
+                                case ResourceKey.RedEmote:
+                                    setting.RedEmote = tokens[1];
+                                    break;
+
+                                case ResourceKey.GreenEmote:
+                                    setting.GreenEmote = tokens[1];
+                                    break;
+
+                                case ResourceKey.BlueEmote:
+                                    setting.BlueEmote = tokens[1];
+                                    break;
+
+                                case ResourceKey.Interpolation:
+                                    setting.Interpolation = int.Parse(tokens[1]);
+                                    break;
+
+                                case ResourceKey.Duration:
+                                    setting.Duration = int.Parse(tokens[1]);
+                                    break;
+
+                                case ResourceKey.VValue:
+                                    setting.MinimumV = int.Parse(tokens[1]);
+                                    setting.MaximumV = int.Parse(tokens[2]);
+                                    break;
+
+                                case ResourceKey.SValue:
+                                    setting.MinimumS = int.Parse(tokens[1]);
+                                    setting.MaximumS = int.Parse(tokens[2]);
+                                    break;
+                            }
+                        }
+                    }
+                }
             }
-            content += "-\n";
-            foreach (ResourceKey key in IntResourceDictionary.Keys)
-            {
-                content += Enum.GetName(key) + "\t" + IntResourceDictionary[key] + "\n";
-            }
-            content += "-\n";
-            foreach (ResourceKey key in BoolResourceDictionary.Keys)
-            {
-                content += Enum.GetName(key) + "\t" + BoolResourceDictionary[key] + "\n";
-            }
-            File.WriteAllText(_SAVE_FILE_LOCATION, content);
+            return setting;
         }
 
         public void SaveModelSetting(ArtmeshColoringSetting setting)
@@ -126,7 +172,6 @@ namespace MiitsuColorController.Helper
                     tagTmp += tag + ",";
                 }
                 content += Enum.GetName(ResourceKey.SelectedTags) + "\t" + tagTmp.Substring(0, tagTmp.Length - 1) + "\n";
-
             }
             content += Enum.GetName(ResourceKey.MessageCount) + "\t" + setting.MessageCount + "\n";
             content += Enum.GetName(ResourceKey.ColoringMethod) + "\t" + setting.MessageHandlingMethod + "\n";
@@ -149,77 +194,44 @@ namespace MiitsuColorController.Helper
             File.WriteAllText(CurrentModelInformation.ID + ".Miitsu", content);
         }
 
-        public ArtmeshColoringSetting LoadModelSetting()
+        public void SaveToPersistantStorage()
         {
-            ArtmeshColoringSetting setting = new ArtmeshColoringSetting();
-            if (File.Exists(CurrentModelInformation.ID + ".Miitsu"))
+            string content = "";
+            foreach (ResourceKey key in StringResourceDictionary.Keys)
             {
-                string[] lines = File.ReadAllLines(CurrentModelInformation.ID + ".Miitsu");
-                string[] tokens;
-                ResourceKey enumValue;
-                foreach (string line in lines)
-                {
-                    tokens = line.Split("\t");
-                    if (tokens.Length > 0)
-                    {
-                        if (Enum.TryParse(tokens[0], out enumValue))
-                        {
-                            switch (enumValue)
-                            {
-                                case ResourceKey.Activated:
-                                    setting.Activated = bool.Parse(tokens[1]);
-                                    break;
-                                case ResourceKey.SelectedArtmesh:
-                                    foreach (string name in tokens[1].Split(","))
-                                    {
-                                        setting.SelectedArtMesh.Add(name);
-                                    }
-                                    break;
-                                case ResourceKey.SelectedTags:
-                                    foreach (string tag in tokens[1].Split(","))
-                                    {
-                                        setting.SelectedTag.Add(tag);
-                                    }
-                                    break;
-                                case ResourceKey.MessageCount:
-                                    setting.MessageCount = int.Parse(tokens[1]);
-                                    break;
-                                case ResourceKey.ColoringMethod:
-                                    setting.MessageHandlingMethod = int.Parse(tokens[1]);
-                                    break;
-                                case ResourceKey.RedEmote:
-                                    setting.RedEmote = tokens[1];
-                                    break;
-                                case ResourceKey.GreenEmote:
-                                    setting.GreenEmote = tokens[1];
-                                    break;
-                                case ResourceKey.BlueEmote:
-                                    setting.BlueEmote = tokens[1];
-                                    break;
-                                case ResourceKey.Interpolation:
-                                    setting.Interpolation = int.Parse(tokens[1]);
-                                    break;
-                                case ResourceKey.Duration:
-                                    setting.Duration = int.Parse(tokens[1]);
-                                    break;
-                                case ResourceKey.VValue:
-                                    setting.MinimumV = int.Parse(tokens[1]);
-                                    setting.MaximumV = int.Parse(tokens[2]);
-                                    break;
-                                case ResourceKey.SValue:
-                                    setting.MinimumS = int.Parse(tokens[1]);
-                                    setting.MaximumS = int.Parse(tokens[2]);
-                                    break;
-                            }
-                        }
-                    }
-                }
+                content += Enum.GetName(key) + "\t" + StringResourceDictionary[key] + "\n";
             }
-            return setting;
+            content += "-\n";
+            foreach (ResourceKey key in IntResourceDictionary.Keys)
+            {
+                content += Enum.GetName(key) + "\t" + IntResourceDictionary[key] + "\n";
+            }
+            content += "-\n";
+            foreach (ResourceKey key in BoolResourceDictionary.Keys)
+            {
+                content += Enum.GetName(key) + "\t" + BoolResourceDictionary[key] + "\n";
+            }
+            File.WriteAllText(_SAVE_FILE_LOCATION, content);
         }
-        public static string GetAppIcon()
+
+        public void UpdateCurrentModelInformation(VTSCurrentModelData.Data modelData, VTSArtMeshListData.Data artmeshData)
         {
-            return Convert.ToBase64String(File.ReadAllBytes(_ICON_PATH));
+            CurrentModelInformation.ID = modelData.modelID;
+            CurrentModelInformation.ModelName = modelData.modelName;
+            CurrentModelInformation.ArtMeshNames = artmeshData.artMeshNames;
+            CurrentModelInformation.ArtMeshTags = artmeshData.artMeshTags;
+            FeatureManager.Instance.ReAssembleConfig();
+        }
+        private void InitializeMissingResource()
+        {
+            if (!BoolResourceDictionary.ContainsKey(ResourceKey.ConnectVTSOnStart))
+            {
+                BoolResourceDictionary.Add(ResourceKey.ConnectVTSOnStart, false);
+            }
+            if (!BoolResourceDictionary.ContainsKey(ResourceKey.ConnectTwitchOnStart))
+            {
+                BoolResourceDictionary.Add(ResourceKey.ConnectTwitchOnStart, false);
+            }
         }
     }
 }

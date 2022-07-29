@@ -31,6 +31,7 @@ namespace MiitsuColorController.Views
         private bool _isInsideCanvas = false;
         private bool _hasClicked = false;
         private ArtMeshTingtingViewModel _context;
+
         public ArtMeshTintingFeature()
         {
             InitializeComponent();
@@ -42,9 +43,9 @@ namespace MiitsuColorController.Views
             _indicationCircle.Height = 10;
             _indicationCircle.Width = 10;
             _indicationCircle.Stroke = new SolidColorBrush() { Color = Microsoft.UI.Colors.Black };
-            //todo 
+            //todo
             //implement test button
-            //implement start button 
+            //implement start button
         }
 
         private void PopulateListsCallBack(List<string> names, List<string> tags, List<string> selected, List<string> selectedTags)
@@ -153,7 +154,6 @@ namespace MiitsuColorController.Views
             {
                 sender.Value = args.NewValue;
             }
-
         }
 
         private void ColorPickerCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
