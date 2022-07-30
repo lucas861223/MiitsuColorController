@@ -86,6 +86,7 @@ namespace MiitsuColorController.Helper
                 ArraySegment<byte> sendBuff = new(byteData);
                 try { await _socket.SendAsync(sendBuff, WebSocketMessageType.Text, true, new CancellationTokenSource(5000).Token); }
                 catch (OperationCanceledException) { CheckConnection(ErrorMessage); }
+                catch (System.Net.Sockets.SocketException) { CheckConnection(ErrorMessage); }
             }
         }
     }

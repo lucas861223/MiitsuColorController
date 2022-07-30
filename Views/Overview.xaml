@@ -170,11 +170,11 @@
                     </TextBlock>
                     <TextBlock Grid.Row="8">
                         <Run>參考訊息數量: </Run>
-                        <Run Text="{x:Bind dataContext.MessageCount, Converter={StaticResource IntToStringArrayIndexConverter}, ConverterParameter='累積變色,排程變色', Mode=OneWay}"></Run>
+                        <Run Text="{x:Bind dataContext.MessageCount}"></Run>
                     </TextBlock>
                     <TextBlock Grid.Row="9">
                         <Run>變色方針: </Run>
-                        <Run Text="{x:Bind dataContext.Interpolation, Mode=OneWay}"></Run>
+                        <Run Text="{x:Bind dataContext.MessageHandlingMethod, Converter={StaticResource IntToStringArrayIndexConverter}, ConverterParameter='累積變色,排程變色', Mode=OneWay}"></Run>
                     </TextBlock>
                     <Grid Grid.Row="10">
                         <Grid.ColumnDefinitions>

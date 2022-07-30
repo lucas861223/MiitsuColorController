@@ -7,12 +7,11 @@ using MiitsuColorController.Helper;
 using MiitsuColorController.Models;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Windows.UI;
 
 namespace MiitsuColorController.ViewModel
 {
-    public class ArtMeshTingtingViewModel : ObservableObject
+    public class ArtMeshTintingViewModel : ObservableObject
     {
         private VTSSocket _vtsSocket = VTSSocket.Instance;
         private int _messageHandlingMethod = 0;
@@ -216,19 +215,19 @@ namespace MiitsuColorController.ViewModel
             });
         }
 
-        public ArtMeshTingtingViewModel()
+        public ArtMeshTintingViewModel()
         {
             _uiThread = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
-            VTSSocket.Instance.NewModelEvent += new Action(NewModelEventHandler);
+            _featureManager.RegisterNewSettingEvent(new Action(NewModelEventHandler));
+            NewModelEventHandler();
             LoadModel();
         }
 
-        public ArtMeshTingtingViewModel(Canvas ColorPickerCanvas, Action<List<string>, List<string>, List<string>, List<string>> LoadModelCallback)
+        public ArtMeshTintingViewModel(Canvas ColorPickerCanvas, Action<List<string>, List<string>, List<string>, List<string>> LoadModelCallback)
         {
             _uiThread = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
             //VTSSocket.Instance.ConnectionEstablishedEvent += new Action(LoadModelAsync);
-            VTSSocket.Instance.NewModelEvent += new Action(NewModelEventHandlerWithUI);
-            NewModelEventHandlerWithUI();
+            _featureManager.RegisterNewSettingEvent(new Action(NewModelEventHandlerWithUI));
             LoadModel();
             _colorPickerCanvas = ColorPickerCanvas;
             _loadModelCallback = LoadModelCallback;
@@ -349,7 +348,9 @@ namespace MiitsuColorController.ViewModel
                 }
                 _uiThread.TryEnqueue(() =>
                 {
-                    NewModelEventHandler();
+                    _setting = _featureManager.GetSetting();
+                    ModelName = _resourceManager.CurrentModelInformation.ModelName;
+                    OnPropertyChanged((string)null);
                     List<string> tmpNames = _setting.SelectedArtMesh;
                     _setting.SelectedArtMesh = new();
                     List<string> tmpTags = _setting.SelectedTag;

@@ -30,19 +30,22 @@ namespace MiitsuColorController.Views
         private Ellipse _indicationCircle;
         private bool _isInsideCanvas = false;
         private bool _hasClicked = false;
-        private ArtMeshTingtingViewModel _context;
+        private ArtMeshTintingViewModel _context;
 
         public ArtMeshTintingFeature()
         {
             InitializeComponent();
             Action<List<string>, List<string>, List<string>, List<string>> _populateListsCallBack = PopulateListsCallBack;
-            _context = new ArtMeshTingtingViewModel(ColorPickerCanvas, _populateListsCallBack);
-            DataContext = _context;
-            _indicationCircle = new Ellipse();
-            _indicationCircle.StrokeThickness = 1;
-            _indicationCircle.Height = 10;
-            _indicationCircle.Width = 10;
-            _indicationCircle.Stroke = new SolidColorBrush() { Color = Microsoft.UI.Colors.Black };
+            this.Loaded += (sender, e) =>
+            {
+                _context = new ArtMeshTintingViewModel(ColorPickerCanvas, _populateListsCallBack);
+                DataContext = _context;
+                _indicationCircle = new Ellipse();
+                _indicationCircle.StrokeThickness = 1;
+                _indicationCircle.Height = 10;
+                _indicationCircle.Width = 10;
+                _indicationCircle.Stroke = new SolidColorBrush() { Color = Microsoft.UI.Colors.Black };
+            };
             //todo
             //implement test button
             //implement start button
@@ -65,7 +68,6 @@ namespace MiitsuColorController.Views
             {
                 ArtMeshNameListView.SelectedItems.Add(name);
             }
-            _context.SelectedButFilteredTag.Clear();
             foreach (string tag in selectedTags)
             {
                 TagListView.SelectedItems.Add(tag);

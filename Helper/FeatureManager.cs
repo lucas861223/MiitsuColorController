@@ -19,12 +19,13 @@ namespace MiitsuColorController.Helper
         private bool _isTesting = false;
         private JsonSerializerOptions _jsonSerializerOptions = new();
         private ResourceManager _resourceManager = ResourceManager.Instance;
-        private ArtmeshColoringSetting _setting;
+        private ArtmeshColoringSetting _setting = new();
         private float _sRatio;
         private int _taskDelay;
         private TwitchSocket _twitchSocket = TwitchSocket.Instance;
         private float _vRatio;
         private VTSSocket _vtsSocket = VTSSocket.Instance;
+        public event Action NewSettingEvent;
 
         private FeatureManager()
         {
@@ -101,6 +102,12 @@ namespace MiitsuColorController.Helper
         {
             _setting = _resourceManager.LoadModelSetting();
             ReAssembleConfig(_setting);
+        }
+
+        public void LoadNewSetting()
+        {
+            ReAssembleConfig();
+            NewSettingEvent();
         }
 
         public void ResumeFeatures()
@@ -202,6 +209,11 @@ namespace MiitsuColorController.Helper
                     _isInUse = false;
                 });
             }
+        }
+
+        internal void RegisterNewSettingEvent(Action action)
+        {
+            NewSettingEvent = action;
         }
 
         public async void StartTesting(ArtmeshColoringSetting setting)

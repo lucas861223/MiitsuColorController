@@ -224,7 +224,6 @@ namespace MiitsuColorController.Helper
         {
             CurrentModelInformation.ArtMeshNames = artmeshData.artMeshNames;
             CurrentModelInformation.ArtMeshTags = artmeshData.artMeshTags;
-            FeatureManager.Instance.ReAssembleConfig();
         }
 
         private void InitializeMissingResource()

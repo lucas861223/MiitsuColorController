@@ -38,8 +38,6 @@ namespace MiitsuColorController.Helper
             set { _autoReconnect = value; OnPropertyChanged(nameof(AutoReconnect)); }
         }
 
-        public event Action NewModelEvent;
-
         private VTSSocket() : base()
         {
             _jsonSerializerOptions.IncludeFields = true;
@@ -144,7 +142,6 @@ namespace MiitsuColorController.Helper
                 StartSending();
                 VTSStateData stateRequest = new();
                 SendMessage(JsonSerializer.Serialize(stateRequest, typeof(VTSStateData), _jsonSerializerOptions));
-                System.Diagnostics.Debug.WriteLine("opened connection, sent state request");
             });
         }
 
@@ -159,6 +156,7 @@ namespace MiitsuColorController.Helper
             {
                 _dispathcerQueue.TryEnqueue(() =>
                 {
+                    Disconnect();
                     StatusString = "授權失敗";
                 });
             }
@@ -166,6 +164,9 @@ namespace MiitsuColorController.Helper
             {
                 _resourceManager.StringResourceDictionary.TryGetValue(ResourceKey.VTSAuthToken, out authData.data.authenticationToken);
                 authData.messageType = "AuthenticationRequest";
+                authData.data.pluginName = "Miitsuba Coloring Controller";
+                authData.data.pluginDeveloper = "weichichi";
+                authData.data.pluginIcon = ResourceManager.GetAppIcon();
                 SendMessage(JsonSerializer.Serialize(authData, typeof(VTSAuthData), _jsonSerializerOptions));
             }
         }
@@ -173,7 +174,6 @@ namespace MiitsuColorController.Helper
         private void ReceivedStateRequest(VTSStateData stateResposne)
         {
             IsAuthorized = stateResposne.data.currentSessionAuthenticated;
-            System.Diagnostics.Debug.WriteLine("state request received, autorization status \t" + IsAuthorized);
             if (!IsAuthorized)
             {
                 Authorize();
@@ -207,12 +207,10 @@ namespace MiitsuColorController.Helper
                         }
                         receivedString += Encoding.UTF8.GetString(receiveData, 0, receiveFlags.Count);
                     } while (!receiveFlags.EndOfMessage);
-                    System.Diagnostics.Debug.WriteLine("!!" + receivedString);
 
                     jsonObjects = receivedString.Replace("}{", "}|{").Split("|");
                     foreach (string jsonString in jsonObjects)
                     {
-                        System.Diagnostics.Debug.WriteLine(jsonString);
                         try
                         {
                             response = JsonSerializer.Deserialize<VTSMessageData>(jsonString, _jsonSerializerOptions);
@@ -230,7 +228,7 @@ namespace MiitsuColorController.Helper
                             case "AuthenticationTokenResponse":
                                 VTSAuthData VTSAuthenticationTokenObject = Newtonsoft.Json.JsonConvert.DeserializeObject<VTSAuthData>(jsonString);
                                 _resourceManager.StringResourceDictionary[ResourceKey.VTSAuthToken] = VTSAuthenticationTokenObject.data.authenticationToken;
-                                UserAuthenticated(VTSAuthenticationTokenObject, false);
+                                UserAuthenticated(VTSAuthenticationTokenObject, true);
                                 break;
                             case "APIStateResponse":
                                 VTSStateData VTSStateDataObject = Newtonsoft.Json.JsonConvert.DeserializeObject<VTSStateData>(jsonString);
@@ -283,14 +281,11 @@ namespace MiitsuColorController.Helper
 
         private void ReceivedModelInformation(VTSCurrentModelData currentModelData)
         {
-            if (ResourceManager.Instance.CurrentModelInformation.ID != currentModelData.data.modelID)
-            {
-                VTSArtMeshListData currentModelArtmesh = new();
-                SendMessage(JsonSerializer.Serialize(currentModelArtmesh, typeof(VTSArtMeshListData), _jsonSerializerOptions));
-                //SendRequest(JsonSerializer.Serialize(currentModelArtmesh, typeof(VTSArtMeshListData), _jsonSerializerOptions),
-                //    "失去與VTube Studio的連結");
-                ResourceManager.Instance.UpdateCurrentModelInformation(currentModelData.data);
-            }
+            ResourceManager.Instance.UpdateCurrentModelInformation(currentModelData.data);
+            VTSArtMeshListData currentModelArtmesh = new();
+            SendMessage(JsonSerializer.Serialize(currentModelArtmesh, typeof(VTSArtMeshListData), _jsonSerializerOptions));
+            //SendRequest(JsonSerializer.Serialize(currentModelArtmesh, typeof(VTSArtMeshListData), _jsonSerializerOptions),
+            //    "失去與VTube Studio的連結");
         }
 
         private void ReceivedModelMeshes(VTSArtMeshListData meshesData)
@@ -298,7 +293,7 @@ namespace MiitsuColorController.Helper
             //SendRequest(JsonSerializer.Serialize(currentModelArtmesh, typeof(VTSArtMeshListData), _jsonSerializerOptions),
             //    "失去與VTube Studio的連結");
             ResourceManager.Instance.UpdateCurrentModelMeshes(meshesData.data);
-            NewModelEvent();
+            FeatureManager.Instance.LoadNewSetting();
         }
 
 
@@ -338,17 +333,13 @@ namespace MiitsuColorController.Helper
                 {
                     if (_taskQueue.TryDequeue(out task))
                     {
-                        System.Diagnostics.Debug.WriteLine("sending " + task.Item1);
                         SendRequest(task.Item1, "失去與VTube Studio的連結");
                         Task.Delay(task.Item2).Wait();
                     }
                     else
                     {
-                        System.Diagnostics.Debug.WriteLine("nothing to send, going to sleep");
                         _sendEWH.WaitOne();
-                        System.Diagnostics.Debug.WriteLine("I woke up");
                         _sendEWH.Reset();
-                        System.Diagnostics.Debug.WriteLine("Reset");
                     }
                 }
             });
