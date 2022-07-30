@@ -33,7 +33,7 @@ namespace MiitsuColorController.Views
             }
             if (VTS_Socket.IsNotInUse && (!VTS_Socket.IsConnected || !VTS_Socket.IsAuthorized))
             {
-                VTS_Socket.ConnectAndAuthorize();
+                VTS_Socket.Connect();
             }
         }
 

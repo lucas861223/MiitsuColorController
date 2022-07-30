@@ -74,7 +74,6 @@ namespace MiitsuColorController.ViewModel
         private ResourceManager _resourceManager = ResourceManager.Instance;
         private FeatureManager _featureManager = FeatureManager.Instance;
         private Microsoft.UI.Dispatching.DispatcherQueue _uiThread;
-        private bool _settingLoaded = false;
 
         public int MinimumS
         {
@@ -221,7 +220,7 @@ namespace MiitsuColorController.ViewModel
         {
             _uiThread = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
             VTSSocket.Instance.NewModelEvent += new Action(NewModelEventHandler);
-            LoadModelAsync();
+            LoadModel();
         }
 
         public ArtMeshTingtingViewModel(Canvas ColorPickerCanvas, Action<List<string>, List<string>, List<string>, List<string>> LoadModelCallback)
@@ -229,7 +228,8 @@ namespace MiitsuColorController.ViewModel
             _uiThread = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
             //VTSSocket.Instance.ConnectionEstablishedEvent += new Action(LoadModelAsync);
             VTSSocket.Instance.NewModelEvent += new Action(NewModelEventHandlerWithUI);
-            LoadModelAsync();
+            NewModelEventHandlerWithUI();
+            LoadModel();
             _colorPickerCanvas = ColorPickerCanvas;
             _loadModelCallback = LoadModelCallback;
             PaintCanvas();
@@ -318,18 +318,14 @@ namespace MiitsuColorController.ViewModel
 
         private void LoadModel(object sender, RoutedEventArgs e)
         {
-            LoadModelAsync();
+            LoadModel();
         }
 
-        public async void LoadModelAsync()
+        public void LoadModel()
         {
             if (_vtsSocket.IsConnected)
             {
-                _settingLoaded = false;
-                await Task.Run(() =>
-                {
-                    _vtsSocket.GetModelInformation();
-                });
+                _vtsSocket.GetModelInformation();
             }
             else
             {
@@ -353,9 +349,7 @@ namespace MiitsuColorController.ViewModel
                 }
                 _uiThread.TryEnqueue(() =>
                 {
-                    _setting = _featureManager.GetSetting();
-                    ModelName = _resourceManager.CurrentModelInformation.ModelName;
-                    OnPropertyChanged((string)null);
+                    NewModelEventHandler();
                     List<string> tmpNames = _setting.SelectedArtMesh;
                     _setting.SelectedArtMesh = new();
                     List<string> tmpTags = _setting.SelectedTag;

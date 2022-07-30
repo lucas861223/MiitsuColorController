@@ -15,7 +15,8 @@ namespace MiitsuColorController.Helper
         protected bool AlreadyRetried = false;
         private CancellationTokenSource _cancelSend;
         private string _statusString = "未連結";
-        public bool AutoReconnect { get; set; }
+        protected bool _autoReconnect;
+        protected CancellationTokenSource _cancelRecv;
         public bool ConnectOnStartup { get; set; }
         public bool IsConnected
         { get { return _socket != null && _socket.State == WebSocketState.Open && IsAuthorized; } }
@@ -27,6 +28,7 @@ namespace MiitsuColorController.Helper
         { get { return _statusString; } set { _statusString = value; OnPropertyChanged(nameof(StatusString)); } }
         public AbstractSocket()
         {
+            _cancelRecv = new CancellationTokenSource();
             _socket = new ClientWebSocket();
             _socket.Options.KeepAliveInterval = new TimeSpan(0, 0, 10);
             _dispathcerQueue = DispatcherQueue.GetForCurrentThread();
@@ -35,6 +37,8 @@ namespace MiitsuColorController.Helper
         public async void Disconnect()
         {
             StatusString = "未連結";
+            _cancelRecv.Cancel();
+            _cancelRecv = new CancellationTokenSource();
             StopSending();
             IsAuthorized = false;
             if (_socket.State == WebSocketState.Open)
@@ -79,9 +83,9 @@ namespace MiitsuColorController.Helper
             if (_socket.State == WebSocketState.Open)
             {
                 byte[] byteData = Encoding.UTF8.GetBytes(Message);
-                System.ArraySegment<byte> sendBuff = new(byteData);
+                ArraySegment<byte> sendBuff = new(byteData);
                 try { await _socket.SendAsync(sendBuff, WebSocketMessageType.Text, true, new CancellationTokenSource(5000).Token); }
-                catch (System.OperationCanceledException) { CheckConnection(ErrorMessage); }
+                catch (OperationCanceledException) { CheckConnection(ErrorMessage); }
             }
         }
     }

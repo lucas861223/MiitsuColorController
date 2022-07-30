@@ -121,7 +121,7 @@
                         <RowDefinition Height="1*" />
                         <RowDefinition Height="1*" />
                     </Grid.RowDefinitions>
-                    <Border Opacity="0.7"
+                    <Border Opacity="0.8"
                             Background="Black"
                             HorizontalAlignment="Center"
                             Grid.Row="0"

@@ -102,12 +102,7 @@ namespace MiitsuColorController.Helper
             }
         }
 
-        public new void Disconnect()
-        {
-            _cancelRecv.Cancel();
-            _cancelRecv = new CancellationTokenSource();
-            base.Disconnect();
-        }
+
 
         internal void Exit()
         {
@@ -119,11 +114,9 @@ namespace MiitsuColorController.Helper
         }
 
         private static TwitchSocket _instance = null;
-        private CancellationTokenSource _cancelRecv;
         private string _TWITCH_IRC_URL = "ws://irc-ws.chat.twitch.tv:80";
         private TwitchSocket() : base()
         {
-            _cancelRecv = new CancellationTokenSource();
             ResourceManager manager = ResourceManager.Instance;
             if (manager.StringResourceDictionary.TryGetValue(ResourceKey.TwitchAuthToken, out string tmp))
             {

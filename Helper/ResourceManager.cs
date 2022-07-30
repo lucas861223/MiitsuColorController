@@ -214,14 +214,19 @@ namespace MiitsuColorController.Helper
             File.WriteAllText(_SAVE_FILE_LOCATION, content);
         }
 
-        public void UpdateCurrentModelInformation(VTSCurrentModelData.Data modelData, VTSArtMeshListData.Data artmeshData)
+        public void UpdateCurrentModelInformation(VTSCurrentModelData.Data modelData)
         {
             CurrentModelInformation.ID = modelData.modelID;
             CurrentModelInformation.ModelName = modelData.modelName;
+        }
+
+        public void UpdateCurrentModelMeshes(VTSArtMeshListData.Data artmeshData)
+        {
             CurrentModelInformation.ArtMeshNames = artmeshData.artMeshNames;
             CurrentModelInformation.ArtMeshTags = artmeshData.artMeshTags;
             FeatureManager.Instance.ReAssembleConfig();
         }
+
         private void InitializeMissingResource()
         {
             if (!BoolResourceDictionary.ContainsKey(ResourceKey.ConnectVTSOnStart))

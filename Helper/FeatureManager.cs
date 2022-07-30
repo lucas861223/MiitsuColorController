@@ -172,11 +172,11 @@ namespace MiitsuColorController.Helper
                                 ColorHelper.RBGToAdjustedColorTint(rgb, _sRatio, _setting.MinimumS, _vRatio, _setting.MinimumV, ref _colortintHolder);
                                 if (_setting.MessageHandlingMethod == 0)
                                 {
-                                    int leftStep = _vtsSocket.TaskQueue.Count;
+                                    int leftStep = _vtsSocket.GetQueueSize();
                                     currentAdjustedRGB[0] -= difference[0] * (_setting.Interpolation + 1 - leftStep);
                                     currentAdjustedRGB[1] -= difference[1] * (_setting.Interpolation + 1 - leftStep);
                                     currentAdjustedRGB[2] -= difference[2] * (_setting.Interpolation + 1 - leftStep);
-                                    _vtsSocket.TaskQueue.Clear();
+                                    _vtsSocket.ClearQueue();
                                 }
                                 difference[0] = _colortintHolder.colorR - currentAdjustedRGB[0] / (_setting.Interpolation + 1);
                                 difference[1] = _colortintHolder.colorG - currentAdjustedRGB[1] / (_setting.Interpolation + 1);
@@ -186,7 +186,7 @@ namespace MiitsuColorController.Helper
                                     currentAdjustedRGB[0] += difference[0];
                                     currentAdjustedRGB[1] += difference[1];
                                     currentAdjustedRGB[2] += difference[2];
-                                    _vtsSocket.TaskQueue.Enqueue(new Tuple<string, int>(String.Format(_formatString, Math.Round(currentAdjustedRGB[0]), Math.Round(currentAdjustedRGB[1]), Math.Round(currentAdjustedRGB[2])), _taskDelay));
+                                    _vtsSocket.SendMessage(String.Format(_formatString, Math.Round(currentAdjustedRGB[0]), Math.Round(currentAdjustedRGB[1]), Math.Round(currentAdjustedRGB[2])), _taskDelay);
                                 }
                             }
                         }
@@ -274,7 +274,7 @@ namespace MiitsuColorController.Helper
                             }
                         }
                         ColorHelper.RBGToAdjustedColorTint(rgb, _sRatio, _setting.MinimumS, _vRatio, _setting.MinimumV, ref _colortintHolder);
-                        _vtsSocket.TaskQueue.Enqueue(new Tuple<string, int>(String.Format(_formatString, _colortintHolder.colorR, _colortintHolder.colorG, _colortintHolder.colorB), 0));
+                        _vtsSocket.SendMessage(String.Format(_formatString, _colortintHolder.colorR, _colortintHolder.colorG, _colortintHolder.colorB));
                         Task.Delay(_taskDelay).Wait();
                     }
                 });
@@ -284,7 +284,7 @@ namespace MiitsuColorController.Helper
         public void StopTesting()
         {
             _isTesting = false;
-            _vtsSocket.TaskQueue.Enqueue(new Tuple<string, int>(String.Format(_formatString, 255, 255, 255), 0));
+            _vtsSocket.SendMessage(String.Format(_formatString, 255, 255, 255));
             ReAssembleConfig(_setting);
             ResumeFeatures();
         }
@@ -297,7 +297,7 @@ namespace MiitsuColorController.Helper
         public void UpdateSelections(ArtmeshColoringSetting setting)
         {
             //reset tinted parts
-            _vtsSocket.TaskQueue.Enqueue(new Tuple<string, int>(String.Format(_formatString, 255, 255, 255), 0));
+            _vtsSocket.SendMessage(String.Format(_formatString, 255, 255, 255), 0);
             MakeFormatString(setting);
         }
 

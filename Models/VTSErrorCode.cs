@@ -1,4 +1,4 @@
-﻿namespace Models
+﻿namespace MiitsuColorController.Models
 {
     /// <summary>
     /// Enum for API-related errors.
