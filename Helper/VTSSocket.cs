@@ -81,13 +81,13 @@ namespace MiitsuColorController.Helper
             }
             else
             {
-                UserAuthenticated(AuthRequest, true);
+                ReceivedUserAuthenticatedAction(AuthRequest, true);
                 //SendRequest(JsonSerializer.Serialize(AuthRequest, typeof(VTSAuthData), _jsonSerializerOptions),
                 //    "連結失敗- 找不到Vtube Studio\n有開Vtube Studio嗎?\t有開啟API嗎?\n網址和埠號有打對嗎?");
             }
         }
 
-        public void AuthenticationResultReceived(VTSAuthData AuthResponse)
+        public void ReceivedAuthenticationResult(VTSAuthData AuthResponse)
         {
             IsAuthorized = AuthResponse.data.authenticated;
             if (!AuthResponse.data.authenticated)
@@ -150,7 +150,7 @@ namespace MiitsuColorController.Helper
             return _taskQueue.Count;
         }
 
-        private void UserAuthenticated(VTSAuthData authData, bool success)
+        private void ReceivedUserAuthenticatedAction(VTSAuthData authData, bool success)
         {
             if (!success)
             {
@@ -201,10 +201,8 @@ namespace MiitsuColorController.Helper
                     do
                     {
                         try { receiveFlags = await _socket.ReceiveAsync(recvBuff, token); }
-                        catch (OperationCanceledException)
-                        {
-                            CheckConnection("失去與Vtube Studio的連結");
-                        }
+                        catch (OperationCanceledException) { CheckConnection("失去與Vtube Studio的連結"); return; }
+                        catch (System.Net.Sockets.SocketException) { CheckConnection("失去與Vtube Studio的連結"); return; }
                         receivedString += Encoding.UTF8.GetString(receiveData, 0, receiveFlags.Count);
                     } while (!receiveFlags.EndOfMessage);
 
@@ -223,12 +221,12 @@ namespace MiitsuColorController.Helper
                         {
                             case "AuthenticationResponse":
                                 VTSAuthData VTSAuthDataObject = Newtonsoft.Json.JsonConvert.DeserializeObject<VTSAuthData>(jsonString);
-                                AuthenticationResultReceived(VTSAuthDataObject);
+                                ReceivedAuthenticationResult(VTSAuthDataObject);
                                 break;
                             case "AuthenticationTokenResponse":
                                 VTSAuthData VTSAuthenticationTokenObject = Newtonsoft.Json.JsonConvert.DeserializeObject<VTSAuthData>(jsonString);
                                 _resourceManager.StringResourceDictionary[ResourceKey.VTSAuthToken] = VTSAuthenticationTokenObject.data.authenticationToken;
-                                UserAuthenticated(VTSAuthenticationTokenObject, true);
+                                ReceivedUserAuthenticatedAction(VTSAuthenticationTokenObject, true);
                                 break;
                             case "APIStateResponse":
                                 VTSStateData VTSStateDataObject = Newtonsoft.Json.JsonConvert.DeserializeObject<VTSStateData>(jsonString);
@@ -247,7 +245,7 @@ namespace MiitsuColorController.Helper
                                 switch (Enum.ToObject(typeof(ErrorID), error.data.errorID))
                                 {
                                     case ErrorID.TokenRequestDenied:
-                                        UserAuthenticated(null, false);
+                                        ReceivedUserAuthenticatedAction(null, false);
                                         break;
                                 }
                                 break;

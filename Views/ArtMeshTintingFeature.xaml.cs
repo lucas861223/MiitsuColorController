@@ -34,17 +34,17 @@ namespace MiitsuColorController.Views
 
         public ArtMeshTintingFeature()
         {
-            InitializeComponent();
             Action<List<string>, List<string>, List<string>, List<string>> _populateListsCallBack = PopulateListsCallBack;
-            this.Loaded += (sender, e) =>
+            _context = new ArtMeshTintingViewModel(_populateListsCallBack);
+            InitializeComponent();
+            _indicationCircle = new Ellipse();
+            _indicationCircle.StrokeThickness = 1;
+            _indicationCircle.Height = 10;
+            _indicationCircle.Width = 10;
+            _indicationCircle.Stroke = new SolidColorBrush() { Color = Microsoft.UI.Colors.Black };
+            Loaded += (sender, e) =>
             {
-                _context = new ArtMeshTintingViewModel(ColorPickerCanvas, _populateListsCallBack);
-                DataContext = _context;
-                _indicationCircle = new Ellipse();
-                _indicationCircle.StrokeThickness = 1;
-                _indicationCircle.Height = 10;
-                _indicationCircle.Width = 10;
-                _indicationCircle.Stroke = new SolidColorBrush() { Color = Microsoft.UI.Colors.Black };
+                _context.StartLoadingModel(ColorPickerCanvas);
             };
             //todo
             //implement test button

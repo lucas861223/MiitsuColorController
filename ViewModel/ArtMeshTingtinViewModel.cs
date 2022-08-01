@@ -14,9 +14,8 @@ namespace MiitsuColorController.ViewModel
     public class ArtMeshTintingViewModel : ObservableObject
     {
         private VTSSocket _vtsSocket = VTSSocket.Instance;
-        private int _messageHandlingMethod = 0;
         public int MessageHandlingMethod
-        { get { return _messageHandlingMethod; } set { _messageHandlingMethod = value; OnPropertyChanged(nameof(MessageHandlingMethod)); } }
+        { get { return _setting.MessageHandlingMethod; } set { _setting.MessageHandlingMethod = value; OnPropertyChanged(nameof(MessageHandlingMethod)); } }
         private ArtmeshColoringSetting _setting = new();
 
         public int Interpolation
@@ -190,7 +189,7 @@ namespace MiitsuColorController.ViewModel
         public List<string> SelectedArtMesh
         { get { return _setting.SelectedArtMesh; } }
         public List<string> SelectedTag
-        { get { return _setting.SelectedArtMesh; } }
+        { get { return _setting.SelectedTag; } }
         public List<string> SelectedButFilteredName = new();
         public List<string> SelectedButFilteredTag = new();
         private Action<List<string>, List<string>, List<string>, List<string>> _loadModelCallback;
@@ -223,20 +222,24 @@ namespace MiitsuColorController.ViewModel
             LoadModel();
         }
 
-        public ArtMeshTintingViewModel(Canvas ColorPickerCanvas, Action<List<string>, List<string>, List<string>, List<string>> LoadModelCallback)
+        public ArtMeshTintingViewModel(Action<List<string>, List<string>, List<string>, List<string>> LoadModelCallback)
         {
             _uiThread = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
             //VTSSocket.Instance.ConnectionEstablishedEvent += new Action(LoadModelAsync);
             _featureManager.RegisterNewSettingEvent(new Action(NewModelEventHandlerWithUI));
-            LoadModel();
-            _colorPickerCanvas = ColorPickerCanvas;
             _loadModelCallback = LoadModelCallback;
-            PaintCanvas();
-            UpdateColor();
         }
 
         private float _lastS = 0f;
         private float _lastH = 0f;
+
+        public void StartLoadingModel(Canvas ColorPickerCanvas)
+        {
+            LoadModel();
+            _colorPickerCanvas = ColorPickerCanvas;
+            PaintCanvas();
+            UpdateColor();
+        }
 
         private void SaveModelSetting(object sender, RoutedEventArgs e)
         {
@@ -369,7 +372,6 @@ namespace MiitsuColorController.ViewModel
             {
                 _setting = _featureManager.GetSetting();
                 ModelName = _resourceManager.CurrentModelInformation.ModelName;
-                OnPropertyChanged((string)null);
             });
         }
 
