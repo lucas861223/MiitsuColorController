@@ -93,6 +93,7 @@ namespace MiitsuColorController
             // Only navigate if the selected page isn't currently loaded.
             if (!(_page is null))// && !Type.Equals(preNavPageType, _page))
             {
+                _currentPage = navItemTag;
                 ContentFrame.Navigate(_page);
             }
         }
@@ -102,7 +103,6 @@ namespace MiitsuColorController
             var navItemTag = args.InvokedItemContainer.Tag.ToString();
             if (navItemTag != _currentPage)
             {
-                _currentPage = navItemTag;
                 NavigationViewNavigate(navItemTag);
             }
         }

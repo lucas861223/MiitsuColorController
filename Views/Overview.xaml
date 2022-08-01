@@ -16,7 +16,7 @@
     </Page.Resources>
 
     <Grid Name="grid"
-          Padding="40,20,20,20">
+          Padding="40,20,20,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="4*" />
             <RowDefinition Height="6*" />
@@ -86,7 +86,6 @@
                         Grid.Column="1"
                         Grid.ColumnSpan="3"
                         HorizontalAlignment="Stretch"
-                        VerticalAlignment="Stretch"
                         Click="ConnectBothSockets"
                         Content="連結" />
                 <Rectangle Grid.Column="2"
@@ -94,32 +93,31 @@
             </Grid>
         </Border>
         <Grid Grid.Row="1"
-              Margin="0,10,0,10">
+              Margin="0,10,0,0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="4*" />
-                <ColumnDefinition Width="4*" />
                 <ColumnDefinition Width="4*" />
                 <ColumnDefinition Width="4*" />
             </Grid.ColumnDefinitions>
             <Border Background="#333333"
                     CornerRadius="7,7,7,7"
-                    Margin="10,10,10,10"
-                    Grid.Column="1"
+                    Margin="0,10,10,0"
+                    Grid.Column="0"
                     BorderThickness="2"
                     BorderBrush="{x:Bind dataContext.Activated, Mode=OneWay, Converter={StaticResource BoolToRedGreenConverter}}">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="1*" />
-                        <RowDefinition Height="1*" />
-                        <RowDefinition Height="1*" />
-                        <RowDefinition Height="1*" />
-                        <RowDefinition Height="1*" />
-                        <RowDefinition Height="1*" />
-                        <RowDefinition Height="1*" />
-                        <RowDefinition Height="1*" />
-                        <RowDefinition Height="1*" />
-                        <RowDefinition Height="1*" />
-                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="2*" />
+                        <RowDefinition Height="2*" />
+                        <RowDefinition Height="2*" />
+                        <RowDefinition Height="2*" />
+                        <RowDefinition Height="2*" />
+                        <RowDefinition Height="2*" />
+                        <RowDefinition Height="2*" />
+                        <RowDefinition Height="2*" />
+                        <RowDefinition Height="2*" />
+                        <RowDefinition Height="2*" />
+                        <RowDefinition Height="3*"
+                                       MinHeight="30" />
                     </Grid.RowDefinitions>
                     <Border Opacity="0.8"
                             Background="Black"
@@ -185,14 +183,16 @@
                         <Button Grid.Column="0"
                                 Click="{x:Bind dataContext.RefreshCommand, Mode=OneTime}"
                                 IsEnabled="{x:Bind VTS_Socket.IsConnected, Mode=OneWay}"
-                                HorizontalAlignment="Center">
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center">
                             <Button.Content>
                                 <SymbolIcon Symbol="Refresh"></SymbolIcon>
                             </Button.Content>
                         </Button>
                         <Button Grid.Column="1"
                                 Click="NavigateToColorTintingFeature"
-                                HorizontalAlignment="Center">
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center">
                             <Button.Content>
                                 <SymbolIcon Symbol="Setting"></SymbolIcon>
                             </Button.Content>
@@ -201,15 +201,16 @@
                                 IsEnabled="{x:Bind VTS_Socket.IsConnected, Mode=OneWay}"
                                 Click="{x:Bind dataContext.ActivateCommand, Mode=OneTime}"
                                 Grid.Column="2"
-                                HorizontalAlignment="Center">
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center">
                         </Button>
                     </Grid>
                 </Grid>
             </Border>
             <Border Background="#111111"
                     CornerRadius="7,7,7,7"
-                    Margin="10,10,10,10"
-                    Grid.Column="2">
+                    Margin="10,10,0,0"
+                    Grid.Column="1">
                 <Viewbox>
                     <TextBlock>More to come..</TextBlock>
                 </Viewbox>
