@@ -15,7 +15,10 @@ namespace MiitsuColorController.ViewModel
     {
         private VTSSocket _vtsSocket = VTSSocket.Instance;
         public int MessageHandlingMethod
-        { get { return _setting.MessageHandlingMethod; } set { _setting.MessageHandlingMethod = value; OnPropertyChanged(nameof(MessageHandlingMethod)); } }
+        {
+            get { return _setting.MessageHandlingMethod; }
+            set { _setting.MessageHandlingMethod = value; OnPropertyChanged(nameof(MessageHandlingMethod)); }
+        }
         private ArtmeshColoringSetting _setting = new();
 
         public int Interpolation
@@ -46,29 +49,18 @@ namespace MiitsuColorController.ViewModel
             }
         }
 
-        public string GreenEmote
-        { get { return _setting.GreenEmote; } set { _setting.GreenEmote = value; OnPropertyChanged(nameof(GreenEmote)); } }
-        public string RedEmote
-        { get { return _setting.RedEmote; } set { _setting.RedEmote = value; OnPropertyChanged(nameof(RedEmote)); } }
-        public string BlueEmote
-        { get { return _setting.BlueEmote; } set { _setting.BlueEmote = value; OnPropertyChanged(nameof(BlueEmote)); } }
-        public bool Activated
-        { get { return _setting.Activated; } set { _setting.Activated = value; OnPropertyChanged(nameof(Activated)); } }
+        public string GreenEmote { get { return _setting.GreenEmote; } set { _setting.GreenEmote = value; OnPropertyChanged(nameof(GreenEmote)); } }
+        public string RedEmote { get { return _setting.RedEmote; } set { _setting.RedEmote = value; OnPropertyChanged(nameof(RedEmote)); } }
+        public string BlueEmote { get { return _setting.BlueEmote; } set { _setting.BlueEmote = value; OnPropertyChanged(nameof(BlueEmote)); } }
+        public bool Activated { get { return _setting.Activated; } set { _setting.Activated = value; OnPropertyChanged(nameof(Activated)); } }
         private bool _isTesting = false;
-        public bool IsTesting
-        { get { return _isTesting; } set { _isTesting = value; OnPropertyChanged(nameof(IsTesting)); } }
-        public RoutedEventHandler RefreshCommand
-        { get { return LoadModel; } }
-        public RoutedEventHandler SaveCommand
-        { get { return SaveModelSetting; } }
-        public RoutedEventHandler TestCommand
-        { get { return Test; } }
-        public RoutedEventHandler ActivateCommand
-        { get { return Activate; } }
-        public SelectionChangedEventHandler NameSelectionCommand
-        { get { return ArtMeshNameListView_SelectionChanged; } }
-        public SelectionChangedEventHandler TagSelectionCommand
-        { get { return TagListView_SelectionChanged; } }
+        public bool IsTesting { get { return _isTesting; } set { _isTesting = value; OnPropertyChanged(nameof(IsTesting)); } }
+        public RoutedEventHandler RefreshCommand { get { return LoadModel; } }
+        public RoutedEventHandler SaveCommand { get { return SaveModelSetting; } }
+        public RoutedEventHandler TestCommand { get { return Test; } }
+        public RoutedEventHandler ActivateCommand { get { return Activate; } }
+        public SelectionChangedEventHandler NameSelectionCommand { get { return ArtMeshNameListView_SelectionChanged; } }
+        public SelectionChangedEventHandler TagSelectionCommand { get { return TagListView_SelectionChanged; } }
         private ResourceManager _resourceManager = ResourceManager.Instance;
         private FeatureManager _featureManager = FeatureManager.Instance;
         private Microsoft.UI.Dispatching.DispatcherQueue _uiThread;
@@ -182,14 +174,11 @@ namespace MiitsuColorController.ViewModel
         }
 
         private Canvas _colorPickerCanvas;
-        public int MessageCount
-        { get { return _setting.MessageCount; } set { _setting.MessageCount = value; OnPropertyChanged(nameof(MessageCount)); } }
+        public int MessageCount { get { return _setting.MessageCount; } set { _setting.MessageCount = value; OnPropertyChanged(nameof(MessageCount)); } }
         public List<string> ArtMeshNames = new();
         public List<string> Tags = new();
-        public List<string> SelectedArtMesh
-        { get { return _setting.SelectedArtMesh; } }
-        public List<string> SelectedTag
-        { get { return _setting.SelectedTag; } }
+        public List<string> SelectedArtMesh { get { return _setting.SelectedArtMesh; } }
+        public List<string> SelectedTag { get { return _setting.SelectedTag; } }
         public List<string> SelectedButFilteredName = new();
         public List<string> SelectedButFilteredTag = new();
         private Action<List<string>, List<string>, List<string>, List<string>> _loadModelCallback;

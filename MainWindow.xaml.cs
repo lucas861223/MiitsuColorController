@@ -118,8 +118,7 @@ namespace MiitsuColorController
                     NavView.SelectedItem = NavView.MenuItems[i];
                 }
             }
-            NavView.Header =
-                ((NavigationViewItem)NavView.SelectedItem)?.Content?.ToString();
+            NavView.Header = ((NavigationViewItem)NavView.SelectedItem)?.Content?.ToString();
         }
     }
 }
