@@ -89,15 +89,6 @@
                       BorderBrush="DarkGray"
                       SelectionChanged="{x:Bind _context.NameSelectionCommand, Mode=OneTime}" />
 
-
-            <Button Content="{x:Bind _context.IsTesting, Mode=OneWay, Converter={StaticResource BoolToStringConverter}, ConverterParameter='停止測試,測試'}"
-                    Grid.Column="1"
-                    Grid.Row="3"
-                    IsEnabled="{x:Bind _context.Activated, Mode=OneWay, Converter={StaticResource InverseBoolConverter}}"
-                    Click="{x:Bind _context.TestCommand, Mode=OneTime}"
-                    VerticalAlignment="Stretch"
-                    HorizontalAlignment="Stretch"></Button>
-
             <Grid Grid.Column="0"
                   Grid.ColumnSpan="2"
                   Grid.Row="0"
@@ -141,16 +132,18 @@
                 <Button Grid.Row="2"
                         Grid.Column="0"
                         HorizontalAlignment="Center"
-                        Content="XDDDDDDDDDDDD"
+                        Content="{x:Bind _context.IsAutoTesting, Mode=OneWay, Converter={StaticResource BoolToStringConverter}, ConverterParameter='停止自動變色測試,啟動自動變色測試'}"
+                        IsEnabled="{x:Bind _context.Activated, Mode=OneWay, Converter={StaticResource InverseBoolConverter}}"
+                        Click="{x:Bind _context.TestCommand, Mode=OneTime}"
                         VerticalAlignment="Center">
-
                 </Button>
                 <Button Grid.Row="2"
                         Grid.Column="1"
                         HorizontalAlignment="Center"
-                        Content="XDDDDDDDDDDDD"
+                        Content="{x:Bind _context.IsClickTesting, Mode=OneWay, Converter={StaticResource BoolToStringConverter}, ConverterParameter='停止手動選色測試,啟動手動選色測試'}"
+                        IsEnabled="{x:Bind _context.Activated, Mode=OneWay, Converter={StaticResource InverseBoolConverter}}"
+                        Click="StartClickTesting"
                         VerticalAlignment="Center">
-
                 </Button>
             </Grid>
             <Border Grid.Column="0"

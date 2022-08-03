@@ -35,6 +35,8 @@ namespace MiitsuColorController.Views
         private bool _isInsideRect = false;
         private bool _hasClickedRect = false;
         private ArtMeshTintingViewModel _context;
+        private FeatureManager _featureManager = FeatureManager.Instance;
+        private bool _isClickTesting = false;
 
         public ArtMeshTintingFeature()
         {
@@ -67,7 +69,7 @@ namespace MiitsuColorController.Views
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
-            if (_context.IsTesting)
+            if (_context.IsAutoTesting)
             {
                 FeatureManager.Instance.StopTesting();
             }
@@ -191,7 +193,7 @@ namespace MiitsuColorController.Views
             _context.UpdateColor((float)(360.0 * (mousePosition.X / ColorPickerCanvas.ActualWidth)),
                                  (float)(mousePosition.Y / ColorPickerCanvas.ActualHeight));
             _context.UpdateHS(360.0 * (mousePosition.X / ColorPickerCanvas.ActualWidth),
-                              mousePosition.Y / ColorPickerCanvas.ActualHeight);
+                              (float)(mousePosition.Y / ColorPickerCanvas.ActualHeight));
         }
 
         private void ColorPickerCanvas_PointerMoved(object sender, PointerRoutedEventArgs e)
@@ -239,7 +241,7 @@ namespace MiitsuColorController.Views
             }
             _indicationTriangle.SetValue(Canvas.TopProperty, mousePosition.Y);
             _indicationLine.SetValue(Canvas.TopProperty, mousePosition.Y);
-            _context.UpdateV(mousePosition.Y / RectColor.ActualHeight);
+            _context.UpdateV((float)(1 - mousePosition.Y / RectColor.ActualHeight));
         }
 
         private void RectColor_PointerMoved(object sender, PointerRoutedEventArgs e)
@@ -260,6 +262,12 @@ namespace MiitsuColorController.Views
         private void RectColor_PointerExited(object sender, PointerRoutedEventArgs e)
         {
             _isInsideRect = false;
+        }
+
+        private void StartClickTesting(object sender, RoutedEventArgs e)
+        {
+            _isClickTesting = true;
+            _context.Clicktest();
         }
     }
 }

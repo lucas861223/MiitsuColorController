@@ -1,4 +1,4 @@
-﻿using MiitsuColorController.Models;
+﻿Clicmented using MiitsuColorController.Models;
 using System;
 using Windows.UI;
 
@@ -9,9 +9,9 @@ namespace MiitsuColorController.Helper
         //360, 1, 1 to 255, 255, 255,
         public static byte[] ConvertHSV2RGB(float h, float s, float v)
         {
-            byte r = 0;
-            byte g = 0;
-            byte b = 0;
+            byte r;
+            byte g;
+            byte b;
 
             h /= 60;
             int i = (int)Math.Floor(h);
@@ -70,17 +70,17 @@ namespace MiitsuColorController.Helper
         public static void ConvertHSV2RGBColorTint(float h, float s, float v, ref ArtMeshColorTint result)
         {
             byte[] rgb = ConvertHSV2RGB(h, s, v);
-            result.colorB = (int)rgb[2];
-            result.colorG = (int)rgb[1];
-            result.colorR = (int)rgb[0];
+            result.colorB = rgb[2];
+            result.colorG = rgb[1];
+            result.colorR = rgb[0];
         }
 
         public static void RBGToAdjustedColorTint(float[] color, float sRatio, float minS, float vRatio, float minV, ref ArtMeshColorTint result)
         {
             float[] hsv = { 0, 0, 0 };
             ConvertRGB2HSV(color, ref hsv);
-            hsv[1] = hsv[1] * sRatio + minS;
-            hsv[2] = hsv[2] * vRatio + minV;
+            hsv[1] = hsv[1] * sRatio + minS / 100;
+            hsv[2] = hsv[2] * vRatio + minV / 100;
             ConvertHSV2RGBColorTint(hsv[0], hsv[1], hsv[2], ref result);
         }
 

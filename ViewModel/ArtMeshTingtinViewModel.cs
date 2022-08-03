@@ -28,7 +28,7 @@ namespace MiitsuColorController.ViewModel
             {
                 _setting.Interpolation = value;
                 OnPropertyChanged(nameof(Interpolation));
-                if (IsTesting)
+                if (IsAutoTesting || IsClickTesting)
                 {
                     _featureManager.UpdateTestingParameters(_setting);
                 }
@@ -42,7 +42,7 @@ namespace MiitsuColorController.ViewModel
             {
                 _setting.Duration = value;
                 OnPropertyChanged(nameof(Duration));
-                if (IsTesting)
+                if (IsAutoTesting || IsClickTesting)
                 {
                     _featureManager.UpdateTestingParameters(_setting);
                 }
@@ -53,8 +53,18 @@ namespace MiitsuColorController.ViewModel
         public string RedEmote { get { return _setting.RedEmote; } set { _setting.RedEmote = value; OnPropertyChanged(nameof(RedEmote)); } }
         public string BlueEmote { get { return _setting.BlueEmote; } set { _setting.BlueEmote = value; OnPropertyChanged(nameof(BlueEmote)); } }
         public bool Activated { get { return _setting.Activated; } set { _setting.Activated = value; OnPropertyChanged(nameof(Activated)); } }
-        private bool _isTesting = false;
-        public bool IsTesting { get { return _isTesting; } set { _isTesting = value; OnPropertyChanged(nameof(IsTesting)); } }
+        private bool _isAutoTesting = false;
+        public bool IsAutoTesting
+        {
+            get { return _isAutoTesting; }
+            set { _isAutoTesting = value; OnPropertyChanged(nameof(IsAutoTesting)); OnPropertyChanged(nameof(IsTesting)); }
+        }
+        public bool IsClickTesting
+        {
+            get { return _isClickTesting; }
+            set { _isClickTesting = value; OnPropertyChanged(nameof(IsClickTesting)); OnPropertyChanged(nameof(IsTesting)); }
+        }
+        public bool IsTesting { get { return IsClickTesting || IsAutoTesting; } }
         public RoutedEventHandler RefreshCommand { get { return LoadModel; } }
         public RoutedEventHandler SaveCommand { get { return SaveModelSetting; } }
         public RoutedEventHandler TestCommand { get { return Test; } }
@@ -75,7 +85,7 @@ namespace MiitsuColorController.ViewModel
                     _setting.MinimumS = value;
                     OnPropertyChanged(nameof(S));
                     UpdateCanvas();
-                    if (IsTesting)
+                    if (IsAutoTesting || IsClickTesting)
                     {
                         _featureManager.UpdateTestingParameters(_setting);
                     }
@@ -94,7 +104,7 @@ namespace MiitsuColorController.ViewModel
                     _setting.MaximumS = value;
                     OnPropertyChanged(nameof(S));
                     UpdateCanvas();
-                    if (IsTesting)
+                    if (IsAutoTesting || IsClickTesting)
                     {
                         _featureManager.UpdateTestingParameters(_setting);
                     }
@@ -113,7 +123,7 @@ namespace MiitsuColorController.ViewModel
                     _setting.MinimumV = value;
                     OnPropertyChanged(nameof(V));
                     UpdateColor();
-                    if (IsTesting)
+                    if (IsAutoTesting || IsClickTesting)
                     {
                         _featureManager.UpdateTestingParameters(_setting);
                     }
@@ -132,7 +142,7 @@ namespace MiitsuColorController.ViewModel
                     _setting.MaximumV = value;
                     OnPropertyChanged(nameof(V));
                     UpdateColor();
-                    if (IsTesting)
+                    if (IsAutoTesting || IsClickTesting)
                     {
                         _featureManager.UpdateTestingParameters(_setting);
                     }
@@ -188,8 +198,8 @@ namespace MiitsuColorController.ViewModel
         private Action<List<string>, List<string>, List<string>, List<string>> _loadModelCallback;
         private string _modelName = "載入中...";
         private int _h = 0;
-        private double _s = 0;
-        private double _v = 0;
+        private float _s = 0;
+        private float _v = 0.5f;
         public int H { get { return _h; } set { _h = value; OnPropertyChanged(nameof(H)); } }
         public int S
         {
@@ -241,6 +251,7 @@ namespace MiitsuColorController.ViewModel
 
         private float _lastS = 0f;
         private float _lastH = 0f;
+        private bool _isClickTesting;
 
         public void StartLoadingModel(Canvas ColorPickerCanvas)
         {
@@ -282,7 +293,7 @@ namespace MiitsuColorController.ViewModel
             {
                 SelectedTag.Remove(tag);
             }
-            if (IsTesting)
+            if (IsAutoTesting || IsClickTesting)
             {
                 _featureManager.UpdateSelections(_setting);
             }
@@ -298,7 +309,7 @@ namespace MiitsuColorController.ViewModel
             {
                 SelectedArtMesh.Remove(artmesh);
             }
-            if (IsTesting)
+            if (IsAutoTesting || IsClickTesting)
             {
                 _featureManager.UpdateSelections(_setting);
             }
@@ -306,14 +317,35 @@ namespace MiitsuColorController.ViewModel
 
         public void Test(object sender, RoutedEventArgs e)
         {
-            IsTesting = !IsTesting;
-            if (IsTesting)
+            IsAutoTesting = !IsAutoTesting;
+            if (IsAutoTesting)
             {
-                _featureManager.StartTesting(_setting);
+                if (IsClickTesting)
+                {
+                    Clicktest();
+                }
+                _featureManager.StartAutoTesting(_setting);
             }
             else
             {
                 _featureManager.StopTesting();
+            }
+        }
+
+        public void Clicktest()
+        {
+            IsClickTesting = !IsClickTesting;
+            if (IsClickTesting)
+            {
+                if (IsAutoTesting)
+                {
+                    Test(null, null);
+                }
+                _featureManager.StartClickTesting(_setting);
+            }
+            else
+            {
+                _featureManager.StopClickTesting();
             }
         }
 
@@ -454,17 +486,25 @@ namespace MiitsuColorController.ViewModel
             _lastH = h;
         }
 
-        public void UpdateHS(double width, double height)
+        public void UpdateHS(double width, float height)
         {
             H = (int)Math.Round(width);
             _s = height;
             OnPropertyChanged(nameof(S));
+            if (_isClickTesting)
+            {
+                _featureManager.AddClickTestQueue(H, S / 100f, V / 100f);
+            }
         }
 
-        public void UpdateV(double height)
+        public void UpdateV(float height)
         {
             _v = height;
             OnPropertyChanged(nameof(V));
+            if (_isClickTesting)
+            {
+                _featureManager.AddClickTestQueue(H, S / 100f, V / 100f);
+            }
         }
     }
 }
