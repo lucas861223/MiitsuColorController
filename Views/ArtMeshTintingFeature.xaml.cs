@@ -205,15 +205,20 @@ namespace MiitsuColorController.Views
                                   mousePosition.X <= ColorPickerCanvas.ActualWidth &&
                                   mousePosition.Y <= ColorPickerCanvas.ActualHeight;
             }
-            if (_isInsideCanvas && e.GetCurrentPoint(ColorPickerCanvas).Properties.IsLeftButtonPressed)
+            if (_isInsideCanvas)
             {
-                ColorPickerCanvas_PointerPressed(sender, e);
+                _context.SetDescription(true, "ColorPickerCanvas");
+                if (e.GetCurrentPoint(ColorPickerCanvas).Properties.IsLeftButtonPressed)
+                {
+                    ColorPickerCanvas_PointerPressed(sender, e);
+                }
             }
         }
 
         private void ColorPickerCanvas_PointerExited(object sender, PointerRoutedEventArgs e)
         {
             _isInsideCanvas = false;
+            _context.SetDescription(false, null);
         }
 
         private void RectColor_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -253,15 +258,20 @@ namespace MiitsuColorController.Views
                                   mousePosition.X <= RectColor.ActualWidth &&
                                   mousePosition.Y <= RectColor.ActualHeight;
             }
-            if (_isInsideRect && e.GetCurrentPoint(ColorPickerCanvas).Properties.IsLeftButtonPressed)
+            if (_isInsideRect)
             {
-                RectColor_PointerPressed(sender, e);
+                _context.SetDescription(true, "RectColor");
+                if (e.GetCurrentPoint(RectColor).Properties.IsLeftButtonPressed)
+                {
+                    RectColor_PointerPressed(sender, e);
+                }
             }
         }
 
         private void RectColor_PointerExited(object sender, PointerRoutedEventArgs e)
         {
             _isInsideRect = false;
+            _context.SetDescription(false, null);
         }
 
         private void StartClickTesting(object sender, RoutedEventArgs e)
