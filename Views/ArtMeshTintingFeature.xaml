@@ -43,7 +43,8 @@
                 Grid.Column="0"
                 Grid.ColumnSpan="2"
                 Canvas.ZIndex="10"
-                Visibility="{x:Bind VTS_Socket.IsConnected, Mode=OneWay, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+                Visibility="Collapsed">
+            <!--Visibility="{x:Bind VTS_Socket.IsConnected, Mode=OneWay, Converter={StaticResource InverseBoolToVisibilityConverter}}">-->
             <Viewbox StretchDirection="Both">
                 <TextBlock Text="此功能只在有連結到Vtube Studio時才能使用" />
             </Viewbox>
@@ -53,27 +54,13 @@
                 Grid.ColumnSpan="2"
                 BorderThickness="2"
                 BorderBrush="{x:Bind _context.Activated, Mode=OneWay, Converter={StaticResource BoolToRedGreenConverter}}">
-            <RelativePanel>
-                <Button Content="{x:Bind _context.Activated, Mode=OneWay, Converter={StaticResource BoolToStringConverter}, ConverterParameter='停用,啟用'}"
-                        RelativePanel.AlignHorizontalCenterWithPanel="True"
-                        IsEnabled="{x:Bind _context.IsTesting, Mode=OneWay, Converter={StaticResource InverseBoolConverter}}"
-                        RelativePanel.AlignVerticalCenterWithPanel="True"
-                        Click="{x:Bind _context.ActivateCommand, Mode=OneTime}"></Button>
-                <TextBlock Text="當前模型： "
-                           Name="ModelLabel"
-                           RelativePanel.AlignLeftWithPanel="True"
-                           RelativePanel.AlignVerticalCenterWithPanel="True"></TextBlock>
-                <TextBlock Text="{x:Bind _context.ModelName, Mode=OneWay}"
-                           RelativePanel.AlignVerticalCenterWithPanel="True"
-                           RelativePanel.RightOf="ModelLabel"></TextBlock>
-                <Button RelativePanel.AlignRightWithPanel="True"
-                        RelativePanel.AlignVerticalCenterWithPanel="True"
-                        Click="{x:Bind _context.SaveCommand, Mode=OneTime}">
-                    <Button.Content>
-                        <SymbolIcon Symbol="Save"></SymbolIcon>
-                    </Button.Content>
-                </Button>
-            </RelativePanel>
+
+            <Button Content="{x:Bind _context.Activated, Mode=OneWay, Converter={StaticResource BoolToStringConverter}, ConverterParameter='停用,啟用'}"
+                    IsEnabled="{x:Bind _context.IsTesting, Mode=OneWay, Converter={StaticResource InverseBoolConverter}}"
+                    HorizontalAlignment="Center"
+                    Click="{x:Bind _context.ActivateCommand, Mode=OneTime}"></Button>
+
+
         </Border>
         <Grid Grid.Row="1"
               Grid.Column="0"
@@ -83,39 +70,26 @@
                 <RowDefinition Height="3*"></RowDefinition>
                 <RowDefinition Height="6*"></RowDefinition>
                 <RowDefinition Height="3*"></RowDefinition>
-                <RowDefinition Height="6*"></RowDefinition>
+                <RowDefinition Height="7*"></RowDefinition>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="10*"></ColumnDefinition>
-                <ColumnDefinition Width="2*"></ColumnDefinition>
-                <ColumnDefinition Width="10*"></ColumnDefinition>
+                <ColumnDefinition Width="4*"></ColumnDefinition>
+                <ColumnDefinition Width="1*"></ColumnDefinition>
+                <ColumnDefinition Width="6*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-
-            <TextBox Grid.Column="0"
-                     Grid.Row="0"
-                     PlaceholderText="搜尋部件..."
-                     TextChanged="NameFilterChanged"
-                     Text="{x:Bind Filter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
 
             <ListView x:Name="ArtMeshNameListView"
                       ItemsSource="{x:Bind FilteredList}"
-                      Grid.Column="0"
+                      Grid.Column="2"
                       Grid.Row="1"
-                      Grid.RowSpan="4"
+                      Grid.RowSpan="3"
                       BorderThickness="1"
                       SelectionMode="Multiple"
+                      Header="部件"
                       BorderBrush="DarkGray"
                       SelectionChanged="{x:Bind _context.NameSelectionCommand, Mode=OneTime}" />
 
-            <Button Grid.Column="1"
-                    Grid.Row="1"
-                    VerticalAlignment="Stretch"
-                    HorizontalAlignment="Stretch"
-                    Click="{x:Bind _context.RefreshCommand, Mode=OneTime}">
-                <Button.Content>
-                    <SymbolIcon Symbol="Refresh"></SymbolIcon>
-                </Button.Content>
-            </Button>
+
             <Button Content="{x:Bind _context.IsTesting, Mode=OneWay, Converter={StaticResource BoolToStringConverter}, ConverterParameter='停止測試,測試'}"
                     Grid.Column="1"
                     Grid.Row="3"
@@ -124,23 +98,82 @@
                     VerticalAlignment="Stretch"
                     HorizontalAlignment="Stretch"></Button>
 
-            <AppBarSeparator Grid.Column="1"
-                             Grid.Row="0" />
-            <AppBarSeparator Grid.Column="1"
-                             Grid.Row="2" />
-            <AppBarSeparator Grid.Column="1"
-                             Grid.Row="4" />
+            <Grid Grid.Column="0"
+                  Grid.ColumnSpan="2"
+                  Grid.Row="0"
+                  Grid.RowSpan="3"
+                  Margin="0,0,20,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="2*"></RowDefinition>
+                    <RowDefinition Height="2*"></RowDefinition>
+                    <RowDefinition Height="3*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="1"
+                        HorizontalAlignment="Right"
+                        Grid.Row="1"
+                        Click="{x:Bind _context.SaveCommand, Mode=OneTime}">
+                    <Button.Content>
+                        <SymbolIcon Symbol="Save"></SymbolIcon>
+                    </Button.Content>
+                </Button>
+                <Button Grid.Column="1"
+                        Grid.Row="0"
+                        HorizontalAlignment="Right"
+                        Click="{x:Bind _context.RefreshCommand, Mode=OneTime}">
+                    <Button.Content>
+                        <SymbolIcon Symbol="Refresh"></SymbolIcon>
+                    </Button.Content>
+                </Button>
+                <TextBlock Grid.Row="0"
+                           VerticalAlignment="Center">
+                    <Run>當前模型:</Run>
+                    <Run Text="{x:Bind _context.ModelName, Mode=OneWay}"></Run>
+                </TextBlock>
+                <TextBlock Grid.Row="1"
+                           VerticalAlignment="Center">
+                    <Run>模型ID:</Run>
+                    <Run Text="{x:Bind _context.ModelID, Mode=OneWay}"></Run>
+                </TextBlock>
+                <Button Grid.Row="2"
+                        Grid.Column="0"
+                        HorizontalAlignment="Center"
+                        Content="XDDDDDDDDDDDD"
+                        VerticalAlignment="Center">
+
+                </Button>
+                <Button Grid.Row="2"
+                        Grid.Column="1"
+                        HorizontalAlignment="Center"
+                        Content="XDDDDDDDDDDDD"
+                        VerticalAlignment="Center">
+
+                </Button>
+            </Grid>
+            <Border Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    Grid.Row="3"
+                    Grid.RowSpan="2"
+                    Padding="5,0,0,0"
+                    CornerRadius="7"
+                    Margin="0,0,20,0"
+                    Background="Gray">
+                <TextBlock Text="test"></TextBlock>
+            </Border>
             <TextBox Grid.Column="2"
                      Grid.Row="0"
-                     PlaceholderText="搜尋標籤..."
-                     TextChanged="TagFilterChanged"
-                     Text="{x:Bind TagFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                     PlaceholderText="搜尋部件和標籤..."
+                     TextChanged="FilterChanged"
+                     Text="{x:Bind Filter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
             </TextBox>
             <ListView x:Name="TagListView"
                       ItemsSource="{x:Bind FilteredTagList}"
                       Grid.Column="2"
-                      Grid.RowSpan="4"
-                      Grid.Row="1"
+                      Header="標籤"
+                      Grid.Row="4"
                       BorderThickness="1"
                       SelectionMode="Multiple"
                       SelectionChanged="{x:Bind _context.TagSelectionCommand, Mode=OneTime}"
@@ -257,31 +290,47 @@
 
         <Grid Grid.Row="2"
               Grid.Column="1"
-              Padding="10,10,0,0">
+              Padding="7,10,0,0">
             <Grid.RowDefinitions>
+                <RowDefinition Height="1*"></RowDefinition>
                 <RowDefinition Height="7*"></RowDefinition>
                 <RowDefinition Height="3*"></RowDefinition>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="15*"></ColumnDefinition>
                 <ColumnDefinition Width="5*"></ColumnDefinition>
-                <ColumnDefinition Width="100*"></ColumnDefinition>
+                <ColumnDefinition Width="25*"></ColumnDefinition>
+                <ColumnDefinition Width="75*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <Canvas Grid.Row="0"
+            <TextBlock Grid.Row="0"
+                       Grid.Column="0">明亮度</TextBlock>
+            <TextBlock Grid.Row="0"
+                       Grid.Column="2">飽和度</TextBlock>
+            <TextBlock Grid.Row="0"
+                       Grid.Column="3"
+                       TextAlignment="Right">
+                <Run Text="(H,S,V): (" /><Run Text="{x:Bind _context.H, Mode=OneWay}" /><Run Text="," /><Run Text="{x:Bind _context.S, Mode=OneWay}" /><Run Text="," /><Run Text="{x:Bind _context.V, Mode=OneWay}" /><Run Text=")" />
+            </TextBlock>
+            <Canvas Grid.Row="1"
                     Grid.Column="0"
                     Background="{StaticResource HueBrush}"
-                    x:Name="RectColor" />
-            <Canvas Grid.Row="0"
+                    x:Name="RectColor"
+                    SizeChanged="RectColor_SizeChanged"
+                    PointerPressed="RectColor_PointerPressed"
+                    PointerExited="RectColor_PointerExited"
+                    PointerMoved="RectColor_PointerMoved" />
+            <Canvas Grid.Row="1"
                     Grid.Column="2"
+                    Grid.ColumnSpan="2"
                     x:Name="ColorPickerCanvas"
                     SizeChanged="ColorPickerCanvas_SizeChanged"
                     Background="Transparent"
                     PointerPressed="ColorPickerCanvas_PointerPressed"
                     PointerExited="ColorPickerCanvas_PointerExited"
                     PointerMoved="ColorPickerCanvas_PointerMoved" />
-            <Grid Grid.Row="1"
+            <Grid Grid.Row="2"
                   Grid.Column="0"
-                  Grid.ColumnSpan="3">
+                  Grid.ColumnSpan="4">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="5*"></RowDefinition>
                     <RowDefinition Height="5*"></RowDefinition>

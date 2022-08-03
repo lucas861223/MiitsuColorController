@@ -2,6 +2,7 @@
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Xaml.Shapes;
 using MiitsuColorController.Helper;
 using MiitsuColorController.ViewModel;
@@ -23,13 +24,16 @@ namespace MiitsuColorController.Views
     {
         public VTSSocket VTS_Socket = VTSSocket.Instance;
         public TwitchSocket Twitch_Socket = TwitchSocket.Instance;
-        public string TagFilter { get; set; } = "";
         public string Filter { get; set; } = "";
         public ObservableCollection<string> FilteredTagList { get; } = new ObservableCollection<string>();
         public ObservableCollection<string> FilteredList { get; } = new ObservableCollection<string>();
         private Ellipse _indicationCircle;
+        private Line _indicationLine;
+        private Polygon _indicationTriangle;
         private bool _isInsideCanvas = false;
         private bool _hasClicked = false;
+        private bool _isInsideRect = false;
+        private bool _hasClickedRect = false;
         private ArtMeshTintingViewModel _context;
 
         public ArtMeshTintingFeature()
@@ -42,6 +46,16 @@ namespace MiitsuColorController.Views
             _indicationCircle.Height = 10;
             _indicationCircle.Width = 10;
             _indicationCircle.Stroke = new SolidColorBrush() { Color = Microsoft.UI.Colors.Black };
+            _indicationTriangle = new Polygon();
+            _indicationTriangle.Fill = new SolidColorBrush() { Color = Microsoft.UI.Colors.White };
+            PointCollection points = new PointCollection();
+            points.Add(new Point(-10, 5));
+            points.Add(new Point(0, 0));
+            points.Add(new Point(-10, -5));
+            _indicationTriangle.Points = points;
+            _indicationLine = new Line();
+            _indicationLine.StrokeThickness = 1.5;
+            _indicationLine.Stroke = new SolidColorBrush() { Color = Microsoft.UI.Colors.White };
             Loaded += (sender, e) =>
             {
                 _context.StartLoadingModel(ColorPickerCanvas);
@@ -49,6 +63,15 @@ namespace MiitsuColorController.Views
             //todo
             //implement test button
             //implement start button
+        }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            if (_context.IsTesting)
+            {
+                FeatureManager.Instance.StopTesting();
+            }
+            base.OnNavigatedFrom(e);
         }
 
         private void PopulateListsCallBack(List<string> names, List<string> tags, List<string> selected, List<string> selectedTags)
@@ -74,74 +97,48 @@ namespace MiitsuColorController.Views
             }
         }
 
-        private void NameFilterChanged(object sender, TextChangedEventArgs e)
-        {
-            var filtered = _context.ArtMeshNames.Where(item => item.Contains(Filter));
 
-            for (int i = FilteredList.Count - 1; i >= 0; i--)
-            {
-                if (!filtered.Contains(FilteredList.ElementAt<string>(i)))
-                {
-                    if (ArtMeshNameListView.SelectedItems.Contains(FilteredList.ElementAt<string>(i)))
-                    {
-                        _context.SelectedButFilteredName.Add(FilteredList.ElementAt<string>(i));
-                    }
-                    FilteredList.RemoveAt(i);
-                }
-            }
-            int index = -1;
-            foreach (var item in filtered)
-            {
-                // If item in filtered list is not currently in ListView's source collection, add it back in
-                if (!FilteredList.Contains(item))
-                {
-                    index++;
-                    FilteredList.Insert(index, item);
-                    if (_context.SelectedButFilteredName.Contains(item))
-                    {
-                        ArtMeshNameListView.SelectedItems.Add(item);
-                        _context.SelectedButFilteredName.Remove(item);
-                    }
-                }
-                else
-                {
-                    index = FilteredList.IndexOf(item);
-                }
-            }
+        private void FilterChanged(object sender, TextChangedEventArgs e)
+        {
+            FilterChanged(_context.ArtMeshNames, FilteredList, _context.SelectedButFilteredName, ArtMeshNameListView);
+            FilterChanged(_context.Tags, FilteredTagList, _context.SelectedButFilteredTag, TagListView);
         }
 
-        private void TagFilterChanged(object sender, TextChangedEventArgs e)
+        private void FilterChanged(List<string> fullList,
+                                   ObservableCollection<string> filteredList,
+                                   List<string> selectedButFilteredList,
+                                   ListView listView)
         {
-            var filtered = _context.Tags.Where(item => item.Contains(TagFilter));
+            var filtered = fullList.Where(item => item.Contains(Filter));
 
-            for (int i = FilteredTagList.Count - 1; i >= 0; i--)
+            for (int i = filteredList.Count - 1; i >= 0; i--)
             {
-                if (!filtered.Contains(FilteredTagList.ElementAt<string>(i)))
+                if (!filtered.Contains(filteredList.ElementAt<string>(i)))
                 {
-                    if (TagListView.SelectedItems.Contains(FilteredTagList.ElementAt<string>(i)))
+                    if (listView.SelectedItems.Contains(filteredList.ElementAt<string>(i)))
                     {
-                        _context.SelectedButFilteredTag.Add(FilteredTagList.ElementAt<string>(i));
+                        selectedButFilteredList.Add(filteredList.ElementAt<string>(i));
                     }
-                    FilteredTagList.RemoveAt(i);
+                    filteredList.RemoveAt(i);
                 }
             }
             int index = -1;
             foreach (var item in filtered)
             {
                 // If item in filtered list is not currently in ListView's source collection, add it back in
-                if (!FilteredTagList.Contains(item))
+                if (!filteredList.Contains(item))
                 {
                     index++;
-                    FilteredTagList.Insert(index, item);
-                    if (_context.SelectedButFilteredTag.Contains(item))
+                    filteredList.Insert(index, item);
+                    if (selectedButFilteredList.Contains(item))
                     {
-                        TagListView.SelectedItems.Add(item);
-                        _context.SelectedButFilteredTag.Remove(item);
+                        listView.SelectedItems.Add(item);
+                        selectedButFilteredList.Remove(item);
                     }
                 }
                 else
                 {
-                    index = FilteredTagList.IndexOf(item);
+                    index = filteredList.IndexOf(item);
                 }
             }
         }
@@ -160,8 +157,7 @@ namespace MiitsuColorController.Views
 
         private void ColorPickerCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            double width = ColorPickerCanvas.ActualWidth / 100;
-            double thickness = (ColorPickerCanvas.ActualWidth - 100) / 100;
+            double thickness = ColorPickerCanvas.ActualWidth / 200d;
             Line tmpLine;
             foreach (UIElement line in ColorPickerCanvas.Children)
             {
@@ -169,8 +165,8 @@ namespace MiitsuColorController.Views
                 {
                     tmpLine = (Line)line;
                     tmpLine.Y2 = ColorPickerCanvas.ActualHeight;
-                    tmpLine.X1 = width * (int)tmpLine.Tag;
-                    tmpLine.X2 = width * (int)tmpLine.Tag;
+                    tmpLine.X1 = thickness * ((int)tmpLine.Tag * 2 + 1);
+                    tmpLine.X2 = thickness * ((int)tmpLine.Tag * 2 + 1);
                     tmpLine.StrokeThickness = thickness * 2.5;
                 }
                 else
@@ -194,6 +190,8 @@ namespace MiitsuColorController.Views
             _indicationCircle.SetValue(Canvas.TopProperty, mousePosition.Y - 5);
             _context.UpdateColor((float)(360.0 * (mousePosition.X / ColorPickerCanvas.ActualWidth)),
                                  (float)(mousePosition.Y / ColorPickerCanvas.ActualHeight));
+            _context.UpdateHS(360.0 * (mousePosition.X / ColorPickerCanvas.ActualWidth),
+                              mousePosition.Y / ColorPickerCanvas.ActualHeight);
         }
 
         private void ColorPickerCanvas_PointerMoved(object sender, PointerRoutedEventArgs e)
@@ -214,6 +212,54 @@ namespace MiitsuColorController.Views
         private void ColorPickerCanvas_PointerExited(object sender, PointerRoutedEventArgs e)
         {
             _isInsideCanvas = false;
+        }
+
+        private void RectColor_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (_hasClickedRect)
+            {
+                _indicationLine.X2 = RectColor.ActualWidth;
+                _indicationLine.SetValue(Canvas.TopProperty, Canvas.GetTop(_indicationLine) * (e.NewSize.Height / e.PreviousSize.Height));
+                _indicationTriangle.SetValue(Canvas.TopProperty, Canvas.GetTop(_indicationTriangle) * (e.NewSize.Height / e.PreviousSize.Height));
+            }
+        }
+
+        private void RectColor_PointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            _isInsideRect = true;
+            Point mousePosition = e.GetCurrentPoint(RectColor).Position;
+            if (!_hasClickedRect)
+            {
+                RectColor.Children.Add(_indicationTriangle);
+                RectColor.Children.Add(_indicationLine);
+                _indicationTriangle.SetValue(Canvas.LeftProperty, 1);
+                _indicationLine.X1 = 0;
+                _indicationLine.X2 = RectColor.ActualWidth;
+                _hasClickedRect = true;
+            }
+            _indicationTriangle.SetValue(Canvas.TopProperty, mousePosition.Y);
+            _indicationLine.SetValue(Canvas.TopProperty, mousePosition.Y);
+            _context.UpdateV(mousePosition.Y / RectColor.ActualHeight);
+        }
+
+        private void RectColor_PointerMoved(object sender, PointerRoutedEventArgs e)
+        {
+            if (!_isInsideRect)
+            {
+                Point mousePosition = e.GetCurrentPoint(RectColor).Position;
+                _isInsideRect = mousePosition.X >= 0 && mousePosition.Y >= 0 &&
+                                  mousePosition.X <= RectColor.ActualWidth &&
+                                  mousePosition.Y <= RectColor.ActualHeight;
+            }
+            if (_isInsideRect && e.GetCurrentPoint(ColorPickerCanvas).Properties.IsLeftButtonPressed)
+            {
+                RectColor_PointerPressed(sender, e);
+            }
+        }
+
+        private void RectColor_PointerExited(object sender, PointerRoutedEventArgs e)
+        {
+            _isInsideRect = false;
         }
     }
 }

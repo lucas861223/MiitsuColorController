@@ -73,6 +73,7 @@ namespace MiitsuColorController.ViewModel
                 if (IsInt(value) && (int)value <= MaximumS)
                 {
                     _setting.MinimumS = value;
+                    OnPropertyChanged(nameof(S));
                     UpdateCanvas();
                     if (IsTesting)
                     {
@@ -91,6 +92,7 @@ namespace MiitsuColorController.ViewModel
                 if (IsInt(value) && (int)value >= MinimumS)
                 {
                     _setting.MaximumS = value;
+                    OnPropertyChanged(nameof(S));
                     UpdateCanvas();
                     if (IsTesting)
                     {
@@ -109,6 +111,7 @@ namespace MiitsuColorController.ViewModel
                 if (IsInt(value) && (int)value <= MaximumV)
                 {
                     _setting.MinimumV = value;
+                    OnPropertyChanged(nameof(V));
                     UpdateColor();
                     if (IsTesting)
                     {
@@ -127,6 +130,7 @@ namespace MiitsuColorController.ViewModel
                 if (IsInt(value) && (int)value >= MinimumV)
                 {
                     _setting.MaximumV = value;
+                    OnPropertyChanged(nameof(V));
                     UpdateColor();
                     if (IsTesting)
                     {
@@ -183,6 +187,19 @@ namespace MiitsuColorController.ViewModel
         public List<string> SelectedButFilteredTag = new();
         private Action<List<string>, List<string>, List<string>, List<string>> _loadModelCallback;
         private string _modelName = "載入中...";
+        private int _h = 0;
+        private double _s = 0;
+        private double _v = 0;
+        public int H { get { return _h; } set { _h = value; OnPropertyChanged(nameof(H)); } }
+        public int S
+        {
+            get { return (int)Math.Round(_s * (MaximumS - MinimumS) + MinimumS); }
+        }
+        public int V
+        {
+            get { return (int)Math.Round(_v * (MaximumV - MinimumV) + MinimumV); }
+        }
+
 
         public string ModelName
         {
@@ -194,13 +211,16 @@ namespace MiitsuColorController.ViewModel
             }
         }
 
-        public void Test()
+        private string _modelID = "載入中...";
+
+        public string ModelID
         {
-            _uiThread.TryEnqueue(() =>
+            get { return _modelID; }
+            set
             {
-                _setting = _featureManager.GetSetting();
-                OnPropertyChanged((string)null);
-            });
+                _modelID = value;
+                OnPropertyChanged(nameof(ModelID));
+            }
         }
 
         public ArtMeshTintingViewModel()
@@ -284,7 +304,7 @@ namespace MiitsuColorController.ViewModel
             }
         }
 
-        private void Test(object sender, RoutedEventArgs e)
+        public void Test(object sender, RoutedEventArgs e)
         {
             IsTesting = !IsTesting;
             if (IsTesting)
@@ -342,15 +362,13 @@ namespace MiitsuColorController.ViewModel
                 {
                     _setting = _featureManager.GetSetting();
                     ModelName = _resourceManager.CurrentModelInformation.ModelName;
+                    ModelID = _resourceManager.CurrentModelInformation.ID;
                     OnPropertyChanged((string)null);
                     List<string> tmpNames = _setting.SelectedArtMesh;
                     _setting.SelectedArtMesh = new();
                     List<string> tmpTags = _setting.SelectedTag;
                     _setting.SelectedTag = new();
-                    if (_loadModelCallback != null)
-                    {
-                        _loadModelCallback(ArtMeshNames, Tags, tmpNames, tmpTags);
-                    }
+                    _loadModelCallback?.Invoke(ArtMeshNames, Tags, tmpNames, tmpTags);
                 });
             }
         }
@@ -361,12 +379,14 @@ namespace MiitsuColorController.ViewModel
             {
                 _setting = _featureManager.GetSetting();
                 ModelName = _resourceManager.CurrentModelInformation.ModelName;
+                ModelID = _resourceManager.CurrentModelInformation.ID;
             });
         }
 
         private void PaintCanvas()
         {
             float _circlePercent = 360.0F / 100F;
+            double thickness = _colorPickerCanvas.ActualWidth / 200d;
             for (int i = 0; i < 100; i++)
             {
                 LinearGradientBrush lgb = new();
@@ -374,14 +394,14 @@ namespace MiitsuColorController.ViewModel
                 lgb.GradientStops.Add(new GradientStop() { Color = ColorHelper.ConvertHSV2RGBColor(_circlePercent * i, MaximumS / 100f, 1), Offset = 1 });
                 Line line = new()
                 {
-                    X1 = _colorPickerCanvas.ActualWidth / 100 * i,
+                    X1 = thickness * (i * 2 + 1),
                     Y1 = 0,
-                    X2 = _colorPickerCanvas.ActualWidth / 100 * i,
+                    X2 = thickness * (i * 2 + 1),
                     Y2 = _colorPickerCanvas.ActualHeight,
-                    StrokeThickness = (_colorPickerCanvas.ActualWidth - 100) / 100 * 2.5,
-                    Stroke = lgb
+                    StrokeThickness = thickness * 2.5,
+                    Stroke = lgb,
+                    Tag = i
                 };
-                line.Tag = i;
                 _colorPickerCanvas.Children.Add(line);
             }
         }
@@ -432,6 +452,19 @@ namespace MiitsuColorController.ViewModel
             ThirdStopColor = ColorHelper.ConvertHSV2RGBColor(h, adjustedS, MaximumV / 100f);
             _lastS = s;
             _lastH = h;
+        }
+
+        public void UpdateHS(double width, double height)
+        {
+            H = (int)Math.Round(width);
+            _s = height;
+            OnPropertyChanged(nameof(S));
+        }
+
+        public void UpdateV(double height)
+        {
+            _v = height;
+            OnPropertyChanged(nameof(V));
         }
     }
 }

@@ -20,7 +20,6 @@ namespace MiitsuColorController
     public sealed partial class MainWindow : Window
     {
         private ResourceManager _resourceManager = ResourceManager.Instance;
-        private string _currentPage;
         private AppWindow window;
 
         public MainWindow()
@@ -79,7 +78,6 @@ namespace MiitsuColorController
         {
             ContentFrame.Navigated += On_Navigated;
             NavView.SelectedItem = NavView.MenuItems[0];
-            _currentPage = _pages[0].Tag;
             NavigationViewNavigate("overview");
         }
 
@@ -91,9 +89,8 @@ namespace MiitsuColorController
             //var preNavPageType = ContentFrame.CurrentSourcePageType;
 
             // Only navigate if the selected page isn't currently loaded.
-            if (!(_page is null))// && !Type.Equals(preNavPageType, _page))
+            if (!(_page is null) && _page != ContentFrame.CurrentSourcePageType)// && !Type.Equals(preNavPageType, _page))
             {
-                _currentPage = navItemTag;
                 ContentFrame.Navigate(_page);
             }
         }
@@ -101,10 +98,7 @@ namespace MiitsuColorController
         private void NavigationViewItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
         {
             var navItemTag = args.InvokedItemContainer.Tag.ToString();
-            if (navItemTag != _currentPage)
-            {
-                NavigationViewNavigate(navItemTag);
-            }
+            NavigationViewNavigate(navItemTag);
         }
 
         private void On_Navigated(object sender, NavigationEventArgs e)

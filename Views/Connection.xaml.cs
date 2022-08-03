@@ -1,5 +1,6 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Navigation;
 using MiitsuColorController.Helper;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -44,6 +45,12 @@ namespace MiitsuColorController.Views
             {
                 Twitch_Socket.Disconnect();
             }
+        }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            //implement saving here, or saving when established connections
+            base.OnNavigatedFrom(e);
         }
     }
 }

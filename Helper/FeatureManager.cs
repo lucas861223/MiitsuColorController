@@ -286,8 +286,15 @@ namespace MiitsuColorController.Helper
                             }
                         }
                         ColorHelper.RBGToAdjustedColorTint(rgb, _sRatio, _setting.MinimumS, _vRatio, _setting.MinimumV, ref _colortintHolder);
-                        _vtsSocket.SendMessage(String.Format(_formatString, _colortintHolder.colorR, _colortintHolder.colorG, _colortintHolder.colorB));
-                        Task.Delay(_taskDelay).Wait();
+                        if (_vtsSocket.IsConnected)
+                        {
+                            _vtsSocket.SendMessage(String.Format(_formatString, _colortintHolder.colorR, _colortintHolder.colorG, _colortintHolder.colorB));
+                            Task.Delay(_taskDelay).Wait();
+                        }
+                        else
+                        {
+                            _isTesting = false;
+                        }
                     }
                 });
             }
