@@ -26,8 +26,8 @@ namespace MiitsuColorController.Helper
         private float _vRatio;
         private VTSSocket _vtsSocket = VTSSocket.Instance;
         public event Action NewSettingEvent;
-        public EventWaitHandle ClickTestEWH = new EventWaitHandle(true, EventResetMode.ManualReset);
         private ConcurrentQueue<float[]> _clickTestQueue = new();
+        private EventWaitHandle _clickingEwh = new EventWaitHandle(true, EventResetMode.ManualReset);
 
         private FeatureManager()
         {
@@ -209,71 +209,62 @@ namespace MiitsuColorController.Helper
             NewSettingEvent = action;
         }
 
-#nullable enable
-        public EventWaitHandle? StartClickTesting(ArtmeshColoringSetting setting)
+        public async void StartClickTesting(ArtmeshColoringSetting setting)
         {
             if (!_isTesting)
             {
                 _isTesting = true;
                 ReAssembleConfig(setting);
-                EventWaitHandle ewh = new EventWaitHandle(true, EventResetMode.ManualReset);
-                StartRunningClickTest(ewh);
-                return ewh;
+                await Task.Run(() =>
+                {
+                    ColorTint colorTintTmp = new ColorTint() { colorA = 0 };
+                    float[]? target;
+                    byte[] rgb;
+                    float[] difference = { 0, 0, 0 };
+                    float[] currentAdjustedRGB = { 255, 255, 255 };
+                    while (_isTesting)
+                    {
+                        if (_clickTestQueue.TryDequeue(out target))
+                        {
+                            rgb = ColorHelper.ConvertHSV2RGB(target[0], target[1], target[2]);
+                            if (_setting.MessageHandlingMethod == 0)
+                            {
+                                int leftStep = _clickTestQueue.Count;
+                                currentAdjustedRGB[0] -= difference[0] * (_setting.Interpolation + 1 - leftStep);
+                                currentAdjustedRGB[1] -= difference[1] * (_setting.Interpolation + 1 - leftStep);
+                                currentAdjustedRGB[2] -= difference[2] * (_setting.Interpolation + 1 - leftStep);
+                                _clickTestQueue.Clear();
+                            }
+                            difference[0] = (rgb[0] - currentAdjustedRGB[0]) / (_setting.Interpolation + 1);
+                            difference[1] = (rgb[1] - currentAdjustedRGB[1]) / (_setting.Interpolation + 1);
+                            difference[2] = (rgb[2] - currentAdjustedRGB[2]) / (_setting.Interpolation + 1);
+                            for (int i = 0; i <= _setting.Interpolation; i++)
+                            {
+                                currentAdjustedRGB[0] += difference[0];
+                                currentAdjustedRGB[1] += difference[1];
+                                currentAdjustedRGB[2] += difference[2];
+                                _vtsSocket.SendMessage(String.Format(_formatString, Math.Round(currentAdjustedRGB[0]), Math.Round(currentAdjustedRGB[1]), Math.Round(currentAdjustedRGB[2])), _taskDelay);
+                            }
+
+                        }
+                        else
+                        {
+                            _clickingEwh.WaitOne();
+                            _clickingEwh.Reset();
+                        }
+                    }
+                    _artmeshCurrentColor[0] = 255;
+                    _artmeshCurrentColor[1] = 255;
+                    _artmeshCurrentColor[2] = 255;
+                });
             }
-            return null;
         }
 
         public void AddClickTestQueue(int h, float s, float v)
         {
             _clickTestQueue.Enqueue(new float[] { h, s, v });
+            _clickingEwh.Set();
         }
-
-        public async void StartRunningClickTest(EventWaitHandle ewh)
-        {
-            await Task.Run(() =>
-            {
-                ColorTint colorTintTmp = new ColorTint() { colorA = 0 };
-                float[] target;
-                byte[] rgb;
-                int rgbSum;
-                float[] difference = { 0, 0, 0 };
-                float[] currentAdjustedRGB = { 255, 255, 255 };
-                while (_isTesting)
-                {
-                    if (_clickTestQueue.TryDequeue(out target))
-                    {
-                        rgb = ColorHelper.ConvertHSV2RGB(target[0], target[1], target[2]);
-                        if (_setting.MessageHandlingMethod == 0)
-                        {
-                            int leftStep = _clickTestQueue.Count;
-                            currentAdjustedRGB[0] -= difference[0] * (_setting.Interpolation + 1 - leftStep);
-                            currentAdjustedRGB[1] -= difference[1] * (_setting.Interpolation + 1 - leftStep);
-                            currentAdjustedRGB[2] -= difference[2] * (_setting.Interpolation + 1 - leftStep);
-                            _clickTestQueue.Clear();
-                        }
-                        difference[0] = (rgb[0] - currentAdjustedRGB[0]) / (_setting.Interpolation + 1);
-                        difference[1] = (rgb[1] - currentAdjustedRGB[1]) / (_setting.Interpolation + 1);
-                        difference[2] = (rgb[2] - currentAdjustedRGB[2]) / (_setting.Interpolation + 1);
-                        for (int i = 0; i <= _setting.Interpolation; i++)
-                        {
-                            currentAdjustedRGB[0] += difference[0];
-                            currentAdjustedRGB[1] += difference[1];
-                            currentAdjustedRGB[2] += difference[2];
-                            _vtsSocket.SendMessage(String.Format(_formatString, Math.Round(currentAdjustedRGB[0]), Math.Round(currentAdjustedRGB[1]), Math.Round(currentAdjustedRGB[2])), _taskDelay);
-                        }
-
-                    }
-                    else
-                    {
-                        Task.Delay(100).Wait();
-                    }
-                }
-                _artmeshCurrentColor[0] = 255;
-                _artmeshCurrentColor[1] = 255;
-                _artmeshCurrentColor[2] = 255;
-            });
-        }
-
 
         public void StopClickTesting()
         {
