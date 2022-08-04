@@ -195,15 +195,15 @@ namespace MiitsuColorController.Helper
                 {
                     if (_socket.State != WebSocketState.Open)
                     {
-                        CheckConnection("失去與VTube Studio的連結");
+                        ResetConnectionStatus("失去與VTube Studio的連結");
                     }
                     receivedString = "";
                     do
                     {
                         try { receiveFlags = await _socket.ReceiveAsync(recvBuff, token); }
-                        catch (OperationCanceledException) { CheckConnection("失去與Vtube Studio的連結"); return; }
-                        catch (System.Net.Sockets.SocketException) { CheckConnection("失去與Vtube Studio的連結"); return; }
-                        catch (System.InvalidOperationException) { CheckConnection("失去與Vtube Studio的連結"); return; }
+                        catch (OperationCanceledException) { ResetConnectionStatus("失去與Vtube Studio的連結"); return; }
+                        catch (System.Net.Sockets.SocketException) { ResetConnectionStatus("失去與Vtube Studio的連結"); return; }
+                        catch (System.InvalidOperationException) { ResetConnectionStatus("失去與Vtube Studio的連結"); return; }
                         receivedString += Encoding.UTF8.GetString(receiveData, 0, receiveFlags.Count);
                     } while (!receiveFlags.EndOfMessage && _socket.State == WebSocketState.Open);
 

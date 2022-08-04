@@ -20,12 +20,14 @@ namespace MiitsuColorController.Helper
         public bool ConnectOnStartup { get; set; }
         public bool IsConnected
         { get { return _socket != null && _socket.State == WebSocketState.Open && IsAuthorized; } }
-
         public bool IsNotInUse
         { get { return _socket != null && (_socket.State == WebSocketState.Closed || _socket.State == WebSocketState.None); } }
-
         public string StatusString
         { get { return _statusString; } set { _statusString = value; OnPropertyChanged(nameof(StatusString)); } }
+
+        protected event Action ConnectionEstablised;
+        protected event Action LostConnection;
+
         public AbstractSocket()
         {
             _cancelRecv = new CancellationTokenSource();
@@ -62,7 +64,7 @@ namespace MiitsuColorController.Helper
             _cancelSend = new CancellationTokenSource();
         }
 
-        protected void CheckConnection(string Message)
+        protected void ResetConnectionStatus(string Message)
         {
             StopSending();
             _socket = new ClientWebSocket();
@@ -76,7 +78,7 @@ namespace MiitsuColorController.Helper
                     StatusString = Message;
                 }
             });
-            return;
+            LostConnection();
         }
         protected async void SendRequest(string Message, string ErrorMessage)
         {
@@ -85,8 +87,8 @@ namespace MiitsuColorController.Helper
                 byte[] byteData = Encoding.UTF8.GetBytes(Message);
                 ArraySegment<byte> sendBuff = new(byteData);
                 try { await _socket.SendAsync(sendBuff, WebSocketMessageType.Text, true, new CancellationTokenSource(5000).Token); }
-                catch (OperationCanceledException) { CheckConnection(ErrorMessage); }
-                catch (System.Net.Sockets.SocketException) { CheckConnection(ErrorMessage); }
+                catch (OperationCanceledException) { ResetConnectionStatus(ErrorMessage); }
+                catch (System.Net.Sockets.SocketException) { ResetConnectionStatus(ErrorMessage); }
             }
         }
     }

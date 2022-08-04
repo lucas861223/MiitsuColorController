@@ -86,7 +86,7 @@ namespace MiitsuColorController.ViewModel
             }
         }
         public int MessageCount { get { return _setting.MessageCount; } set { _setting.MessageCount = value; OnPropertyChanged(nameof(MessageCount)); } }
-        protected string _modelName = "載入中...";
+        private string _modelName = "載入中...";
 
         public string ModelName
         {

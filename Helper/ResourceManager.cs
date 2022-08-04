@@ -162,7 +162,7 @@ namespace MiitsuColorController.Helper
                 {
                     tmp += name + ",";
                 }
-                content += Enum.GetName(ResourceKey.SelectedArtmesh) + "\t" + tmp.Substring(0, tmp.Length - 1) + "\n";
+                content += Enum.GetName(ResourceKey.SelectedArtmesh) + "\t" + tmp[..^1] + "\n";
             }
             if (setting.SelectedTag.Count > 0)
             {
@@ -171,7 +171,7 @@ namespace MiitsuColorController.Helper
                 {
                     tagTmp += tag + ",";
                 }
-                content += Enum.GetName(ResourceKey.SelectedTags) + "\t" + tagTmp.Substring(0, tagTmp.Length - 1) + "\n";
+                content += Enum.GetName(ResourceKey.SelectedTags) + "\t" + tagTmp[..^1] + "\n";
             }
             content += Enum.GetName(ResourceKey.MessageCount) + "\t" + setting.MessageCount + "\n";
             content += Enum.GetName(ResourceKey.ColoringMethod) + "\t" + setting.MessageHandlingMethod + "\n";

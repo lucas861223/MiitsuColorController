@@ -66,7 +66,7 @@ namespace MiitsuColorController.Helper
                         {
                             _dispathcerQueue.TryEnqueue(() =>
                             {
-                                CheckConnection("登入失敗- Access Token有照著指示給嗎?\n試著Refresh你的Token(往下滑)");
+                                ResetConnectionStatus("登入失敗- Access Token有照著指示給嗎?\n試著Refresh你的Token(往下滑)");
                             });
                             break;
                         }
@@ -74,7 +74,7 @@ namespace MiitsuColorController.Helper
                         {
                             _dispathcerQueue.TryEnqueue(() =>
                             {
-                                CheckConnection("登入失敗- Access Token有照著指示給嗎?\n試著Refresh你的Token(往下滑)");
+                                ResetConnectionStatus("登入失敗- Access Token有照著指示給嗎?\n試著Refresh你的Token(往下滑)");
                             });
                             break;
                         }
@@ -82,7 +82,7 @@ namespace MiitsuColorController.Helper
                         {
                             _dispathcerQueue.TryEnqueue(() =>
                             {
-                                CheckConnection("登入失敗- 帳號有打對嗎?");
+                                ResetConnectionStatus("登入失敗- 帳號有打對嗎?");
                             });
                             break;
                         }
@@ -149,17 +149,17 @@ namespace MiitsuColorController.Helper
                 try { receiveFlags = await _socket.ReceiveAsync(recvBuff, token); }
                 catch (OperationCanceledException)
                 {
-                    CheckConnection("連結失敗- 網路有開嗎?");
+                    ResetConnectionStatus("連結失敗- 網路有開嗎?");
                     return "";
                 }
                 catch (WebSocketException)
                 {
-                    CheckConnection("連結失敗- 帳號有打對嗎?\nRefresh Token有照著指示給嗎?");
+                    ResetConnectionStatus("連結失敗- 帳號有打對嗎?\nRefresh Token有照著指示給嗎?");
                     return "";
                 }
                 catch (InvalidOperationException)
                 {
-                    CheckConnection("連結失敗- 帳號有打對嗎?\nRefresh Token有照著指示給嗎?");
+                    ResetConnectionStatus("連結失敗- 帳號有打對嗎?\nRefresh Token有照著指示給嗎?");
                     return "";
                 }
                 result += Encoding.UTF8.GetString(recvBuff.Array, 0, receiveFlags.Count);
