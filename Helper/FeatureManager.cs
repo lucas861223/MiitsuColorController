@@ -129,10 +129,9 @@ namespace MiitsuColorController.Helper
                 {
                     _isInUse = true;
                     _twitchMessageQueue.Clear();
-                    ColorTint colorTintTmp = new() { colorA = 0 };
                     string message;
                     string[] tokens;
-                    float[] rgb = { 0f, 0f, 0f };
+                    float[] targetUnadjustedRGB = { 0f, 0f, 0f };
                     int rgbSum;
                     float[] difference = { 0, 0, 0 };
                     float[] currentAdjustedRGB = { 255, 255, 255 };
@@ -176,10 +175,10 @@ namespace MiitsuColorController.Helper
                                     _artmeshCurrentColor[2] -= emotes[2];
                                 }
                                 rgbSum = _artmeshCurrentColor[0] + _artmeshCurrentColor[1] + _artmeshCurrentColor[2];
-                                rgb[0] = (255f * (_artmeshCurrentColor[0] / rgbSum));
-                                rgb[1] = (255f * (_artmeshCurrentColor[1] / rgbSum));
-                                rgb[2] = (255f * (_artmeshCurrentColor[2] / rgbSum));
-                                ColorHelper.RBGToAdjustedColorTint(rgb, _sRatio, _setting.MinimumS, _vRatio, _setting.MinimumV, ref _colortintHolder);
+                                targetUnadjustedRGB[0] = (255f * (_artmeshCurrentColor[0] / rgbSum));
+                                targetUnadjustedRGB[1] = (255f * (_artmeshCurrentColor[1] / rgbSum));
+                                targetUnadjustedRGB[2] = (255f * (_artmeshCurrentColor[2] / rgbSum));
+                                ColorHelper.RBGToAdjustedColorTint(targetUnadjustedRGB, _sRatio, _setting.MinimumS, _vRatio, _setting.MinimumV, ref _colortintHolder);
                                 if (_setting.MessageHandlingMethod == 0)
                                 {
                                     int leftStep = _vtsSocket.GetQueueSize();
@@ -227,7 +226,6 @@ namespace MiitsuColorController.Helper
                 ReAssembleConfig(setting);
                 await Task.Run(() =>
                 {
-                    ColorTint colorTintTmp = new() { colorA = 0 };
                     float[] target;
                     byte[] rgb;
                     float[] difference = { 0, 0, 0 };
@@ -292,7 +290,6 @@ namespace MiitsuColorController.Helper
                     _isTesting = true;
                     ReAssembleConfig(setting);
                     int difference = 30;
-                    ColorTint colorTintTmp = new() { colorA = 0 };
                     float[] rgb = { 0f, 0f, 0f };
                     bool iRed = false, iBlue = false, iGreen = false;
                     while (_isTesting)

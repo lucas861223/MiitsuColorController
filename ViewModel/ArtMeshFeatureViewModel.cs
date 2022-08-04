@@ -61,7 +61,7 @@ namespace MiitsuColorController.ViewModel
         public SelectionChangedEventHandler TagSelectionCommand { get { return TagListView_SelectionChanged; } }
         public string Description { get; set; }
         //change to use resource sheet
-        private string _defaultDescription = "設定結束後存檔，即可在下一次開啟時自動讀取\n更換模組後需要先刷新才會讀取新模組信息\n啟用聊天室設定後更改設定需要存檔才會套用";
+        private string _defaultDescription = "設定結束後存檔，即可在下一次開啟時自動讀取\n更換模組後需要先刷新才會讀取新模組信息\n啟用聊天室控制後更改設定需要存檔才會套用";
 
         public override int MinimumS
         {
@@ -441,31 +441,31 @@ namespace MiitsuColorController.ViewModel
                 switch (Tag)
                 {
                     case "ActivateButton":
-                        Description = "啟用Twitch聊天室控制，需先關閉測試";
+                        Description = "啟用Twitch聊天室控制，需先關閉運行中的測試";
                         break;
                     case "ArtMeshNameListView":
-                        Description = "勾選欲改變顏色的部件(artmesh)並勾選\n因Winui 3問題(issue #7230)，滾動列表時會造成程式閃退，請善用搜尋功能";
+                        Description = "勾選欲改變顏色的部件(artmesh)\n測試時更改設定可馬上套用，不需要另外儲存\n因Winui 3問題(issue #7230)，滾動列表時會造成程式閃退，請善用搜尋功能";
                         break;
                     case "SaveButton":
-                        Description = "儲存現在的設定，並套用至正在運行的功能上";
+                        Description = "儲存現在的設定，並套用至正在運行的功能上\n";
                         break;
                     case "RefreshButton":
                         Description = "讀取新的模型，並讀取相應設定\n或是捨棄修改，恢復儲存的設定";
                         break;
                     case "AutoTestButton":
-                        Description = "自動變色測試\n需先停用聊天室控制\n程式將把選取的部件染色\n啟用時更改設定可馬上套用，不需要另外儲存\n可以藉此機會看設定的速度、漸變、顏色範圍等是否滿意";
+                        Description = "自動變色測試\n需先停用聊天室控制\n程式將把選取的部件以範圍內的顏色染色\n啟用時更改設定可馬上套用，不需要另外儲存\n可以藉此機會看設定的速度、漸變、顏色範圍等是否滿意";
                         break;
                     case "ClickTestButton":
-                        Description = "手動選色測試\n需先停用聊天室控制\n啟用時更改設定可馬上套用，不需要另外儲存\n使用者可以點擊右下角的色表來指定要變成的顏色\n可以藉此機會看設定的速度、漸變、顏色範圍等是否滿意";
+                        Description = "手動選色測試\n需先停用聊天室控制\n程式將把選取的部件染上右下角色表選擇的顏色\n啟用時更改設定可馬上套用，不需要另外儲存\n使用者可以點擊右下角的色表來指定要變成的顏色\n可以藉此機會看設定的速度、漸變等是否滿意，以及測試理想的顏色範圍";
                         break;
                     case "Filter":
                         Description = "篩選部件和標籤";
                         break;
                     case "TagListView":
-                        Description = "勾選欲改變顏色的標籤(Tag)\n因Winui 3問題(issue #7230)，滾動列表時會造成程式閃退，請善用搜尋功能";
+                        Description = "勾選欲改變顏色的標籤(Tag)\n測試時更改設定可馬上套用，不需要另外儲存\n因Winui 3問題(issue #7230)，滾動列表時會造成程式閃退，請善用搜尋功能";
                         break;
                     case "MessageHandling":
-                        Description = "變色方針\n設定此功能在當前顏色還未完全變化時該如何處理新的變色指令\n累積變色- 捨棄當前目標，並替換程新顏色\n排程變色- 將當前目標變色完成，再處理下一個顏色";
+                        Description = "變色方針\n設定此功能在當前顏色還未完全變化時該如何處理新的變色指令\n累積變色- 中斷當前指令，並將目標替換成新顏色\n排程變色- 將當前目標變色完成，再處理下一個顏色";
                         break;
                     case "MessageCount":
                         Description = "參考訊息數量\n要參考多少訊息的顏色比例來決定目標顏色";
@@ -480,19 +480,19 @@ namespace MiitsuColorController.ViewModel
                         Description = "增加藍色元素的聊天室關鍵詞";
                         break;
                     case "Interpolation":
-                        Description = "漸變數量\n由顏色A變成顏色B時中間過度顏色的數量\n數量越高，顏色變化越順，性能越低\n例:由黑色(0,0,0)變成紅色(255,0,0)時，中間應有多少顏色(25,0,0)、(50,0,0)等\n建議善用測試功能來測試可以承受的數量";
+                        Description = "漸變數量\n由顏色A變成顏色B時中間過渡顏色的數量\n數量越高，顏色變化越順，對程式和Vtube Studio的負擔越重\n例:由黑色(0,0,0)變成紅色(255,0,0)時，中間應有多少如(25,0,0)、(50,0,0)等過渡色\n建議善用測試功能來測試可以承受的數量";
                         break;
                     case "Duration":
-                        Description = "漸變數量\n由顏色A變成顏色B時應花費的時間\n數量越高，變色越慢，性能越高\n建議善用測試功能來測試可以承受的數量";
+                        Description = "時長\n由顏色A變成顏色B時應花費的時間\n數字越高，變色越慢，對程式和vtube studio的負擔越輕\n建議善用測試功能來測試可以承受的數量";
                         break;
                     case "Ranges":
                         Description = "可接受的顏色範圍\n上方色表將會反應範圍更變";
                         break;
                     case "ColorPickerCanvas":
-                        Description = "H-S色表\nx軸為H(hue)，從左至右由0到360，y軸為飽和度(saturation)，從上至下由0到100\n手動選色測試時可以在此選擇顏色";
+                        Description = "H-S色表\nx軸為色調(hue)，從左至右由0到360，y軸為飽和度(saturation)，從上至下由0到100\n手動選色測試時可以在此選擇顏色";
                         break;
                     case "RectColor":
-                        Description = "V色表\ny軸為明亮度(value)，從上至下由100到0\n點及右方色表即可挑選顏色和飽和度\n手動選色測試時可以在此選擇顏色";
+                        Description = "V色表\ny軸為明亮度(value)，從上至下由100到0\n點擊右方色表即可挑選色調和飽和度\n手動選色測試時可以在此選擇顏色";
                         break;
                 }
             }
