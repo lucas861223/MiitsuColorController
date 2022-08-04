@@ -10,7 +10,6 @@ namespace MiitsuColorController.Helper
 {
     public class TwitchSocket : AbstractSocket
     {
-        public ConcurrentQueue<string> ReceiveQueue = new();
         public static TwitchSocket Instance
         {
             get
@@ -104,8 +103,6 @@ namespace MiitsuColorController.Helper
             }
         }
 
-
-
         internal void Exit()
         {
             Disconnect();
@@ -175,6 +172,7 @@ namespace MiitsuColorController.Helper
             ArraySegment<byte> recvBuff = new(receiveData);
             int startIndex = ("PRIVMSG #" + Username + " :").Length;
             CancellationToken token = _cancelRecv.Token;
+            FeatureManager featureManager = FeatureManager.Instance;
             while (!token.IsCancellationRequested && IsConnected)
             {
                 result = Receive(recvBuff, token).Result;
@@ -185,10 +183,8 @@ namespace MiitsuColorController.Helper
                 }
                 else if (result.Contains("PRIVMSG"))
                 {
-                    ReceiveQueue.Enqueue(result[(result.IndexOf("PRIVMSG") + startIndex)..].Trim('\r', '\n'));
+                    featureManager.EnqueueTwitchMessage(result[(result.IndexOf("PRIVMSG") + startIndex)..].Trim('\r', '\n'));
                 }
-
-                Task.Delay(50).Wait();
             }
         }
     }

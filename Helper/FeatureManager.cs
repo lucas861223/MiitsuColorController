@@ -9,25 +9,26 @@ namespace MiitsuColorController.Helper
 {
     public class FeatureManager
     {
-        public bool ArtMeshTintingActivated = false;
-        private static FeatureManager _instance = null;
-        private int[] _artmeshCurrentColor = { 0, 0, 0 };
-        private ConcurrentQueue<int[]> _artmeshEmoteHistory = new();
+        private ArtmeshColoringSetting _setting = new();
         private ArtMeshColorTint _colortintHolder = new();
-        private string _formatString;
         private bool _isInUse = false;
         private bool _isTesting = false;
+        private ConcurrentQueue<float[]> _clickTestQueue = new();
+        private ConcurrentQueue<int[]> _artmeshEmoteHistory = new();
+        private ConcurrentQueue<string> _twitchMessageQueue = new();
+        private EventWaitHandle _clickingEwh = new(true, EventResetMode.ManualReset);
+        private EventWaitHandle _twitchMessageEwh = new(true, EventResetMode.ManualReset);
+        private float _sRatio;
+        private float _vRatio;
+        private int _taskDelay;
+        private int[] _artmeshCurrentColor = { 0, 0, 0 };
         private JsonSerializerOptions _jsonSerializerOptions = new();
         private ResourceManager _resourceManager = ResourceManager.Instance;
-        private ArtmeshColoringSetting _setting = new();
-        private float _sRatio;
-        private int _taskDelay;
-        private TwitchSocket _twitchSocket = TwitchSocket.Instance;
-        private float _vRatio;
+        private static FeatureManager _instance = null;
+        private string _formatString;
         private VTSSocket _vtsSocket = VTSSocket.Instance;
+        public bool ArtMeshTintingActivated = false;
         public event Action NewSettingEvent;
-        private ConcurrentQueue<float[]> _clickTestQueue = new();
-        private EventWaitHandle _clickingEwh = new(true, EventResetMode.ManualReset);
 
         private FeatureManager()
         {
@@ -69,6 +70,14 @@ namespace MiitsuColorController.Helper
             return _setting;
         }
 
+        public void EnqueueTwitchMessage(string message)
+        {
+            if (_isInUse)
+            {
+                _twitchMessageQueue.Enqueue(message);
+                _twitchMessageEwh.Set();
+            }
+        }
         public void MakeFormatString(ArtmeshColoringSetting setting)
         {
             VTSColorTintData request = new();
@@ -119,8 +128,7 @@ namespace MiitsuColorController.Helper
                 await Task.Run(() =>
                 {
                     _isInUse = true;
-                    ConcurrentQueue<string> queue = _twitchSocket.ReceiveQueue;
-                    queue.Clear();
+                    _twitchMessageQueue.Clear();
                     ColorTint colorTintTmp = new() { colorA = 0 };
                     string message;
                     string[] tokens;
@@ -131,7 +139,7 @@ namespace MiitsuColorController.Helper
                     ReAssembleConfig();
                     while (_setting.Activated)
                     {
-                        if (queue.TryDequeue(out message))
+                        if (_twitchMessageQueue.TryDequeue(out message))
                         {
                             tokens = message.Split(" ");
                             if (_setting.Activated)
@@ -156,7 +164,6 @@ namespace MiitsuColorController.Helper
                                 {
                                     continue;
                                 }
-
                                 _artmeshEmoteHistory.Enqueue(emotes);
                                 _artmeshCurrentColor[0] += emotes[0];
                                 _artmeshCurrentColor[1] += emotes[1];
@@ -195,7 +202,8 @@ namespace MiitsuColorController.Helper
                         }
                         else
                         {
-                            Task.Delay(100).Wait();
+                            _twitchMessageEwh.WaitOne();
+                            _twitchMessageEwh.Reset();
                         }
                     }
                     _isInUse = false;
