@@ -27,7 +27,7 @@ namespace MiitsuColorController.Helper
         private VTSSocket _vtsSocket = VTSSocket.Instance;
         public event Action NewSettingEvent;
         private ConcurrentQueue<float[]> _clickTestQueue = new();
-        private EventWaitHandle _clickingEwh = new EventWaitHandle(true, EventResetMode.ManualReset);
+        private EventWaitHandle _clickingEwh = new(true, EventResetMode.ManualReset);
 
         private FeatureManager()
         {
@@ -71,7 +71,7 @@ namespace MiitsuColorController.Helper
 
         public void MakeFormatString(ArtmeshColoringSetting setting)
         {
-            VTSColorTintData request = new VTSColorTintData();
+            VTSColorTintData request = new();
             request.data.artMeshMatcher = new ArtMeshMatcher();
             if (setting.SelectedArtMesh.Count > 0)
             {
@@ -81,11 +81,13 @@ namespace MiitsuColorController.Helper
             {
                 request.data.artMeshMatcher.tagExact = setting.SelectedTag.ToArray();
             }
-            request.data.colorTint = new ArtMeshColorTint();
-            request.data.colorTint.colorB = 252;
-            request.data.colorTint.colorR = 253;
-            request.data.colorTint.colorG = 254;
-            request.data.colorTint.colorA = 255;
+            request.data.colorTint = new ArtMeshColorTint
+            {
+                colorB = 252,
+                colorR = 253,
+                colorG = 254,
+                colorA = 255
+            };
             _formatString = JsonSerializer.Serialize(request, typeof(VTSColorTintData), _jsonSerializerOptions);
             //escape brackets
             _formatString = _formatString.Replace("{", "{{").Replace("}", "}}");
@@ -119,7 +121,7 @@ namespace MiitsuColorController.Helper
                     _isInUse = true;
                     ConcurrentQueue<string> queue = _twitchSocket.ReceiveQueue;
                     queue.Clear();
-                    ColorTint colorTintTmp = new ColorTint() { colorA = 0 };
+                    ColorTint colorTintTmp = new() { colorA = 0 };
                     string message;
                     string[] tokens;
                     float[] rgb = { 0f, 0f, 0f };
@@ -217,8 +219,8 @@ namespace MiitsuColorController.Helper
                 ReAssembleConfig(setting);
                 await Task.Run(() =>
                 {
-                    ColorTint colorTintTmp = new ColorTint() { colorA = 0 };
-                    float[]? target;
+                    ColorTint colorTintTmp = new() { colorA = 0 };
+                    float[] target;
                     byte[] rgb;
                     float[] difference = { 0, 0, 0 };
                     float[] currentAdjustedRGB = { 255, 255, 255 };
@@ -282,7 +284,7 @@ namespace MiitsuColorController.Helper
                     _isTesting = true;
                     ReAssembleConfig(setting);
                     int difference = 30;
-                    ColorTint colorTintTmp = new ColorTint() { colorA = 0 };
+                    ColorTint colorTintTmp = new() { colorA = 0 };
                     float[] rgb = { 0f, 0f, 0f };
                     bool iRed = false, iBlue = false, iGreen = false;
                     while (_isTesting)

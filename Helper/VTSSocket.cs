@@ -28,7 +28,7 @@ namespace MiitsuColorController.Helper
         private static VTSSocket _instance = null;
         private CancellationTokenSource _cancelSend = new();
         private JsonSerializerOptions _jsonSerializerOptions = new();
-        private EventWaitHandle _sendEWH = new EventWaitHandle(true, EventResetMode.ManualReset);
+        private EventWaitHandle _sendEWH = new(true, EventResetMode.ManualReset);
         private ResourceManager _resourceManager = ResourceManager.Instance;
         //maybe when I actually need the requestid
         //private ConcurrentDictionary<string, bool> _responseNeeded = new();

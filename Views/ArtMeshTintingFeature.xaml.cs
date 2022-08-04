@@ -34,29 +34,35 @@ namespace MiitsuColorController.Views
         private bool _hasClicked = false;
         private bool _isInsideRect = false;
         private bool _hasClickedRect = false;
-        private ArtMeshTintingViewModel _context;
+        private ArtMeshFeatureViewModel _context;
         private FeatureManager _featureManager = FeatureManager.Instance;
 
         public ArtMeshTintingFeature()
         {
             Action<List<string>, List<string>, List<string>, List<string>> _populateListsCallBack = PopulateListsCallBack;
-            _context = new ArtMeshTintingViewModel(_populateListsCallBack);
+            _context = new ArtMeshFeatureViewModel(_populateListsCallBack);
             InitializeComponent();
-            _indicationCircle = new Ellipse();
-            _indicationCircle.StrokeThickness = 1;
-            _indicationCircle.Height = 10;
-            _indicationCircle.Width = 10;
-            _indicationCircle.Stroke = new SolidColorBrush() { Color = Microsoft.UI.Colors.Black };
-            _indicationTriangle = new Polygon();
-            _indicationTriangle.Fill = new SolidColorBrush() { Color = Microsoft.UI.Colors.White };
-            PointCollection points = new PointCollection();
+            _indicationCircle = new Ellipse
+            {
+                StrokeThickness = 1,
+                Height = 10,
+                Width = 10,
+                Stroke = new SolidColorBrush() { Color = Microsoft.UI.Colors.Black }
+            };
+            _indicationTriangle = new Polygon
+            {
+                Fill = new SolidColorBrush() { Color = Microsoft.UI.Colors.White }
+            };
+            PointCollection points = new();
             points.Add(new Point(-10, 5));
             points.Add(new Point(0, 0));
             points.Add(new Point(-10, -5));
             _indicationTriangle.Points = points;
-            _indicationLine = new Line();
-            _indicationLine.StrokeThickness = 1.5;
-            _indicationLine.Stroke = new SolidColorBrush() { Color = Microsoft.UI.Colors.White };
+            _indicationLine = new Line
+            {
+                StrokeThickness = 1.5,
+                Stroke = new SolidColorBrush() { Color = Microsoft.UI.Colors.White }
+            };
             Loaded += (sender, e) =>
             {
                 _context.StartLoadingModel(ColorPickerCanvas);

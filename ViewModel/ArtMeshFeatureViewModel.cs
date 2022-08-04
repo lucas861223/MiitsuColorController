@@ -10,7 +10,7 @@ using Windows.UI;
 
 namespace MiitsuColorController.ViewModel
 {
-    public class ArtMeshTintingViewModel : ArtMeshWidgetViewModel
+    public class ArtMeshFeatureViewModel : ArtMeshWidgetViewModel
     {
         public override int Interpolation
         {
@@ -192,7 +192,7 @@ namespace MiitsuColorController.ViewModel
         public int V { get { return (int)Math.Round(_v * (MaximumV - MinimumV) + MinimumV); } }
 
 
-        public ArtMeshTintingViewModel(Action<List<string>, List<string>, List<string>, List<string>> LoadModelCallback)
+        public ArtMeshFeatureViewModel(Action<List<string>, List<string>, List<string>, List<string>> LoadModelCallback)
         {
             _uiThread = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
             //VTSSocket.Instance.ConnectionEstablishedEvent += new Action(LoadModelAsync);
@@ -434,7 +434,7 @@ namespace MiitsuColorController.ViewModel
             }
         }
 
-        public void SetDescription(bool IsEntering, string? Tag)
+        public void SetDescription(bool IsEntering, string Tag)
         {
             if (IsEntering)
             {

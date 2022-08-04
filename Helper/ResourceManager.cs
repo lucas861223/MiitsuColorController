@@ -73,7 +73,7 @@ namespace MiitsuColorController.Helper
 
         public ArtmeshColoringSetting LoadModelSetting()
         {
-            ArtmeshColoringSetting setting = new ArtmeshColoringSetting();
+            ArtmeshColoringSetting setting = new();
             if (File.Exists(CurrentModelInformation.ID + ".Miitsu"))
             {
                 string[] lines = File.ReadAllLines(CurrentModelInformation.ID + ".Miitsu");
