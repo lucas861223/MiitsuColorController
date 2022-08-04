@@ -36,7 +36,6 @@ namespace MiitsuColorController.Views
         private bool _hasClickedRect = false;
         private ArtMeshTintingViewModel _context;
         private FeatureManager _featureManager = FeatureManager.Instance;
-        private bool _isClickTesting = false;
 
         public ArtMeshTintingFeature()
         {
@@ -276,7 +275,6 @@ namespace MiitsuColorController.Views
 
         private void StartClickTesting(object sender, RoutedEventArgs e)
         {
-            _isClickTesting = true;
             _context.Clicktest();
         }
     }

@@ -16,7 +16,7 @@ namespace MiitsuColorController.Views
         public VTSSocket VTS_Socket;
         public FeatureManager Feature_Manager = FeatureManager.Instance;
         public ResourceManager Resource_Manager = ResourceManager.Instance;
-        public ArtMeshTintingViewModel dataContext = new();
+        public ArtMeshWidgetViewModel dataContext = new();
 
         public Overview()
         {

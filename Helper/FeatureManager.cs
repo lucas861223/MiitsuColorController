@@ -269,6 +269,8 @@ namespace MiitsuColorController.Helper
         public void StopClickTesting()
         {
             _isTesting = false;
+            _vtsSocket.SendMessage(String.Format(_formatString, 255, 255, 255));
+            ReAssembleConfig(_setting);
         }
 
         public async void StartAutoTesting(ArtmeshColoringSetting setting)
