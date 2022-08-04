@@ -12,6 +12,8 @@
 
         ConnectVTSOnStart = 4,
         ConnectTwitchOnStart = 5,
+        ReconnectVTSOnError = 24,
+        ReconnectTwitchOnError = 25,
 
         WindowHeight = 7,
         WindowWidth = 8,

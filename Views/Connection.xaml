@@ -93,7 +93,8 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <ToggleButton Grid.Column="0"
-                                      Content="斷線後自動重試" />
+                                      Content="斷線後自動重試"
+                                      IsChecked="{x:Bind Path=VTS_Socket.AutoReconnect, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         <ToggleButton Grid.Column="2"
                                       Content="啟動時自動連結"
                                       IsChecked="{x:Bind Path=VTS_Socket.ConnectOnStartup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />

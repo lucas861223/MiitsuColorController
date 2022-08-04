@@ -32,18 +32,12 @@ namespace MiitsuColorController.Helper
         private ResourceManager _resourceManager = ResourceManager.Instance;
         //maybe when I actually need the requestid
         //private ConcurrentDictionary<string, bool> _responseNeeded = new();
-        public bool AutoReconnect
-        {
-            get { return _autoReconnect; }
-            set { _autoReconnect = value; OnPropertyChanged(nameof(AutoReconnect)); }
-        }
 
         private VTSSocket() : base()
         {
             _jsonSerializerOptions.IncludeFields = true;
             _jsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault;
-            ResourceManager manager = ResourceManager.Instance;
-            if (manager.StringResourceDictionary.TryGetValue(ResourceKey.VTSWebsocketURI, out string tmp))
+            if (_resourceManager.StringResourceDictionary.TryGetValue(ResourceKey.VTSWebsocketURI, out string tmp))
             {
                 VTS_Websocket_URL = tmp;
             }
@@ -51,11 +45,12 @@ namespace MiitsuColorController.Helper
             {
                 VTS_Websocket_URL = "";
             }
-            ConnectOnStartup = manager.BoolResourceDictionary.TryGetValue(ResourceKey.ConnectVTSOnStart, out bool boolTmp) && boolTmp;
+            ConnectOnStartup = _resourceManager.BoolResourceDictionary.TryGetValue(ResourceKey.ConnectVTSOnStart, out bool boolTmp) && boolTmp;
             if (ConnectOnStartup)
             {
                 Connect();
             }
+            LostConnectionEvent += LostConnection;
         }
         public void Authorize()
         {
@@ -109,6 +104,14 @@ namespace MiitsuColorController.Helper
             }
         }
 
+        private void LostConnection()
+        {
+            if (AutoReconnect)
+            {
+                Connect();
+            }
+        }
+
         public async void Connect()
         {
             StatusString = "連結中...";
@@ -133,6 +136,7 @@ namespace MiitsuColorController.Helper
                         _dispathcerQueue.TryEnqueue(() =>
                         {
                             StatusString = "連結失敗- 找不到Vtube Studio\n有開Vtube Studio嗎?\t有開啟API嗎?\n網址和埠號有打對嗎?\t0.0.0.0不行的話試試看localhost";
+                            OnPropertyChanged("IsNotInUse");
                         });
                     }
                     _socket = new ClientWebSocket();
@@ -140,6 +144,7 @@ namespace MiitsuColorController.Helper
                 }
                 StartReceiving();
                 StartSending();
+                _resourceManager.StringResourceDictionary[ResourceKey.VTSWebsocketURI] = VTS_Websocket_URL;
                 VTSStateData stateRequest = new();
                 SendMessage(JsonSerializer.Serialize(stateRequest, typeof(VTSStateData), _jsonSerializerOptions));
             });
@@ -266,9 +271,8 @@ namespace MiitsuColorController.Helper
         public void Exit()
         {
             Disconnect();
-            ResourceManager manager = ResourceManager.Instance;
-            manager.StringResourceDictionary[ResourceKey.VTSWebsocketURI] = VTS_Websocket_URL;
-            manager.BoolResourceDictionary[ResourceKey.ConnectVTSOnStart] = ConnectOnStartup;
+            _resourceManager.BoolResourceDictionary[ResourceKey.ConnectVTSOnStart] = ConnectOnStartup;
+            _resourceManager.BoolResourceDictionary[ResourceKey.ReconnectVTSOnError] = AutoReconnect;
         }
 
         public void GetModelInformation()
@@ -280,7 +284,7 @@ namespace MiitsuColorController.Helper
 
         private void ReceivedModelInformation(VTSCurrentModelData currentModelData)
         {
-            ResourceManager.Instance.UpdateCurrentModelInformation(currentModelData.data);
+            _resourceManager.UpdateCurrentModelInformation(currentModelData.data);
             VTSArtMeshListData currentModelArtmesh = new();
             SendMessage(JsonSerializer.Serialize(currentModelArtmesh, typeof(VTSArtMeshListData), _jsonSerializerOptions));
             //SendRequest(JsonSerializer.Serialize(currentModelArtmesh, typeof(VTSArtMeshListData), _jsonSerializerOptions),
@@ -291,7 +295,7 @@ namespace MiitsuColorController.Helper
         {
             //SendRequest(JsonSerializer.Serialize(currentModelArtmesh, typeof(VTSArtMeshListData), _jsonSerializerOptions),
             //    "失去與VTube Studio的連結");
-            ResourceManager.Instance.UpdateCurrentModelMeshes(meshesData.data);
+            _resourceManager.UpdateCurrentModelMeshes(meshesData.data);
             FeatureManager.Instance.LoadNewSetting();
         }
 

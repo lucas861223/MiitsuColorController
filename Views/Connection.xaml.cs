@@ -2,6 +2,7 @@
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using MiitsuColorController.Helper;
+using MiitsuColorController.Models;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -49,7 +50,11 @@ namespace MiitsuColorController.Views
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
-            //implement saving here, or saving when established connections
+            ResourceManager manager = ResourceManager.Instance;
+            manager.BoolResourceDictionary[ResourceKey.ConnectTwitchOnStart] = Twitch_Socket.ConnectOnStartup;
+            manager.BoolResourceDictionary[ResourceKey.ConnectVTSOnStart] = VTS_Socket.ConnectOnStartup;
+            manager.BoolResourceDictionary[ResourceKey.ReconnectTwitchOnError] = Twitch_Socket.AutoReconnect;
+            manager.BoolResourceDictionary[ResourceKey.ReconnectVTSOnError] = VTS_Socket.AutoReconnect;
             base.OnNavigatedFrom(e);
         }
     }

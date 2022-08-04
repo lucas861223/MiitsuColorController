@@ -24,9 +24,13 @@ namespace MiitsuColorController.Helper
         { get { return _socket != null && (_socket.State == WebSocketState.Closed || _socket.State == WebSocketState.None); } }
         public string StatusString
         { get { return _statusString; } set { _statusString = value; OnPropertyChanged(nameof(StatusString)); } }
+        public bool AutoReconnect
+        {
+            get { return _autoReconnect; }
+            set { _autoReconnect = value; OnPropertyChanged(nameof(AutoReconnect)); }
+        }
 
-        protected event Action ConnectionEstablised;
-        protected event Action LostConnection;
+        protected event Action LostConnectionEvent;
 
         public AbstractSocket()
         {
@@ -78,7 +82,7 @@ namespace MiitsuColorController.Helper
                     StatusString = Message;
                 }
             });
-            LostConnection();
+            LostConnectionEvent?.Invoke();
         }
         protected async void SendRequest(string Message, string ErrorMessage)
         {

@@ -23,7 +23,6 @@ namespace MiitsuColorController.Helper
             }
         }
 
-        public bool ConnectOnStartUp { set; get; }
         public string TwitchAuthToken { set; get; }
         public string Username { set; get; }
         public async void Connect()
@@ -94,10 +93,13 @@ namespace MiitsuColorController.Helper
                                 StatusString = "連結成功";
                                 OnPropertyChanged("IsConnected");
                             });
+                            StartReceiving();
+                            ResourceManager manager = ResourceManager.Instance;
+                            manager.StringResourceDictionary[ResourceKey.TwitchAuthToken] = TwitchAuthToken;
+                            manager.StringResourceDictionary[ResourceKey.TwitchUserName] = Username;
                             break;
                         }
                     }
-                    StartReceiving();
                 });
             }
         }
@@ -108,9 +110,8 @@ namespace MiitsuColorController.Helper
         {
             Disconnect();
             ResourceManager manager = ResourceManager.Instance;
-            manager.StringResourceDictionary[ResourceKey.TwitchUserName] = Username;
-            manager.StringResourceDictionary[ResourceKey.TwitchAuthToken] = TwitchAuthToken;
             manager.BoolResourceDictionary[ResourceKey.ConnectTwitchOnStart] = ConnectOnStartup;
+            manager.BoolResourceDictionary[ResourceKey.ReconnectTwitchOnError] = AutoReconnect;
         }
 
         private static TwitchSocket _instance = null;
@@ -179,12 +180,12 @@ namespace MiitsuColorController.Helper
                 result = Receive(recvBuff, token).Result;
                 if (result.StartsWith("PING "))
                 {
-                    SendRequest("PONG " + result.Substring(5), "連結失敗- 網路有開嗎?");
+                    SendRequest("PONG " + result[5..], "連結失敗- 網路有開嗎?");
                     continue;
                 }
                 else if (result.Contains("PRIVMSG"))
                 {
-                    ReceiveQueue.Enqueue(result.Substring(result.IndexOf("PRIVMSG") + startIndex).Trim('\r', '\n'));
+                    ReceiveQueue.Enqueue(result[(result.IndexOf("PRIVMSG") + startIndex)..].Trim('\r', '\n'));
                 }
 
                 Task.Delay(50).Wait();
