@@ -1,10 +1,10 @@
-﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
 using MiitsuColorController.Models;
 using Microsoft.UI.Dispatching;
 using System;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace MiitsuColorController.Helper
 {

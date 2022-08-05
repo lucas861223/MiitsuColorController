@@ -1,4 +1,4 @@
-﻿namespace MiitsuColorController.Models
+namespace MiitsuColorController.Models
 {
     public class StringEnum
     {

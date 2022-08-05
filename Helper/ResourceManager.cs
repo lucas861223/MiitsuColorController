@@ -1,4 +1,4 @@
-﻿using MiitsuColorController.Models;
+using MiitsuColorController.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;

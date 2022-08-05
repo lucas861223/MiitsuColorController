@@ -1,5 +1,5 @@
-﻿using System;
-using Microsoft.Toolkit.Mvvm.ComponentModel;
+using System;
+using CommunityToolkit.Mvvm.ComponentModel;
 using MiitsuColorController.Models;
 using MiitsuColorController.Helper;
 using Microsoft.UI.Xaml;
