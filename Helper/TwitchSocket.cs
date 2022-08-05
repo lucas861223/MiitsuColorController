@@ -1,6 +1,5 @@
 ﻿using MiitsuColorController.Models;
 using System;
-using System.Collections.Concurrent;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
@@ -26,7 +25,7 @@ namespace MiitsuColorController.Helper
         public string Username { set; get; }
         public async void Connect()
         {
-            StatusString = "連結中...";
+            StatusString = _resourceLoader.GetString(StringEnum.Connecting);
             if (!IsConnected)
             {
                 IsAuthorized = false;
@@ -46,14 +45,14 @@ namespace MiitsuColorController.Helper
                     {
                         _dispathcerQueue.TryEnqueue(() =>
                         {
-                            StatusString = "連結失敗- 網路有開嗎?";
+                            StatusString = _resourceLoader.GetString(StringEnum.TwitchCannotConnect);
                         });
                         _socket = new ClientWebSocket();
                         return;
                     }
-                    SendRequest("PASS oauth:" + TwitchAuthToken, "登入失敗- Access Token有照著指示給嗎?\n試著Refresh你的Token(往下滑)");
-                    SendRequest("NICK " + Username, "連結失敗- 帳號有打對嗎?");
-                    SendRequest("JOIN #" + Username, "連結失敗- 帳號有打對嗎?");
+                    SendRequest("PASS oauth:" + TwitchAuthToken, _resourceLoader.GetString(StringEnum.TwitchAuthTokenProblem));
+                    SendRequest("NICK " + Username, _resourceLoader.GetString(StringEnum.TwitchLoginFailed));
+                    SendRequest("JOIN #" + Username, _resourceLoader.GetString(StringEnum.TwitchLoginFailed));
                     string result;
                     byte[] receiveData = new byte[4096];
                     ArraySegment<byte> recvBuff = new(receiveData);
@@ -64,7 +63,7 @@ namespace MiitsuColorController.Helper
                         {
                             _dispathcerQueue.TryEnqueue(() =>
                             {
-                                ResetConnectionStatus("登入失敗- Access Token有照著指示給嗎?\n試著Refresh你的Token(往下滑)");
+                                ResetConnectionStatus(_resourceLoader.GetString(StringEnum.TwitchAuthTokenProblem));
                             });
                             break;
                         }
@@ -72,7 +71,7 @@ namespace MiitsuColorController.Helper
                         {
                             _dispathcerQueue.TryEnqueue(() =>
                             {
-                                ResetConnectionStatus("登入失敗- Access Token有照著指示給嗎?\n試著Refresh你的Token(往下滑)");
+                                ResetConnectionStatus(_resourceLoader.GetString(StringEnum.TwitchAuthTokenProblem));
                             });
                             break;
                         }
@@ -80,7 +79,7 @@ namespace MiitsuColorController.Helper
                         {
                             _dispathcerQueue.TryEnqueue(() =>
                             {
-                                ResetConnectionStatus("登入失敗- 帳號有打對嗎?");
+                                ResetConnectionStatus(_resourceLoader.GetString(StringEnum.TwitchLoginFailed));
                             });
                             break;
                         }
@@ -89,7 +88,7 @@ namespace MiitsuColorController.Helper
                             _dispathcerQueue.TryEnqueue(() =>
                             {
                                 IsAuthorized = true;
-                                StatusString = "連結成功";
+                                StatusString = _resourceLoader.GetString(StringEnum.SuccessfullyConnected);
                                 OnPropertyChanged("IsConnected");
                             });
                             StartReceiving();
@@ -147,17 +146,17 @@ namespace MiitsuColorController.Helper
                 try { receiveFlags = await _socket.ReceiveAsync(recvBuff, token); }
                 catch (OperationCanceledException)
                 {
-                    ResetConnectionStatus("連結失敗- 網路有開嗎?");
+                    ResetConnectionStatus(_resourceLoader.GetString(StringEnum.TwitchCannotConnect));
                     return "";
                 }
                 catch (WebSocketException)
                 {
-                    ResetConnectionStatus("連結失敗- 帳號有打對嗎?\nRefresh Token有照著指示給嗎?");
+                    ResetConnectionStatus(_resourceLoader.GetString(StringEnum.TwitchLoginFailed));
                     return "";
                 }
                 catch (InvalidOperationException)
                 {
-                    ResetConnectionStatus("連結失敗- 帳號有打對嗎?\nRefresh Token有照著指示給嗎?");
+                    ResetConnectionStatus(_resourceLoader.GetString(StringEnum.TwitchLoginFailed));
                     return "";
                 }
                 result += Encoding.UTF8.GetString(recvBuff.Array, 0, receiveFlags.Count);
@@ -178,7 +177,7 @@ namespace MiitsuColorController.Helper
                 result = Receive(recvBuff, token).Result;
                 if (result.StartsWith("PING "))
                 {
-                    SendRequest("PONG " + result[5..], "連結失敗- 網路有開嗎?");
+                    SendRequest("PONG " + result[5..], _resourceLoader.GetString(StringEnum.TwitchLoginFailed));
                     continue;
                 }
                 else if (result.Contains("PRIVMSG"))

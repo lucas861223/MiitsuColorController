@@ -35,7 +35,6 @@ namespace MiitsuColorController.Views
         private bool _isInsideRect = false;
         private bool _hasClickedRect = false;
         private ArtMeshFeatureViewModel _context;
-        private FeatureManager _featureManager = FeatureManager.Instance;
 
         public ArtMeshTintingFeature()
         {

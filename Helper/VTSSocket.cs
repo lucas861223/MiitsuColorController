@@ -68,7 +68,7 @@ namespace MiitsuColorController.Helper
             {
                 _dispathcerQueue.TryEnqueue(() =>
                 {
-                    StatusString = "等候授權...";
+                    StatusString = _resourceLoader.GetString(StringEnum.WaitingForAuthentication);
                 });
                 SendMessage(JsonSerializer.Serialize(AuthRequest, typeof(VTSAuthData), _jsonSerializerOptions));
                 //SendRequest(JsonSerializer.Serialize(AuthRequest, typeof(VTSAuthData), _jsonSerializerOptions),
@@ -96,7 +96,7 @@ namespace MiitsuColorController.Helper
                     OnPropertyChanged("IsConnected");
                     if (IsConnected)
                     {
-                        StatusString = "連結成功";
+                        StatusString = _resourceLoader.GetString(StringEnum.SuccessfullyConnected);
                     }
                     OnPropertyChanged("IsNotInUse");
                     GetModelInformation();
@@ -114,7 +114,7 @@ namespace MiitsuColorController.Helper
 
         public async void Connect()
         {
-            StatusString = "連結中...";
+            StatusString = _resourceLoader.GetString(StringEnum.Connecting);
             await Task.Run(() =>
             {
                 //connection timeout
@@ -131,11 +131,11 @@ namespace MiitsuColorController.Helper
                 if (_socket.State != WebSocketState.Open)
                 {
                     //hacky solution- trying to see if it's cancelled
-                    if (StatusString != "未連結")
+                    if (StatusString != _resourceLoader.GetString(StringEnum.NotConnected))
                     {
                         _dispathcerQueue.TryEnqueue(() =>
                         {
-                            StatusString = "連結失敗- 找不到Vtube Studio\n有開Vtube Studio嗎?\t有開啟API嗎?\n網址和埠號有打對嗎?\t0.0.0.0不行的話試試看localhost";
+                            StatusString = _resourceLoader.GetString(StringEnum.VTSFailedConnection);
                             OnPropertyChanged("IsNotInUse");
                         });
                     }
@@ -162,7 +162,7 @@ namespace MiitsuColorController.Helper
                 _dispathcerQueue.TryEnqueue(() =>
                 {
                     Disconnect();
-                    StatusString = "授權失敗";
+                    StatusString = _resourceLoader.GetString(StringEnum.VTSAuthenticationFailed);
                 });
             }
             else
@@ -200,15 +200,15 @@ namespace MiitsuColorController.Helper
                 {
                     if (_socket.State != WebSocketState.Open)
                     {
-                        ResetConnectionStatus("失去與VTube Studio的連結");
+                        ResetConnectionStatus(_resourceLoader.GetString(StringEnum.VTSLostConnection));
                     }
                     receivedString = "";
                     do
                     {
                         try { receiveFlags = await _socket.ReceiveAsync(recvBuff, token); }
-                        catch (OperationCanceledException) { ResetConnectionStatus("失去與Vtube Studio的連結"); return; }
-                        catch (System.Net.Sockets.SocketException) { ResetConnectionStatus("失去與Vtube Studio的連結"); return; }
-                        catch (System.InvalidOperationException) { ResetConnectionStatus("失去與Vtube Studio的連結"); return; }
+                        catch (OperationCanceledException) { ResetConnectionStatus(_resourceLoader.GetString(StringEnum.VTSLostConnection)); return; }
+                        catch (System.Net.Sockets.SocketException) { ResetConnectionStatus(_resourceLoader.GetString(StringEnum.VTSLostConnection)); return; }
+                        catch (System.InvalidOperationException) { ResetConnectionStatus(_resourceLoader.GetString(StringEnum.VTSLostConnection)); return; }
                         receivedString += Encoding.UTF8.GetString(receiveData, 0, receiveFlags.Count);
                     } while (!receiveFlags.EndOfMessage && _socket.State == WebSocketState.Open);
 
@@ -336,7 +336,7 @@ namespace MiitsuColorController.Helper
                 {
                     if (_taskQueue.TryDequeue(out task))
                     {
-                        SendRequest(task.Item1, "失去與VTube Studio的連結");
+                        SendRequest(task.Item1, _resourceLoader.GetString(StringEnum.VTSLostConnection));
                         Task.Delay(task.Item2).Wait();
                     }
                     else

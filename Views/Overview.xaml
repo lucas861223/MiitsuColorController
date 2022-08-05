@@ -87,7 +87,7 @@
                         Grid.ColumnSpan="3"
                         HorizontalAlignment="Stretch"
                         Click="ConnectBothSockets"
-                        Content="連結" />
+                        x:Uid="Overview_ConnectButton" />
                 <Rectangle Grid.Column="2"
                            Stretch="UniformToFill"></Rectangle>
             </Grid>
@@ -127,52 +127,52 @@
                             Canvas.ZIndex="10"
                             Visibility="{x:Bind VTS_Socket.IsConnected, Mode=OneWay, Converter={StaticResource InverseBoolToVisibilityConverter}}">
                         <Viewbox StretchDirection="Both">
-                            <TextBlock Text="未連結Vtube Studio" />
+                            <TextBlock x:Uid="ArtmeshTinting_NotConnectedWarning" />
                         </Viewbox>
                     </Border>
                     <TextBlock Grid.Row="0">
-                        <Run>模型: </Run>
+                        <Run x:Uid="ArtmeshTinting_CurrentModel"></Run>
                         <Run Text="{x:Bind dataContext.ModelName, Mode=OneWay}"></Run>
                     </TextBlock>
                     <TextBlock Grid.Row="1">
-                        <Run>紅: </Run>
+                        <Run x:Uid="ArtmeshTinting_Red"> </Run>
                         <Run Text="{x:Bind dataContext.RedEmote, Mode=OneWay}"></Run>
                     </TextBlock>
                     <TextBlock Grid.Row="2">
-                        <Run>綠: </Run>
+                        <Run x:Uid="ArtmeshTinting_Green"> </Run>
                         <Run Text="{x:Bind dataContext.GreenEmote, Mode=OneWay}"></Run>
                     </TextBlock>
                     <TextBlock Grid.Row="3">
-                        <Run>藍: </Run>
+                        <Run x:Uid="ArtmeshTinting_Blue"> </Run>
                         <Run Text="{x:Bind dataContext.BlueEmote, Mode=OneWay}"></Run>
                     </TextBlock>
                     <TextBlock Grid.Row="4">
-                        <Run>飽和度範圍: </Run>
+                        <Run x:Uid="ArtmeshTinting_SaturationRange"> </Run>
                         <Run Text="{x:Bind dataContext.MinimumS, Mode=OneWay}"></Run>
                         <Run> ~ </Run>
                         <Run Text="{x:Bind dataContext.MaximumS, Mode=OneWay}"></Run>
                     </TextBlock>
                     <TextBlock Grid.Row="5">
-                        <Run>明亮度範圍: </Run>
+                        <Run x:Uid="ArtmeshTinting_ValueRange"></Run>
                         <Run Text="{x:Bind dataContext.MinimumV, Mode=OneWay}"></Run>
                         <Run> ~ </Run>
                         <Run Text="{x:Bind dataContext.MaximumV, Mode=OneWay}"></Run>
                     </TextBlock>
                     <TextBlock Grid.Row="6">
-                        <Run>時長: </Run>
+                        <Run x:Uid="ArtmeshTinting_Duration"> </Run>
                         <Run Text="{x:Bind dataContext.Duration, Mode=OneWay}"></Run>
                     </TextBlock>
                     <TextBlock Grid.Row="7">
-                        <Run>插值: </Run>
+                        <Run x:Uid="ArtmeshTinting_Interpolation"></Run>
                         <Run Text="{x:Bind dataContext.Interpolation, Mode=OneWay}"></Run>
                     </TextBlock>
                     <TextBlock Grid.Row="8">
-                        <Run>參考訊息數量: </Run>
+                        <Run x:Uid="ArtmeshTinting_MessageCount"> </Run>
                         <Run Text="{x:Bind dataContext.MessageCount}"></Run>
                     </TextBlock>
                     <TextBlock Grid.Row="9">
-                        <Run>變色方針: </Run>
-                        <Run Text="{x:Bind dataContext.MessageHandlingMethod, Converter={StaticResource IntToStringArrayIndexConverter}, ConverterParameter='累積變色,排程變色', Mode=OneWay}"></Run>
+                        <Run x:Uid="ArtmeshTinting_MessageHandlingMethod"> </Run>
+                        <Run Text="{x:Bind dataContext.VerbalMessageHandlingMethod, Mode=OneWay}"></Run>
                     </TextBlock>
                     <Grid Grid.Row="10">
                         <Grid.ColumnDefinitions>
@@ -212,7 +212,7 @@
                     Margin="10,10,0,0"
                     Grid.Column="1">
                 <Viewbox>
-                    <TextBlock>More to come..</TextBlock>
+                    <TextBlock x:Uid="Overview_MoreToCome"></TextBlock>
                 </Viewbox>
             </Border>
         </Grid>

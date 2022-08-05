@@ -1,4 +1,5 @@
 ﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
+using MiitsuColorController.Models;
 using Microsoft.UI.Dispatching;
 using System;
 using System.Net.WebSockets;
@@ -14,9 +15,10 @@ namespace MiitsuColorController.Helper
         protected ClientWebSocket _socket = null;
         protected bool AlreadyRetried = false;
         private CancellationTokenSource _cancelSend;
-        private string _statusString = "未連結";
+        private string _statusString;
         protected bool _autoReconnect;
         protected CancellationTokenSource _cancelRecv;
+        protected Windows.ApplicationModel.Resources.ResourceLoader _resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForViewIndependentUse();
         public bool ConnectOnStartup { get; set; }
         public bool IsConnected
         { get { return _socket != null && _socket.State == WebSocketState.Open && IsAuthorized; } }
@@ -39,10 +41,11 @@ namespace MiitsuColorController.Helper
             _socket.Options.KeepAliveInterval = new TimeSpan(0, 0, 10);
             _dispathcerQueue = DispatcherQueue.GetForCurrentThread();
             _cancelSend = new CancellationTokenSource();
+            _statusString = _resourceLoader.GetString(StringEnum.NotConnected);
         }
         public async void Disconnect()
         {
-            StatusString = "未連結";
+            StatusString = _resourceLoader.GetString(StringEnum.NotConnected);
             _cancelRecv.Cancel();
             _cancelRecv = new CancellationTokenSource();
             StopSending();
@@ -77,7 +80,7 @@ namespace MiitsuColorController.Helper
             {
                 OnPropertyChanged(nameof(IsConnected));
                 OnPropertyChanged(nameof(IsNotInUse));
-                if (StatusString != "未連結")
+                if (StatusString != _resourceLoader.GetString(StringEnum.NotConnected))
                 {
                     StatusString = Message;
                 }

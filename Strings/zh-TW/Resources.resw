@@ -1,0 +1,386 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Common_ActivateButtonDescription" xml:space="preserve">
+    <value>啟用Twitch聊天室控制，需先關閉運行中的測試</value>
+  </data>
+  <data name="Common_ArtmeshNameListviewDescription" xml:space="preserve">
+    <value>勾選欲改變顏色的部件(artmesh)
+測試時更改設定可馬上套用，不需要另外儲存
+因Winui 3問題(issue #7230)，滾動列表時會造成程式閃退，請善用搜尋功能</value>
+  </data>
+  <data name="Common_AutoTestButtonDescription" xml:space="preserve">
+    <value>自動變色測試\n需先停用聊天室控制
+程式將把選取的部件以範圍內的顏色染色
+啟用時更改設定可馬上套用，不需要另外儲存\n可以藉此機會看設定的速度、漸變、顏色範圍等是否滿意</value>
+  </data>
+  <data name="Common_AutoTestingButton" xml:space="preserve">
+    <value>停止自動變色測試,啟動自動變色測試</value>
+    <comment>the format is [deactivate],[activate] because BoolToStringConverter returns the first if true, second if false</comment>
+  </data>
+  <data name="Common_BlueDescription" xml:space="preserve">
+    <value>增加藍色元素的聊天室關鍵詞</value>
+  </data>
+  <data name="Common_ColorPickerCanvasDescription" xml:space="preserve">
+    <value>H-S色表
+x軸為色調(hue)，從左至右由0到360，y軸為飽和度(saturation)，從上至下由0到100
+手動選色測試時可以在此選擇顏色</value>
+  </data>
+  <data name="Common_RectColorDescription" xml:space="preserve">
+    <value>V色表
+y軸為明亮度(value)，從上至下由100到0
+點擊右方色表即可挑選色調和飽和度
+手動選色測試時可以在此選擇顏色</value>
+  </data>
+  <data name="Common_DefaultDescription" xml:space="preserve">
+    <value>設定結束後存檔，即可在下一次開啟時自動讀取
+更換模組後需要先刷新才會讀取新模組信息
+啟用聊天室控制後更改設定需要存檔才會套用</value>
+  </data>
+  <data name="Common_DurationDescription" xml:space="preserve">
+    <value>時長
+由顏色A變成顏色B時應花費的時間
+數字越高，變色越慢，對程式和vtube studio的負擔越輕
+建議善用測試功能來測試可以承受的數量</value>
+  </data>
+  <data name="Common_FilterDescription" xml:space="preserve">
+    <value>篩選部件和標籤</value>
+  </data>
+  <data name="Common_GreenDescription" xml:space="preserve">
+    <value>增加綠色元素的聊天室關鍵詞</value>
+  </data>
+  <data name="Common_InterpolationDescription" xml:space="preserve">
+    <value>漸變次數
+由顏色A變成顏色B時中間過渡顏色的數量
+數量越高，顏色變化越順，對程式和Vtube Studio的負擔越重
+例:由黑色(0,0,0)變成紅色(255,0,0)時，中間應有多少如(25,0,0)、(50,0,0)等過渡色
+建議善用測試功能來測試可以承受的數量</value>
+  </data>
+  <data name="Common_ManualTestButtonDescription" xml:space="preserve">
+    <value>手動選色測試
+需先停用聊天室控制
+程式將把選取的部件染上右下角色表選擇的顏色
+啟用時更改設定可馬上套用，不需要另外儲存
+使用者可以點擊右下角的色表來指定要變成的顏色
+可以藉此機會看設定的速度、漸變等是否滿意，以及測試理想的顏色範圍</value>
+  </data>
+  <data name="Common_ManualTestingButton" xml:space="preserve">
+    <value>停止手動選色測試,啟動手動選色測試</value>
+    <comment>the format is [deactivate],[activate] because BoolToStringConverter returns the first if true, second if false</comment>
+  </data>
+  <data name="Common_MessageCountDescription" xml:space="preserve">
+    <value>參考訊息數量
+要參考多少訊息的顏色比例來決定目標顏色</value>
+  </data>
+  <data name="Common_MessageHandlingMethodDescription" xml:space="preserve">
+    <value>變色方針
+設定此功能在當前顏色還未完全變化時該如何處理新的變色指令
+累積變色- 中斷當前指令，並將目標替換成新顏色
+排程變色- 將當前目標變色完成，再處理下一個顏色</value>
+  </data>
+  <data name="Common_RangesDescription" xml:space="preserve">
+    <value>可接受的顏色範圍
+上方色表將會反應範圍更變</value>
+  </data>
+  <data name="Common_RedDescription" xml:space="preserve">
+    <value>增加紅色元素的聊天室關鍵詞</value>
+  </data>
+  <data name="Common_RefreshButtonDescription" xml:space="preserve">
+    <value>讀取新的模型，並讀取相應設定
+或是捨棄修改，恢復儲存的設定</value>
+  </data>
+  <data name="Common_SaveButtonDescription" xml:space="preserve">
+    <value>儲存現在的設定，並套用至正在運行的功能上</value>
+  </data>
+  <data name="Common_TagListViewDescription" xml:space="preserve">
+    <value>勾選欲改變顏色的標籤(Tag)
+測試時更改設定可馬上套用，不需要另外儲存
+因Winui 3問題(issue #7230)，滾動列表時會造成程式閃退，請善用搜尋功能</value>
+  </data>
+  <data name="ArtmeshTintingFeature_ArtmeshListView.Header" xml:space="preserve">
+    <value>部件</value>
+  </data>
+  <data name="ArtmeshTintingFeature_FilterTextBox.PlaceholderText" xml:space="preserve">
+    <value>搜尋部件和標籤...</value>
+  </data>
+  <data name="ArtmeshTintingFeature_InterpolationUnit.Text" xml:space="preserve">
+    <value>次</value>
+    <comment>Unit for the interpolation box</comment>
+  </data>
+  <data name="ArtmeshTintingFeature_Maximum.Text" xml:space="preserve">
+    <value>最大：</value>
+  </data>
+  <data name="ArtmeshTintingFeature_MessageCountPartOne.Text" xml:space="preserve">
+    <value>以前</value>
+    <comment>The string before the in-line numberbox</comment>
+  </data>
+  <data name="ArtmeshTintingFeature_MessageCountPartTwo.Text" xml:space="preserve">
+    <value>條訊息中的比例平均值做為選色方針</value>
+    <comment>The string after the in-line numberbox</comment>
+  </data>
+  <data name="ArtmeshTintingFeature_Milliseconed.Text" xml:space="preserve">
+    <value>毫秒</value>
+  </data>
+  <data name="ArtmeshTintingFeature_Minimum.Text" xml:space="preserve">
+    <value>最小：</value>
+  </data>
+  <data name="ArtmeshTintingFeature_NotConnectedWarning.Text" xml:space="preserve">
+    <value>此功能只在有連結到Vtube Studio時才能使用</value>
+    <comment>the string when blocking user from using feature</comment>
+  </data>
+  <data name="ArtmeshTintingFeature_Saturation.Text" xml:space="preserve">
+    <value>飽和度</value>
+    <comment>Saturation from the HSV model</comment>
+  </data>
+  <data name="ArtmeshTintingFeature_SaturationRange.Text" xml:space="preserve">
+    <value>可變的飽和度範圍 (0~100)</value>
+  </data>
+  <data name="ArtmeshTintingFeature_TagListView.Header" xml:space="preserve">
+    <value>標籤</value>
+  </data>
+  <data name="ArtmeshTintingFeature_TwitchChatControl.Text" xml:space="preserve">
+    <value>聊天室控制：</value>
+  </data>
+  <data name="ArtmeshTintingFeature_Value.Text" xml:space="preserve">
+    <value>明亮度</value>
+    <comment>Value from the HSV model</comment>
+  </data>
+  <data name="ArtmeshTintingFeature_ValueRange.Text" xml:space="preserve">
+    <value>可變的明亮度範圍 (0~100)</value>
+  </data>
+  <data name="ArtmeshTinting_Blue.Text" xml:space="preserve">
+    <value>藍色：</value>
+  </data>
+  <data name="ArtmeshTinting_Cumulative.Text" xml:space="preserve">
+    <value>累積變色</value>
+  </data>
+  <data name="ArtmeshTinting_CurrentModel.Text" xml:space="preserve">
+    <value>當前模型：</value>
+  </data>
+  <data name="ArtmeshTinting_CurrentModelID.Text" xml:space="preserve">
+    <value>模型ID：</value>
+  </data>
+  <data name="ArtmeshTinting_Duration.Text" xml:space="preserve">
+    <value>時長：</value>
+  </data>
+  <data name="ArtmeshTinting_Green.Text" xml:space="preserve">
+    <value>綠色：</value>
+  </data>
+  <data name="ArtmeshTinting_Interpolation.Text" xml:space="preserve">
+    <value>漸變次數：</value>
+  </data>
+  <data name="ArtmeshTinting_MessageCount.Text" xml:space="preserve">
+    <value>參考訊息數量：</value>
+  </data>
+  <data name="ArtmeshTinting_MessageHandlingMethod.Text" xml:space="preserve">
+    <value>變色方針：</value>
+  </data>
+  <data name="ArtmeshTinting_NotConnectedWarning.Text" xml:space="preserve">
+    <value>未連結Vtube Studio</value>
+    <comment>A shorter verison of Common_NotConnectedWarning</comment>
+  </data>
+  <data name="ArtmeshTinting_Queued.Text" xml:space="preserve">
+    <value>排程變色</value>
+  </data>
+  <data name="ArtmeshTinting_Red.Text" xml:space="preserve">
+    <value>紅色：</value>
+  </data>
+  <data name="ArtmeshTinting_SaturationRange.Text" xml:space="preserve">
+    <value>飽和度範圍：</value>
+  </data>
+  <data name="ArtmeshTinting_ValueRange.Text" xml:space="preserve">
+    <value>明亮度範圍：</value>
+  </data>
+  <data name="Connection_AutoReconnetButton.Content" xml:space="preserve">
+    <value>斷線後自動重試</value>
+  </data>
+  <data name="Connection_ConnectOnStartUpButton.Content" xml:space="preserve">
+    <value>啟動時自動連結</value>
+  </data>
+  <data name="Connection_TwitchAccountTextBox.PlaceholderText" xml:space="preserve">
+    <value>Twitch用戶名稱</value>
+  </data>
+  <data name="Connection_TwitchAuthTokenTextBox.PlaceholderText" xml:space="preserve">
+    <value>用左邊的網站生產一個Access token，然後貼上來</value>
+  </data>
+  <data name="Connection_TwitchAccount.Text" xml:space="preserve">
+    <value>帳號：</value>
+  </data>
+  <data name="Connection_VTSTextBox.PlaceholderText" xml:space="preserve">
+    <value>在設定裡,需先開啟API</value>
+  </data>
+  <data name="Connection_VTSWebSocketUri.Text" xml:space="preserve">
+    <value>API地址：</value>
+  </data>
+  <data name="Common_DisconnectOrConnect" xml:space="preserve">
+    <value>斷開連結,連結</value>
+    <comment>the format is [disconnect],[connect] because BoolToStringConverter returns the first if true, second if false</comment>
+  </data>
+  <data name="Overview_ConnectButton.Content" xml:space="preserve">
+    <value>連結</value>
+  </data>
+  <data name="Overview_MoreToCome.Text" xml:space="preserve">
+    <value>More to come..</value>
+  </data>
+  <data name="ArtmeshTinting_VerbalCumulative" xml:space="preserve">
+    <value>累積變色</value>
+  </data>
+  <data name="ArtmeshTinting_VerbalQueued" xml:space="preserve">
+    <value>排程變色</value>
+  </data>
+  <data name="Common_Activate" xml:space="preserve">
+    <value>啟用</value>
+  </data>
+  <data name="Common_Connecting" xml:space="preserve">
+    <value>連結中...</value>
+  </data>
+  <data name="Common_Deactivate" xml:space="preserve">
+    <value>停用</value>
+  </data>
+  <data name="Common_NotConnected" xml:space="preserve">
+    <value>未連結</value>
+  </data>
+  <data name="Common_SuccessfullyConnected" xml:space="preserve">
+    <value>連結成功</value>
+  </data>
+  <data name="Common_TwitchAuthTokenProblem" xml:space="preserve">
+    <value>登入失敗- Access Token有照著指示給嗎?
+試著Refresh你的Token(往下滑)</value>
+  </data>
+  <data name="Common_TwitchCannotConnect" xml:space="preserve">
+    <value>連結失敗- 網路有開嗎?</value>
+  </data>
+  <data name="Common_TwitchLoginFailed" xml:space="preserve">
+    <value>連結失敗- 帳號有打對嗎?</value>
+  </data>
+  <data name="Common_VTSAuthenticationFailed" xml:space="preserve">
+    <value>授權失敗</value>
+  </data>
+  <data name="Common_VTSFailedConnection" xml:space="preserve">
+    <value>連結失敗- 找不到Vtube Studio
+有開Vtube Studio嗎?	有開啟API嗎?
+網址和埠號有打對嗎?	還是不行的話，試試看把0.0.0.0替換成localhost</value>
+  </data>
+  <data name="Common_VTSLostConnection" xml:space="preserve">
+    <value>失去與VTube Studio的連結</value>
+  </data>
+  <data name="Common_WaitingForAuthentication" xml:space="preserve">
+    <value>等待授權...</value>
+  </data>
+</root>

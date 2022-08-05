@@ -1,0 +1,391 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ArtmeshTintingFeature_ArtmeshListView.Header" xml:space="preserve">
+    <value>Artmesh</value>
+  </data>
+  <data name="ArtmeshTintingFeature_FilterTextBox.PlaceholderText" xml:space="preserve">
+    <value>Search for artmesh and tag</value>
+  </data>
+  <data name="ArtmeshTintingFeature_InterpolationUnit.Text" xml:space="preserve">
+    <value>times</value>
+    <comment>Unit for the interpolation box</comment>
+  </data>
+  <data name="ArtmeshTintingFeature_Maximum.Text" xml:space="preserve">
+    <value>Maximum:</value>
+  </data>
+  <data name="ArtmeshTintingFeature_MessageCountPartOne.Text" xml:space="preserve">
+    <value>Calculate the keyword proportion from past</value>
+    <comment>The string before the in-line numberbox</comment>
+  </data>
+  <data name="ArtmeshTintingFeature_MessageCountPartTwo.Text" xml:space="preserve">
+    <value>messages to determine the color.</value>
+    <comment>The string after the in-line numberbox</comment>
+  </data>
+  <data name="ArtmeshTintingFeature_Milliseconed.Text" xml:space="preserve">
+    <value>millisecond</value>
+  </data>
+  <data name="ArtmeshTintingFeature_Minimum.Text" xml:space="preserve">
+    <value>Minimum:</value>
+  </data>
+  <data name="ArtmeshTintingFeature_NotConnectedWarning.Text" xml:space="preserve">
+    <value>This feature is only avaliable when connected to Vtube Studio.</value>
+    <comment>the string when blocking user from using feature</comment>
+  </data>
+  <data name="ArtmeshTintingFeature_Saturation.Text" xml:space="preserve">
+    <value>Saturation</value>
+    <comment>Saturation from the HSV model</comment>
+  </data>
+  <data name="ArtmeshTintingFeature_SaturationRange.Text" xml:space="preserve">
+    <value>Saturation Range (0~100)</value>
+  </data>
+  <data name="ArtmeshTintingFeature_TagListView.Header" xml:space="preserve">
+    <value>Tag</value>
+  </data>
+  <data name="ArtmeshTintingFeature_TwitchChatControl.Text" xml:space="preserve">
+    <value>Twitch Chat Control</value>
+  </data>
+  <data name="ArtmeshTintingFeature_Value.Text" xml:space="preserve">
+    <value>Value</value>
+    <comment>Value from the HSV model</comment>
+  </data>
+  <data name="ArtmeshTintingFeature_ValueRange.Text" xml:space="preserve">
+    <value>Value Range (0~100)</value>
+  </data>
+  <data name="ArtmeshTinting_Blue.Text" xml:space="preserve">
+    <value>Blue:</value>
+  </data>
+  <data name="ArtmeshTinting_Cumulative.Text" xml:space="preserve">
+    <value>Replace</value>
+  </data>
+  <data name="ArtmeshTinting_CurrentModel.Text" xml:space="preserve">
+    <value>Current Model:</value>
+  </data>
+  <data name="ArtmeshTinting_CurrentModelID.Text" xml:space="preserve">
+    <value>Model ID:</value>
+  </data>
+  <data name="ArtmeshTinting_Duration.Text" xml:space="preserve">
+    <value>Duration:</value>
+  </data>
+  <data name="ArtmeshTinting_Green.Text" xml:space="preserve">
+    <value>Green Keyword:</value>
+  </data>
+  <data name="ArtmeshTinting_Interpolation.Text" xml:space="preserve">
+    <value>Interpolation:</value>
+  </data>
+  <data name="ArtmeshTinting_MessageCount.Text" xml:space="preserve">
+    <value>Number of message to reference:</value>
+  </data>
+  <data name="ArtmeshTinting_MessageHandlingMethod.Text" xml:space="preserve">
+    <value>Color Processing Mode</value>
+  </data>
+  <data name="ArtmeshTinting_NotConnectedWarning.Text" xml:space="preserve">
+    <value>Not Connected to Vtube Studio</value>
+    <comment>A shorter verison of Common_NotConnectedWarning</comment>
+  </data>
+  <data name="ArtmeshTinting_Queued.Text" xml:space="preserve">
+    <value>Queued</value>
+  </data>
+  <data name="ArtmeshTinting_Red.Text" xml:space="preserve">
+    <value>Red Keyword:</value>
+  </data>
+  <data name="ArtmeshTinting_SaturationRange.Text" xml:space="preserve">
+    <value>Saturation Range</value>
+  </data>
+  <data name="ArtmeshTinting_ValueRange.Text" xml:space="preserve">
+    <value>Value range:</value>
+  </data>
+  <data name="ArtmeshTinting_VerbalCumulative" xml:space="preserve">
+    <value>Replace</value>
+  </data>
+  <data name="ArtmeshTinting_VerbalQueued" xml:space="preserve">
+    <value>Queued</value>
+  </data>
+  <data name="Common_Activate" xml:space="preserve">
+    <value>Activate</value>
+  </data>
+  <data name="Common_ActivateButtonDescription" xml:space="preserve">
+    <value>Activate Twitch chat control. Need to turn off testings first.</value>
+  </data>
+  <data name="Common_ArtmeshNameListviewDescription" xml:space="preserve">
+    <value>Select the artmeshes to be tinted by checking the boxes.
+During testing, the changes will automatically apply without needing to save first.
+Due to a bug in Winui 3 (Github issue #7230), scrolling down the list will crash the app. Please use the filter function instead.</value>
+  </data>
+  <data name="Common_AutoTestButtonDescription" xml:space="preserve">
+    <value>Automatic Testing 
+Need to deactivate Twitch chat control first.
+The app will automatically choose colors and tint the selected artmeshes.
+Changes made during testing will automatically be applied without the need to save.
+This will show the effect of duration, interpolaton and color range setting.</value>
+  </data>
+  <data name="Common_AutoTestingButton" xml:space="preserve">
+    <value>停止自動變色測試,啟動自動變色測試</value>
+    <comment>the format is [deactivate],[activate] because BoolToStringConverter returns the first if true, second if false</comment>
+  </data>
+  <data name="Common_BlueDescription" xml:space="preserve">
+    <value>Twitch chat keyword for adding blue in target color.</value>
+  </data>
+  <data name="Common_ColorPickerCanvasDescription" xml:space="preserve">
+    <value>H-S Chart
+X-axis corresponds to Hue in HSV, from left to right is 0 to 360. The Y-axis corresponds to saturation in HSV, from top to bottom is 0 to 100.
+During Manual Testing mode, you can choose a new color by clicking on this panel.</value>
+  </data>
+  <data name="Common_Connecting" xml:space="preserve">
+    <value>Connecting...</value>
+  </data>
+  <data name="Common_Deactivate" xml:space="preserve">
+    <value>Deactivate</value>
+  </data>
+  <data name="Common_DeactivateOrActivate" xml:space="preserve">
+    <value>停用,啟用</value>
+    <comment>the format is [deactivate],[activate] because BoolToStringConverter returns the first if true, second if false</comment>
+  </data>
+  <data name="Common_DefaultDescription" xml:space="preserve">
+    <value>Remember to save the setting so the App can automatically load it for you next time.
+If you load a new model in Vtube studio, the App will need to be refreshed to fetch its information.
+If the feature is activated, you need to save to apply changes.</value>
+  </data>
+  <data name="Common_DisconnectOrConnect" xml:space="preserve">
+    <value>斷開連結,連結</value>
+    <comment>the format is [disconnect],[connect] because BoolToStringConverter returns the first if true, second if false</comment>
+  </data>
+  <data name="Common_DurationDescription" xml:space="preserve">
+    <value>Duration
+The amount of time it takes to change from Color A to Color B.
+The shorter the duration, the faster it goes through the changes, and the lower the performance is.
+Use the testing function to see what your computer can handle.</value>
+  </data>
+  <data name="Common_FilterDescription" xml:space="preserve">
+    <value>Filter the artmeshes and tags.</value>
+  </data>
+  <data name="Common_GreenDescription" xml:space="preserve">
+    <value>Twitch chat keyword for adding green in target color.</value>
+  </data>
+  <data name="Common_InterpolationDescription" xml:space="preserve">
+    <value>Interpolation
+How many colors will the program go through from Color A to Color B.
+The higher the number, the smoother the transition, and the lower the performance is. 
+Ex. When transitioning from black (0, 0, 0) to red (255, 0, 0), how many in-between colors such as (25, 0, 0), (50, 0, 0) will the program go through.
+Use the testing function to see what your computer can handle.</value>
+  </data>
+  <data name="Common_ManualTestButtonDescription" xml:space="preserve">
+    <value>Manual Testing
+Need to deactivate Twitch chat control first.
+The app will tint the selected artmeshes with the color selected on the color picker.
+Changes made during testing will automatically be applied without the need to save.
+User can click on the color picker on the bottom right to select a color to tint.
+This will show the effect of duration and interpolation setting, and test how the artmeshes will look with certain color.</value>
+  </data>
+  <data name="Common_ManualTestingButton" xml:space="preserve">
+    <value>停止手動選色測試,啟動手動選色測試</value>
+    <comment>the format is [deactivate],[activate] because BoolToStringConverter returns the first if true, second if false</comment>
+  </data>
+  <data name="Common_MessageCountDescription" xml:space="preserve">
+    <value>Reference Message Number
+The number of messages to take the average of color distribution from. </value>
+  </data>
+  <data name="Common_MessageHandlingMethodDescription" xml:space="preserve">
+    <value>Color Handling Method
+Determine what to do with a new color when the current color has not yet been completely processed yet.
+Cumulative- Stop the current color changing process, and change towards the new color.
+Queued- Finish the current color changing process, then process the next.</value>
+  </data>
+  <data name="Common_NotConnected" xml:space="preserve">
+    <value>Not Connected</value>
+  </data>
+  <data name="Common_RangesDescription" xml:space="preserve">
+    <value>Ranges of color to tint.</value>
+  </data>
+  <data name="Common_RectColorDescription" xml:space="preserve">
+    <value>V Chart
+Y-axis corresponds to Value in HSV, from top to bottom is 100 to 0.
+Choose the hue and saturation by clicking on the color picker on the right.
+During Manual Testing mode, you can choose a new color by clicking on this panel.</value>
+  </data>
+  <data name="Common_RedDescription" xml:space="preserve">
+    <value>Twitch chat keyword for adding red in target color.</value>
+  </data>
+  <data name="Common_RefreshButtonDescription" xml:space="preserve">
+    <value>Load the current model from Vtube Studio, as well as the corresponding config.
+This can also be used to discard unsaved changes and revert to the last saved config.</value>
+  </data>
+  <data name="Common_SaveButtonDescription" xml:space="preserve">
+    <value>Save the current config, and apply if the feature is activated.</value>
+  </data>
+  <data name="Common_SuccessfullyConnected" xml:space="preserve">
+    <value>Successfully Connected</value>
+  </data>
+  <data name="Common_TagListViewDescription" xml:space="preserve">
+    <value>Select the tag of the artmeshes to be tinted by checking the boxes.
+During testing, the changes will automatically apply without needing to save first.
+Due to a bug in Winui 3 (Github issue #7230), scrolling down the list will crash the app. Please use the filter function instead.</value>
+  </data>
+  <data name="Common_TwitchAuthTokenProblem" xml:space="preserve">
+    <value>Login Failed- Did you follow the instruction to get your Access Token?
+Or try freshing your Access Token (scroll down).</value>
+  </data>
+  <data name="Common_TwitchCannotConnect" xml:space="preserve">
+    <value>Connection Failed- Are you connected to the internet?</value>
+  </data>
+  <data name="Common_TwitchLoginFailed" xml:space="preserve">
+    <value>Login Failed- Is your username correct?</value>
+  </data>
+  <data name="Common_VTSAuthenticationFailed" xml:space="preserve">
+    <value>Authentication Failed</value>
+  </data>
+  <data name="Common_VTSFailedConnection" xml:space="preserve">
+    <value>Connection Failed- Can't find Vtube Studio
+Is it opened? Is API enabled?
+Are the link and port correct? Try replacing 0.0.0.0 with localhost</value>
+  </data>
+  <data name="Common_VTSLostConnection" xml:space="preserve">
+    <value>Lost connection with VTube Studio</value>
+  </data>
+  <data name="Common_WaitingForAuthentication" xml:space="preserve">
+    <value>Waiting for authentication...</value>
+  </data>
+  <data name="Connection_AutoReconnetButton.Content" xml:space="preserve">
+    <value>Auto Reconnect</value>
+  </data>
+  <data name="Connection_ConnectOnStartUpButton.Content" xml:space="preserve">
+    <value>Auto Connect On Startup</value>
+  </data>
+  <data name="Connection_TwitchAccount.Text" xml:space="preserve">
+    <value>Username:</value>
+  </data>
+  <data name="Connection_TwitchAccountTextBox.PlaceholderText" xml:space="preserve">
+    <value>Twitch Username.</value>
+  </data>
+  <data name="Connection_TwitchAuthTokenTextBox.PlaceholderText" xml:space="preserve">
+    <value>Use the link to the left to generate an access token, then paste it here.</value>
+  </data>
+  <data name="Connection_VTSTextBox.PlaceholderText" xml:space="preserve">
+    <value>In setting, need to enable API first.</value>
+  </data>
+  <data name="Connection_VTSWebSocketUri.Text" xml:space="preserve">
+    <value>WebSocket URI</value>
+  </data>
+  <data name="Overview_ConnectButton.Content" xml:space="preserve">
+    <value>Connect</value>
+  </data>
+  <data name="Overview_MoreToCome.Text" xml:space="preserve">
+    <value>More to come..</value>
+  </data>
+</root>

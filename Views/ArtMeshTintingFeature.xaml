@@ -43,9 +43,9 @@
                 Grid.Column="0"
                 Grid.ColumnSpan="2"
                 Canvas.ZIndex="10"
-                Visibility="{x:Bind VTS_Socket.IsConnected, Mode=OneWay, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+                Visibility="Collapsed">
             <Viewbox StretchDirection="Both">
-                <TextBlock Text="此功能只在有連結到Vtube Studio時才能使用" />
+                <TextBlock x:Uid="ArtmeshTintingFeature_NotConnectedWarning" />
             </Viewbox>
         </Border>
         <Border Grid.Row="0"
@@ -59,7 +59,8 @@
                         Tag="ActivateButton"
                         PointerEntered="{x:Bind _context.PointerEnteredCommand, Mode=OneTime}"
                         PointerExited="{x:Bind _context.PointerLeftCommand, Mode=OneTime}">
-                <TextBlock VerticalAlignment="Center">聊天室控制:</TextBlock>
+                <TextBlock VerticalAlignment="Center"
+                           x:Uid="ArtmeshTintingFeature_TwitchChatControl"></TextBlock>
                 <Button Content="{x:Bind _context.Activated, Mode=OneWay, Converter={StaticResource BoolToStringConverter}, ConverterParameter='停用,啟用'}"
                         IsEnabled="{x:Bind _context.IsTesting, Mode=OneWay, Converter={StaticResource InverseBoolConverter}}"
                         HorizontalAlignment="Center"
@@ -90,7 +91,7 @@
                       Grid.RowSpan="3"
                       BorderThickness="1"
                       SelectionMode="Multiple"
-                      Header="部件"
+                      x:Uid="ArtmeshTintingFeature_ArtmeshListView"
                       Tag="ArtMeshNameListView"
                       PointerEntered="{x:Bind _context.PointerEnteredCommand, Mode=OneTime}"
                       PointerExited="{x:Bind _context.PointerLeftCommand, Mode=OneTime}"
@@ -135,12 +136,12 @@
                 </Button>
                 <TextBlock Grid.Row="0"
                            VerticalAlignment="Center">
-                    <Run>當前模型:</Run>
+                    <Run x:Uid="ArtmeshTinting_CurrentModel"></Run>
                     <Run Text="{x:Bind _context.ModelName, Mode=OneWay}"></Run>
                 </TextBlock>
                 <TextBlock Grid.Row="1"
                            VerticalAlignment="Center">
-                    <Run>模型ID:</Run>
+                    <Run x:Uid="ArtmeshTinting_CurrentModelID"></Run>
                     <Run Text="{x:Bind _context.ModelID, Mode=OneWay}"></Run>
                 </TextBlock>
                 <Button Grid.Row="2"
@@ -179,7 +180,7 @@
             </Border>
             <TextBox Grid.Column="2"
                      Grid.Row="0"
-                     PlaceholderText="搜尋部件和標籤..."
+                     x:Uid="ArtmeshTintingFeature_FilterTextBox"
                      TextChanged="FilterChanged"
                      Tag="Filter"
                      PointerEntered="{x:Bind _context.PointerEnteredCommand, Mode=OneTime}"
@@ -189,7 +190,7 @@
             <ListView x:Name="TagListView"
                       ItemsSource="{x:Bind FilteredTagList}"
                       Grid.Column="2"
-                      Header="標籤"
+                      x:Uid="ArtmeshTintingFeature_TagListView"
                       Grid.Row="4"
                       BorderThickness="1"
                       Tag="TagListView"
@@ -224,11 +225,11 @@
                               PointerEntered="{x:Bind _context.PointerEnteredCommand, Mode=OneTime}"
                               PointerExited="{x:Bind _context.PointerLeftCommand, Mode=OneTime}">
                     <RadioButtons.Header>
-                        <TextBlock Text="變色方針">
+                        <TextBlock x:Uid="ArtmeshTinting_MessageHandlingMethod">
                         </TextBlock>
                     </RadioButtons.Header>
-                    <x:String>累積變色</x:String>
-                    <x:String>排程變色</x:String>
+                    <TextBlock x:Uid="ArtmeshTinting_Cumulative"></TextBlock>
+                    <TextBlock x:Uid="ArtmeshTinting_Queue"></TextBlock>
                 </RadioButtons>
 
                 <StackPanel Grid.Column="0"
@@ -239,7 +240,8 @@
                             Tag="MessageCount"
                             PointerEntered="{x:Bind _context.PointerEnteredCommand, Mode=OneTime}"
                             PointerExited="{x:Bind _context.PointerLeftCommand, Mode=OneTime}">
-                    <TextBlock VerticalAlignment="Center">以前</TextBlock>
+                    <TextBlock VerticalAlignment="Center"
+                               x:Uid="ArtmeshTintingFeature_MessageCountPartOne"></TextBlock>
                     <NumberBox SpinButtonPlacementMode="Compact"
                                Width="60"
                                Minimum="1"
@@ -247,15 +249,17 @@
                                LargeChange="1"
                                Value="{x:Bind _context.MessageCount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                ValueChanged="NumberBox_ValueChanged"></NumberBox>
-                    <TextBlock VerticalAlignment="Center">條訊息中的比例平均值做為選色方針</TextBlock>
+                    <TextBlock VerticalAlignment="Center"
+                               x:Uid="ArtmeshTintingFeature_MessageCountPartTwo"></TextBlock>
                 </StackPanel>
 
                 <TextBlock Grid.Row="3"
                            VerticalAlignment="Center"
                            Grid.Column="0"
                            Tag="GreenEmote"
+                           x:Uid="ArtmeshTinting_Green"
                            PointerEntered="{x:Bind _context.PointerEnteredCommand, Mode=OneTime}"
-                           PointerExited="{x:Bind _context.PointerLeftCommand, Mode=OneTime}">綠色</TextBlock>
+                           PointerExited="{x:Bind _context.PointerLeftCommand, Mode=OneTime}"></TextBlock>
                 <TextBox Grid.Row="3"
                          VerticalAlignment="Center"
                          Grid.Column="1"
@@ -267,8 +271,9 @@
                            Grid.Column="0"
                            VerticalAlignment="Center"
                            Tag="RedEmote"
+                           x:Uid="ArtmeshTinting_Red"
                            PointerEntered="{x:Bind _context.PointerEnteredCommand, Mode=OneTime}"
-                           PointerExited="{x:Bind _context.PointerLeftCommand, Mode=OneTime}">紅色</TextBlock>
+                           PointerExited="{x:Bind _context.PointerLeftCommand, Mode=OneTime}"></TextBlock>
                 <TextBox Grid.Row="2"
                          VerticalAlignment="Center"
                          Grid.Column="1"
@@ -279,9 +284,10 @@
                 <TextBlock Grid.Row="4"
                            Grid.Column="0"
                            Tag="BlueEmote"
+                           x:Uid="ArtmeshTinting_Blue"
                            PointerEntered="{x:Bind _context.PointerEnteredCommand, Mode=OneTime}"
                            PointerExited="{x:Bind _context.PointerLeftCommand, Mode=OneTime}"
-                           VerticalAlignment="Center">藍色</TextBlock>
+                           VerticalAlignment="Center"></TextBlock>
                 <TextBox Grid.Row="4"
                          VerticalAlignment="Center"
                          Grid.Column="1"
@@ -301,9 +307,9 @@
                         Value="{x:Bind _context.Interpolation, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     <Slider.Header>
                         <TextBlock>
-                            <Run>漸變數量：</Run>
+                            <Run x:Uid="ArtmeshTinting_Interpolation"></Run>
                             <Run Text="{x:Bind _context.Interpolation, Mode=OneWay}"></Run>
-                            <Run>次</Run>
+                            <Run x:Uid="ArtmeshTintingFeature_InterpolationUnit"> </Run>
                         </TextBlock>
                     </Slider.Header>
                 </Slider>
@@ -319,9 +325,9 @@
                         Value="{x:Bind _context.Duration, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     <Slider.Header>
                         <TextBlock>
-                            <Run>時長：</Run>
+                            <Run x:Uid="ArtmeshTinting_Duration"></Run>
                             <Run Text="{x:Bind _context.Duration, Mode=OneWay}"></Run>
-                            <Run>毫秒</Run>
+                            <Run x:Uid="ArtmeshTintingFeature_Milliseconed"></Run>
                         </TextBlock>
                     </Slider.Header>
                 </Slider>
@@ -343,9 +349,11 @@
                 <ColumnDefinition Width="75*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Row="0"
-                       Grid.Column="0">明亮度</TextBlock>
+                       Grid.Column="0"
+                       x:Uid="ArtmeshTintingFeature_Value"></TextBlock>
             <TextBlock Grid.Row="0"
-                       Grid.Column="2">飽和度</TextBlock>
+                       Grid.Column="2"
+                       x:Uid="ArtmeshTintingFeature_Saturation"></TextBlock>
             <TextBlock Grid.Row="0"
                        Grid.Column="3"
                        TextAlignment="Right">
@@ -387,38 +395,37 @@
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Row="0"
                            Grid.Column="0"
-                           VerticalAlignment="Center">
-                    可變的飽和度範圍 (0~100)
+                           VerticalAlignment="Center"
+                           x:Uid="ArtmeshTintingFeature_SaturationRange">
                 </TextBlock>
                 <TextBlock Grid.Row="0"
                            Grid.Column="1"
                            VerticalAlignment="Center"
-                           TextAlignment="Right">
-                    最小:
+                           TextAlignment="Right"
+                           x:Uid="ArtmeshTintingFeature_Minimum">
                 </TextBlock>
                 <TextBlock Grid.Row="0"
                            Grid.Column="3"
                            VerticalAlignment="Center"
-                           TextAlignment="Right">
-                    最大:
+                           TextAlignment="Right"
+                           x:Uid="ArtmeshTintingFeature_Maximum">
                 </TextBlock>
                 <TextBlock Grid.Row="1"
                            Grid.Column="1"
                            VerticalAlignment="Center"
-                           TextAlignment="Right">
-                    最小:
+                           TextAlignment="Right"
+                           x:Uid="ArtmeshTintingFeature_Minimum">
                 </TextBlock>
                 <TextBlock Grid.Row="1"
                            Grid.Column="3"
                            VerticalAlignment="Center"
-                           TextAlignment="Right">
-                    最大:
+                           TextAlignment="Right"
+                           x:Uid="ArtmeshTintingFeature_Maximum">
                 </TextBlock>
                 <TextBlock Grid.Row="1"
                            Grid.Column="0"
-                           VerticalAlignment="Center">
-                    可變的明亮度範圍 (0~100)
-                </TextBlock>
+                           VerticalAlignment="Center"
+                           x:Uid="ArtmeshTintingFeature_ValueRange.Text" />
 
                 <NumberBox Grid.Row="1"
                            Grid.Column="2"

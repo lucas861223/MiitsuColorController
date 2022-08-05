@@ -73,15 +73,15 @@
                         <TextBlock Grid.Column="1"
                                    Grid.ColumnSpan="2"
                                    VerticalAlignment="Center"
-                                   TextAlignment="Right">
-                            API地址:
+                                   TextAlignment="Right"
+                                   x:Uid="Connection_VTSWebSocketUri">
                         </TextBlock>
                         <TextBox Grid.Column="3"
                                  Height="{Binding Path=ActualHeight, ElementName=TwitchUserNameTextBox}"
                                  AcceptsReturn="False"
                                  IsEnabled="{x:Bind Path=VTS_Socket.IsNotInUse, Mode=OneWay}"
                                  IsSpellCheckEnabled="False"
-                                 PlaceholderText="在設定裡,需先開啟API"
+                                 x:Uid="Connection_VTSTextBox"
                                  Text="{x:Bind Path=VTS_Socket.VTS_Websocket_URL, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     </Grid>
                     <Grid Grid.Row="2"
@@ -93,10 +93,10 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <ToggleButton Grid.Column="0"
-                                      Content="斷線後自動重試"
+                                      x:Uid="Connection_AutoReconnetButton"
                                       IsChecked="{x:Bind Path=VTS_Socket.AutoReconnect, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         <ToggleButton Grid.Column="2"
-                                      Content="啟動時自動連結"
+                                      x:Uid="Connection_ConnectOnStartUpButton"
                                       IsChecked="{x:Bind Path=VTS_Socket.ConnectOnStartup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     </Grid>
                 </Grid>
@@ -159,8 +159,8 @@
                                    Grid.Column="1"
                                    Grid.ColumnSpan="2"
                                    VerticalAlignment="Center"
-                                   TextAlignment="Right">
-                            帳號:
+                                   TextAlignment="Right"
+                                   x:Uid="Connection_TwitchAccount">
                         </TextBlock>
                         <TextBox Name="TwitchUserNameTextBox"
                                  Grid.Row="0"
@@ -168,7 +168,7 @@
                                  AcceptsReturn="False"
                                  IsEnabled="{x:Bind Path=Twitch_Socket.IsNotInUse, Mode=OneWay}"
                                  IsSpellCheckEnabled="False"
-                                 PlaceholderText="Twitch用戶名稱"
+                                 x:Uid="Connection_TwitchAccountTextBox"
                                  Text="{x:Bind Path=Twitch_Socket.Username, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         <TextBlock Grid.Row="1"
                                    Grid.Column="1"
@@ -182,7 +182,7 @@
                                  AcceptsReturn="False"
                                  IsEnabled="{x:Bind Path=Twitch_Socket.IsNotInUse, Mode=OneWay}"
                                  IsSpellCheckEnabled="False"
-                                 PlaceholderText="用左邊的網站生產一個Access token，然後貼上來"
+                                 x:Uid="Connection_TwitchAuthTokenTextBox"
                                  Text="{x:Bind Path=Twitch_Socket.TwitchAuthToken, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     </Grid>
                     <Grid Grid.Row="2"
@@ -194,9 +194,9 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <ToggleButton Grid.Column="0"
-                                      Content="斷線後自動重試" />
+                                      x:Uid="Connection_AutoReconnetButton" />
                         <ToggleButton Grid.Column="2"
-                                      Content="啟動時自動連結"
+                                      x:Uid="Connection_ConnectOnStartUpButton"
                                       IsChecked="{x:Bind Path=Twitch_Socket.ConnectOnStartup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     </Grid>
                 </Grid>
