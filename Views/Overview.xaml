@@ -172,7 +172,7 @@
                     </TextBlock>
                     <TextBlock Grid.Row="9">
                         <Run x:Uid="ArtmeshTinting_MessageHandlingMethod"> </Run>
-                        <Run Text="{x:Bind dataContext.MessageHandlingMethod, Converter={StaticResource IntToStringArrayIndexConverter}, Mode=OneWay}"></Run>
+                        <Run Text="{x:Bind dataContext.MessageHandlingMethod, Converter={StaticResource IntToStringArrayIndexConverter}, ConverterParameter='Converter_QueuedOrCumulative', Mode=OneWay}"></Run>
                     </TextBlock>
                     <Grid Grid.Row="10">
                         <Grid.ColumnDefinitions>

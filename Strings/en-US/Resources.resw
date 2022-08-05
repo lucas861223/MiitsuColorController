@@ -326,6 +326,7 @@ Or try freshing your Access Token (scroll down).</value>
     <value>Connection Failed- Can't find Vtube Studio
 Is it opened? Is API enabled?
 Are the link and port correct? Try replacing 0.0.0.0 with localhost</value>
+    <comment>There's a tab character between each question</comment>
   </data>
   <data name="Common_VTSLostConnection" xml:space="preserve">
     <value>Lost connection with VTube Studio</value>
@@ -355,7 +356,7 @@ Are the link and port correct? Try replacing 0.0.0.0 with localhost</value>
     <value>WebSocket URI</value>
   </data>
   <data name="Converter_ConnectOrDisconnect" xml:space="preserve">
-    <value>連結,斷開連結</value>
+    <value>Connect,Disconnect</value>
     <comment>the format is [connect],[disconnect] because BoolToStringConverter returns the first if true, second if false</comment>
   </data>
   <data name="Converter_DeactivateOrActivate" xml:space="preserve">
@@ -373,6 +374,15 @@ Are the link and port correct? Try replacing 0.0.0.0 with localhost</value>
   <data name="Convertetr_AutoTestingButton" xml:space="preserve">
     <value>Stop Auto Testing,Start Auto Testing</value>
     <comment>the format is [deactivate auto testing],[activate auto testing] because BoolToStringConverter returns the first if true, second if false</comment>
+  </data>
+  <data name="NavigationView_ArtmeshTintingFeature.Content" xml:space="preserve">
+    <value>Artmesh Tinting Feature</value>
+  </data>
+  <data name="NavigationView_Connection.Content" xml:space="preserve">
+    <value>Connection</value>
+  </data>
+  <data name="NavigationView_Overview.Content" xml:space="preserve">
+    <value>Overview</value>
   </data>
   <data name="Overview_ConnectButton.Content" xml:space="preserve">
     <value>Connect</value>

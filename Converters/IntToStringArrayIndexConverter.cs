@@ -1,6 +1,5 @@
 ﻿using Microsoft.UI.Xaml.Data;
 using System;
-using MiitsuColorController.Models;
 
 namespace MiitsuColorController.Converters
 {
@@ -8,7 +7,7 @@ namespace MiitsuColorController.Converters
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            return Windows.ApplicationModel.Resources.ResourceLoader.GetForViewIndependentUse().GetString(StringEnum.QueuedOrCumulative).Split(",")[(int)value];
+            return Windows.ApplicationModel.Resources.ResourceLoader.GetForViewIndependentUse().GetString((string)parameter).Split(",")[(int)value];
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)

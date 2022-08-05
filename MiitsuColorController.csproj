@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net5.0-windows10.0.19041.0</TargetFramework>
-    <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+    <Targetframework>net5.0-windows10.0.19041.0</Targetframework>
+    <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
     <DefaultLanguage>en-US</DefaultLanguage>
     <RootNamespace>MiitsuColorController</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -23,6 +23,7 @@
     <None Remove="Views\ArtMeshTintingFeature.xaml" />
     <None Remove="Views\Connection.xaml" />
     <None Remove="Views\Overview.xaml" />
+    <None Remove="Views\Setting.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -40,6 +41,11 @@
   -->
   <ItemGroup Condition="'$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
     <ProjectCapability Include="Msix" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\Setting.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Views\ArtMeshTintingFeature.xaml">

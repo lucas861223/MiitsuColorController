@@ -364,6 +364,7 @@ y軸為明亮度(value)，從上至下由100到0
     <value>連結失敗- 找不到Vtube Studio
 有開Vtube Studio嗎?	有開啟API嗎?
 網址和埠號有打對嗎?	還是不行的話，試試看把0.0.0.0替換成localhost</value>
+    <comment>There's a tab character between each question</comment>
   </data>
   <data name="Common_VTSLostConnection" xml:space="preserve">
     <value>失去與VTube Studio的連結</value>
@@ -378,5 +379,14 @@ y軸為明亮度(value)，從上至下由100到0
   <data name="Converter_QueuedOrCumulative" xml:space="preserve">
     <value>排程變色,累積變色</value>
     <comment>[Queued],[Cumulative] for IntToStringArrayIndexConverter</comment>
+  </data>
+  <data name="NavigationView_ArtmeshTintingFeature.Content" xml:space="preserve">
+    <value>部件染色功能</value>
+  </data>
+  <data name="NavigationView_Connection.Content" xml:space="preserve">
+    <value>連結</value>
+  </data>
+  <data name="NavigationView_Overview.Content" xml:space="preserve">
+    <value>總覽</value>
   </data>
 </root>

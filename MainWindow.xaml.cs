@@ -97,8 +97,18 @@ namespace MiitsuColorController
 
         private void NavigationViewItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
         {
-            var navItemTag = args.InvokedItemContainer.Tag.ToString();
-            NavigationViewNavigate(navItemTag);
+            if (args.IsSettingsInvoked)
+            {
+                if (ContentFrame.CurrentSourcePageType != typeof(Setting))
+                {
+                    ContentFrame.Navigate(typeof(Setting));
+                }
+            }
+            else
+            {
+                var navItemTag = args.InvokedItemContainer.Tag.ToString();
+                NavigationViewNavigate(navItemTag);
+            }
         }
 
         private void On_Navigated(object sender, NavigationEventArgs e)

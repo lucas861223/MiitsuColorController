@@ -11,17 +11,17 @@
                         Header="WinUI 3 Navigation Sample"
                         IsBackButtonVisible="Collapsed"
                         IsPaneOpen="False"
-                        IsSettingsVisible="False"
+                        IsSettingsVisible="True"
                         ItemInvoked="NavigationViewItemInvoked"
                         Loaded="NavigationViewLoaded">
             <NavigationView.MenuItems>
-                <NavigationViewItem Content="總覽"
+                <NavigationViewItem x:Uid="NavigationView_Overview"
                                     Icon="Home"
                                     Tag="overview" />
-                <NavigationViewItem Content="連結"
+                <NavigationViewItem x:Uid="NavigationView_Connection"
                                     Icon="FourBars"
                                     Tag="connection" />
-                <NavigationViewItem Content="部件染色功能"
+                <NavigationViewItem x:Uid="NavigationView_ArtmeshTintingFeature"
                                     Icon="Contact2"
                                     Tag="artmeshtintingfeature" />
             </NavigationView.MenuItems>
