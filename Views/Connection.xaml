@@ -67,7 +67,7 @@
                                 Click="ConnectToVTubeStudio">
                             <Button.Content>
                                 <TextBlock TextWrapping="Wrap"
-                                           Text="{x:Bind Path=VTS_Socket.IsNotInUse, Mode=OneWay, Converter={StaticResource BoolToStringConverter}, ConverterParameter='連結,斷開連結！！'}" />
+                                           Text="{x:Bind Path=VTS_Socket.IsNotInUse, Mode=OneWay, Converter={StaticResource BoolToStringConverter}, ConverterParameter='Converter_ConnectOrDisconnect'}" />
                             </Button.Content>
                         </Button>
                         <TextBlock Grid.Column="1"
@@ -152,7 +152,7 @@
                                 Click="ConnectToTwitch">
                             <Button.Content>
                                 <TextBlock TextWrapping="Wrap"
-                                           Text="{x:Bind Path=Twitch_Socket.IsNotInUse, Mode=OneWay, Converter={StaticResource BoolToStringConverter}, ConverterParameter='連結,斷開連結！！'}" />
+                                           Text="{x:Bind Path=Twitch_Socket.IsNotInUse, Mode=OneWay, Converter={StaticResource BoolToStringConverter}, ConverterParameter='Converter_ConnectOrDisconnect'}" />
                             </Button.Content>
                         </Button>
                         <TextBlock Grid.Row="0"

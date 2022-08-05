@@ -172,7 +172,7 @@
                     </TextBlock>
                     <TextBlock Grid.Row="9">
                         <Run x:Uid="ArtmeshTinting_MessageHandlingMethod"> </Run>
-                        <Run Text="{x:Bind dataContext.VerbalMessageHandlingMethod, Mode=OneWay}"></Run>
+                        <Run Text="{x:Bind dataContext.MessageHandlingMethod, Converter={StaticResource IntToStringArrayIndexConverter}, Mode=OneWay}"></Run>
                     </TextBlock>
                     <Grid Grid.Row="10">
                         <Grid.ColumnDefinitions>
@@ -197,7 +197,7 @@
                                 <SymbolIcon Symbol="Setting"></SymbolIcon>
                             </Button.Content>
                         </Button>
-                        <Button Content="{x:Bind dataContext.Activated, Mode=OneWay, Converter={StaticResource BoolToStringConverter}, ConverterParameter='停用,啟用'}"
+                        <Button Content="{x:Bind dataContext.Activated, Mode=OneWay, Converter={StaticResource BoolToStringConverter}, ConverterParameter='Converter_DeactivateOrActivate'}"
                                 IsEnabled="{x:Bind VTS_Socket.IsConnected, Mode=OneWay}"
                                 Click="{x:Bind dataContext.ActivateCommand, Mode=OneTime}"
                                 Grid.Column="2"

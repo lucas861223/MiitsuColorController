@@ -9,7 +9,6 @@
         public static string BlueDescription = "Common_BlueDescription";
         public static string ColorPickerCanvasDescription = "Common_ColorPickerCanvasDescription";
         public static string Connecting = "Common_Connecting";
-        public static string DeactivateOrActivate = "Common_DeactivateOrActivate";
         public static string DefaultDescription = "Common_DefaultDescription";
         public static string DisconnectOrConnect = "Common_DisconnectOrConnect";
         public static string DurationDescription = "Common_DurationDescription";
@@ -35,9 +34,6 @@
         public static string VTSFailedConnection = "Common_VTSFailedConnection";
         public static string VTSLostConnection = "Common_VTSLostConnection";
         public static string WaitingForAuthentication = "Common_WaitingForAuthentication";
-        public static string Cumulative = "ArtmeshTinting_VerbalCumulative";
-        public static string Queued = "ArtmeshTinting_VerbalQueued";
-        public static string Deactivate = "ArtmeshTinting_DeActivate";
-        public static string Activate = "ArtmeshTinting_Activate";
+        public static string QueuedOrCumulative = "Converter_QueuedOrCumulative";
     }
 }

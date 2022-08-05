@@ -130,9 +130,9 @@
 程式將把選取的部件以範圍內的顏色染色
 啟用時更改設定可馬上套用，不需要另外儲存\n可以藉此機會看設定的速度、漸變、顏色範圍等是否滿意</value>
   </data>
-  <data name="Common_AutoTestingButton" xml:space="preserve">
+  <data name="Convertetr_AutoTestingButton" xml:space="preserve">
     <value>停止自動變色測試,啟動自動變色測試</value>
-    <comment>the format is [deactivate],[activate] because BoolToStringConverter returns the first if true, second if false</comment>
+    <comment>the format is [deactivate auto testing],[activate auto testing] because BoolToStringConverter returns the first if true, second if false</comment>
   </data>
   <data name="Common_BlueDescription" xml:space="preserve">
     <value>增加藍色元素的聊天室關鍵詞</value>
@@ -180,9 +180,9 @@ y軸為明亮度(value)，從上至下由100到0
 使用者可以點擊右下角的色表來指定要變成的顏色
 可以藉此機會看設定的速度、漸變等是否滿意，以及測試理想的顏色範圍</value>
   </data>
-  <data name="Common_ManualTestingButton" xml:space="preserve">
+  <data name="Converter_ManualTestingButton" xml:space="preserve">
     <value>停止手動選色測試,啟動手動選色測試</value>
-    <comment>the format is [deactivate],[activate] because BoolToStringConverter returns the first if true, second if false</comment>
+    <comment>the format is [deactivate manual testing],[activate  manual testing] because BoolToStringConverter returns the first if true, second if false</comment>
   </data>
   <data name="Common_MessageCountDescription" xml:space="preserve">
     <value>參考訊息數量
@@ -328,9 +328,9 @@ y軸為明亮度(value)，從上至下由100到0
   <data name="Connection_VTSWebSocketUri.Text" xml:space="preserve">
     <value>API地址：</value>
   </data>
-  <data name="Common_DisconnectOrConnect" xml:space="preserve">
-    <value>斷開連結,連結</value>
-    <comment>the format is [disconnect],[connect] because BoolToStringConverter returns the first if true, second if false</comment>
+  <data name="Converter_ConnectOrDisconnect" xml:space="preserve">
+    <value>連結,斷開連結</value>
+    <comment>the format is [connect],[disconnect] because BoolToStringConverter returns the first if true, second if false</comment>
   </data>
   <data name="Overview_ConnectButton.Content" xml:space="preserve">
     <value>連結</value>
@@ -338,20 +338,8 @@ y軸為明亮度(value)，從上至下由100到0
   <data name="Overview_MoreToCome.Text" xml:space="preserve">
     <value>More to come..</value>
   </data>
-  <data name="ArtmeshTinting_VerbalCumulative" xml:space="preserve">
-    <value>累積變色</value>
-  </data>
-  <data name="ArtmeshTinting_VerbalQueued" xml:space="preserve">
-    <value>排程變色</value>
-  </data>
-  <data name="Common_Activate" xml:space="preserve">
-    <value>啟用</value>
-  </data>
   <data name="Common_Connecting" xml:space="preserve">
     <value>連結中...</value>
-  </data>
-  <data name="Common_Deactivate" xml:space="preserve">
-    <value>停用</value>
   </data>
   <data name="Common_NotConnected" xml:space="preserve">
     <value>未連結</value>
@@ -382,5 +370,13 @@ y軸為明亮度(value)，從上至下由100到0
   </data>
   <data name="Common_WaitingForAuthentication" xml:space="preserve">
     <value>等待授權...</value>
+  </data>
+  <data name="Converter_DeactivateOrActivate" xml:space="preserve">
+    <value>停用,啟用</value>
+    <comment>the format is [deactivate],[activate] because BoolToStringConverter returns the first if true, second if false</comment>
+  </data>
+  <data name="Converter_QueuedOrCumulative" xml:space="preserve">
+    <value>排程變色,累積變色</value>
+    <comment>[Queued],[Cumulative] for IntToStringArrayIndexConverter</comment>
   </data>
 </root>

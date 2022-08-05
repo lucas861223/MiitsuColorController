@@ -13,25 +13,10 @@ namespace MiitsuColorController.ViewModel
         public int MessageHandlingMethod
         {
             get { return _setting.MessageHandlingMethod; }
-            set { _setting.MessageHandlingMethod = value; OnPropertyChanged(nameof(MessageHandlingMethod)); OnPropertyChanged(nameof(VerbalMessageHandlingMethod)); }
+            set { _setting.MessageHandlingMethod = value; OnPropertyChanged(nameof(MessageHandlingMethod)); }
         }
 
         protected Windows.ApplicationModel.Resources.ResourceLoader _resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForViewIndependentUse();
-
-        public string VerbalMessageHandlingMethod
-        {
-            get
-            {
-                if (MessageHandlingMethod == 1)
-                {
-                    return _resourceLoader.GetString(StringEnum.Cumulative);
-                }
-                else
-                {
-                    return _resourceLoader.GetString(StringEnum.Queued);
-                }
-            }
-        }
 
         public virtual int Interpolation
         {

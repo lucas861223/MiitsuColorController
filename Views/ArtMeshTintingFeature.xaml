@@ -43,7 +43,7 @@
                 Grid.Column="0"
                 Grid.ColumnSpan="2"
                 Canvas.ZIndex="10"
-                Visibility="Collapsed">
+                Visibility="{x:Bind VTS_Socket.IsConnected, Mode=OneWay, Converter={StaticResource InverseBoolToVisibilityConverter}}">
             <Viewbox StretchDirection="Both">
                 <TextBlock x:Uid="ArtmeshTintingFeature_NotConnectedWarning" />
             </Viewbox>
@@ -61,7 +61,7 @@
                         PointerExited="{x:Bind _context.PointerLeftCommand, Mode=OneTime}">
                 <TextBlock VerticalAlignment="Center"
                            x:Uid="ArtmeshTintingFeature_TwitchChatControl"></TextBlock>
-                <Button Content="{x:Bind _context.Activated, Mode=OneWay, Converter={StaticResource BoolToStringConverter}, ConverterParameter='停用,啟用'}"
+                <Button Content="{x:Bind _context.Activated, Mode=OneWay, Converter={StaticResource BoolToStringConverter}, ConverterParameter='Converter_DeactivateOrActivate'}"
                         IsEnabled="{x:Bind _context.IsTesting, Mode=OneWay, Converter={StaticResource InverseBoolConverter}}"
                         HorizontalAlignment="Center"
                         Click="{x:Bind _context.ActivateCommand, Mode=OneTime}"></Button>
@@ -147,7 +147,7 @@
                 <Button Grid.Row="2"
                         Grid.Column="0"
                         HorizontalAlignment="Center"
-                        Content="{x:Bind _context.IsAutoTesting, Mode=OneWay, Converter={StaticResource BoolToStringConverter}, ConverterParameter='停止自動變色測試,啟動自動變色測試'}"
+                        Content="{x:Bind _context.IsAutoTesting, Mode=OneWay, Converter={StaticResource BoolToStringConverter}, ConverterParameter='Convertetr_AutoTestingButton'}"
                         IsEnabled="{x:Bind _context.Activated, Mode=OneWay, Converter={StaticResource InverseBoolConverter}}"
                         Click="{x:Bind _context.TestCommand, Mode=OneTime}"
                         Tag="AutoTestButton"
@@ -161,7 +161,7 @@
                         Tag="ClickTestButton"
                         PointerEntered="{x:Bind _context.PointerEnteredCommand, Mode=OneTime}"
                         PointerExited="{x:Bind _context.PointerLeftCommand, Mode=OneTime}"
-                        Content="{x:Bind _context.IsClickTesting, Mode=OneWay, Converter={StaticResource BoolToStringConverter}, ConverterParameter='停止手動選色測試,啟動手動選色測試'}"
+                        Content="{x:Bind _context.IsClickTesting, Mode=OneWay, Converter={StaticResource BoolToStringConverter}, ConverterParameter='Converter_ManualTestingButton'}"
                         IsEnabled="{x:Bind _context.Activated, Mode=OneWay, Converter={StaticResource InverseBoolConverter}}"
                         Click="StartClickTesting"
                         VerticalAlignment="Center">

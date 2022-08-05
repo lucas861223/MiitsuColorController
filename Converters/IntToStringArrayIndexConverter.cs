@@ -8,8 +8,7 @@ namespace MiitsuColorController.Converters
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-
-            return "xd";
+            return Windows.ApplicationModel.Resources.ResourceLoader.GetForViewIndependentUse().GetString(StringEnum.QueuedOrCumulative).Split(",")[(int)value];
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)

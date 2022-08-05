@@ -61,7 +61,6 @@ namespace MiitsuColorController.ViewModel
         public SelectionChangedEventHandler NameSelectionCommand { get { return ArtMeshNameListView_SelectionChanged; } }
         public SelectionChangedEventHandler TagSelectionCommand { get { return TagListView_SelectionChanged; } }
         public string Description { get; set; }
-        Windows.ApplicationModel.Resources.ResourceLoader _resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForViewIndependentUse();
 
         public override int MinimumS
         {
