@@ -1,21 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <Targetframework>net6.0-windows10.0.19041.0</Targetframework>
-    <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
-    <DefaultLanguage>en-US</DefaultLanguage>
-    <RootNamespace>MiitsuColorController</RootNamespace>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
-    <Platforms>x86;x64</Platforms>
-    <RuntimeIdentifiers>win10-x86;win10-x64;win10-arm64</RuntimeIdentifiers>
-    <PublishProfile>win10-$(Platform).pubxml</PublishProfile>
-    <UseWinUI>true</UseWinUI>
-    <EnableMsixTooling>true</EnableMsixTooling>
     <ApplicationIcon>3.0.ico</ApplicationIcon>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <EnablePreviewMsixTooling>true</EnablePreviewMsixTooling>
+    <OutputType>WinExe</OutputType>
+    <Platforms>x86;x64;arm64</Platforms>
+    <PublishProfile>win10-$(Platform).pubxml</PublishProfile>
+    <RootNamespace>MiitsuColorController</RootNamespace>
+    <RuntimeIdentifiers>win10-x86;win10-x64;win10-arm64</RuntimeIdentifiers>
+    <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
+    <TargetFramework>net6.0-windows10.0.19041.0</TargetFramework>
+    <UseWinUI>true</UseWinUI>
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
     <WindowsPackageType>None</WindowsPackageType>
-    <PlatformTarget>x64</PlatformTarget>
-    <Nullable>warnings</Nullable>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="app.manifest" />

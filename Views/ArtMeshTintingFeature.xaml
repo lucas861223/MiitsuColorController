@@ -229,7 +229,7 @@
                         </TextBlock>
                     </RadioButtons.Header>
                     <TextBlock x:Uid="ArtmeshTinting_Cumulative"></TextBlock>
-                    <TextBlock x:Uid="ArtmeshTinting_Queue"></TextBlock>
+                    <TextBlock x:Uid="ArtmeshTinting_Queued"></TextBlock>
                 </RadioButtons>
 
                 <StackPanel Grid.Column="0"
@@ -425,7 +425,7 @@
                 <TextBlock Grid.Row="1"
                            Grid.Column="0"
                            VerticalAlignment="Center"
-                           x:Uid="ArtmeshTintingFeature_ValueRange.Text" />
+                           x:Uid="ArtmeshTintingFeature_ValueRange" />
 
                 <NumberBox Grid.Row="1"
                            Grid.Column="2"

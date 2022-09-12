@@ -290,62 +290,90 @@ namespace MiitsuColorController.Helper
                     _isTesting = true;
                     ReAssembleConfig(setting);
                     int difference = 30;
-                    float[] rgb = { 0f, 0f, 0f };
+                    float[] rgb = { 255f, 255f, 255f };
+                    bool fadeout = false;
                     bool iRed = false, iBlue = false, iGreen = false;
                     while (_isTesting)
                     {
-                        if (!iRed && !iGreen && !iBlue)
+                        if (!fadeout)
                         {
-                            rgb[0] += difference;
-                            if (rgb[0] >= 255)
+                            if (!iRed && !iGreen && !iBlue)
                             {
-                                rgb[0] = 255;
-                                iRed = true;
+                                rgb[1] -= difference;
+                                rgb[2] -= difference;
+                                if (rgb[1] <= 0)
+                                {
+                                    rgb[1] = 0;
+                                    rgb[2] = 0;
+                                    iRed = true;
+                                }
+                            }
+                            else if (iRed && !iGreen && !iBlue)
+                            {
+                                rgb[1] += difference;
+                                rgb[0] -= difference;
+                                if (rgb[1] >= 255)
+                                {
+                                    rgb[1] = 255;
+                                    rgb[0] = 0;
+                                    iGreen = true;
+                                }
+                            }
+                            else if (iRed && iGreen && !iBlue)
+                            {
+                                rgb[2] += difference;
+                                rgb[1] -= difference;
+                                if (rgb[2] >= 255)
+                                {
+                                    rgb[2] = 255;
+                                    rgb[1] = 0;
+                                    iBlue = true;
+                                }
+                            }
+                            else if (iRed && iGreen && iBlue)
+                            {
+                                rgb[2] -= difference;
+                                rgb[1] += difference;
+                                rgb[0] += difference;
+                                if (rgb[0] >= 255)
+                                {
+                                    rgb[2] = 0;
+                                    rgb[1] = 255;
+                                    rgb[0] = 255;
+                                    iRed = false;
+                                }
+                            }
+                            else if (!iRed && iGreen && iBlue)
+                            {
+                                rgb[2] += difference;
+                                rgb[0] -= difference;
+                                if (rgb[0] <= 0)
+                                {
+                                    rgb[2] = 255;
+                                    rgb[0] = 0;
+                                    iGreen = false;
+                                }
+                            }
+                            else if (!iRed && !iGreen && iBlue)
+                            {
+                                rgb[0] += difference;
+                                rgb[1] -= difference;
+                                if (rgb[1] <= 0)
+                                {
+                                    rgb[0] = 255;
+                                    rgb[1] = 0;
+                                    iBlue = false;
+                                    fadeout = true;
+                                }
                             }
                         }
-                        else if (iRed && !iGreen && !iBlue)
+                        else
                         {
                             rgb[1] += difference;
                             if (rgb[1] >= 255)
                             {
                                 rgb[1] = 255;
-                                iGreen = true;
-                            }
-                        }
-                        else if (iRed && iGreen && !iBlue)
-                        {
-                            rgb[2] += difference;
-                            if (rgb[2] >= 255)
-                            {
-                                rgb[2] = 255;
-                                iBlue = true;
-                            }
-                        }
-                        else if (iRed && iGreen && iBlue)
-                        {
-                            rgb[0] -= difference;
-                            if (rgb[0] <= 0)
-                            {
-                                rgb[0] = 0;
-                                iRed = false;
-                            }
-                        }
-                        else if (!iRed && iGreen && iBlue)
-                        {
-                            rgb[1] -= difference;
-                            if (rgb[1] <= 0)
-                            {
-                                rgb[1] = 0;
-                                iGreen = false;
-                            }
-                        }
-                        else if (!iRed && !iGreen && iBlue)
-                        {
-                            rgb[2] -= difference;
-                            if (rgb[2] <= 0)
-                            {
-                                rgb[2] = 0;
-                                iBlue = false;
+                                fadeout = false;
                             }
                         }
                         ColorHelper.RBGToAdjustedColorTint(rgb, _sRatio, _setting.MinimumS, _vRatio, _setting.MinimumV, ref _colortintHolder);
